@@ -8,6 +8,31 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
 
+    //CGM Graph setup
+    cgmLine = new QLineSeries();
+    QPen dottedLine(Qt::black);
+    dottedLine.setStyle(Qt::CustomDashLine);
+    dottedLine.setWidth(5);
+    dottedLine.setCapStyle(Qt::SquareCap);
+    dottedLine.setDashPattern({0.1, 2});
+    cgmLine->setPen(dottedLine);
+
+    //sample line
+    cgmLine->append(0, 8.9);
+    cgmLine->append(2, 9.3);
+    cgmLine->append(4, 7.2);
+
+
+    cgmChart = new QChart();
+    cgmChart->addSeries(cgmLine);
+    cgmChart->createDefaultAxes();
+
+    cgmView = new QChartView(cgmChart);
+    cgmView->setRenderHint(QPainter::Antialiasing);
+
+    QVBoxLayout *layout = new QVBoxLayout(ui->CGMGraph);
+    layout->addWidget(cgmView);
+
     //connecting slots to change pages
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
@@ -20,7 +45,7 @@ void MainWindow::openHome(){
 }
 
 void MainWindow::openBolus(){
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 void MainWindow::openOptions(){
@@ -28,7 +53,7 @@ void MainWindow::openOptions(){
 }
 
 void MainWindow::openCarbs(){
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 
 

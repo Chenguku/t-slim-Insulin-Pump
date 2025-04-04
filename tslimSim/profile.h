@@ -1,6 +1,6 @@
 #ifndef PROFILE_H
 #define PROFILE_H
-
+#include <iostream>
 
 class Profile
 {
@@ -23,6 +23,7 @@ public:
     void setTargetGlucose(float g);
 
 private:
+    std::string name;
     float basalRate;
     float carbRatio;
     float correctionFactor;

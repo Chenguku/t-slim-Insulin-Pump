@@ -1,5 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QChart>
+#include <QVBoxLayout>
+
+QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
 
@@ -17,6 +23,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QLineSeries *cgmLine;
+    QChart *cgmChart;
+    QChartView *cgmView;
 
 private slots:
     void openHome();

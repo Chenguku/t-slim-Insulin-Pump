@@ -7,6 +7,8 @@ class CGM
 public:
     CGM(float initialBG);
 
+    bool getStatus() const;
+
     float getCurrentBG() const;
     void setCurrentBG(float cbg);
 
@@ -14,6 +16,7 @@ public:
     void decreaseBG(float x);
 
 private:
+    bool isConnected;
     float currentBloodGlucose;
 
 };
