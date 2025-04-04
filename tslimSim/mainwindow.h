@@ -19,7 +19,9 @@ private:
     Ui::MainWindow *ui;
 
 private slots:
+    void openHome();
     void openBolus();
     void openOptions();
+    void openCarbs();
 };
 #endif // MAINWINDOW_H
