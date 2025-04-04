@@ -17,5 +17,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+    void openBolus();
+    void openOptions();
 };
 #endif // MAINWINDOW_H

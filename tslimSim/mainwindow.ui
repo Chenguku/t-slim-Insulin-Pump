@@ -36,7 +36,7 @@
      <attribute name="title">
       <string>Home</string>
      </attribute>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="homeBolus">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -52,7 +52,7 @@
        <string>Bolus</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="homeOptions">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -91,7 +91,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>118</width>
+        <width>121</width>
         <height>41</height>
        </rect>
       </property>
@@ -239,7 +239,7 @@
      <widget class="QLabel" name="time">
       <property name="geometry">
        <rect>
-        <x>270</x>
+        <x>240</x>
         <y>0</y>
         <width>111</width>
         <height>31</height>
@@ -260,7 +260,7 @@
      <widget class="QLabel" name="date">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>270</x>
         <y>40</y>
         <width>81</width>
         <height>17</height>
@@ -276,6 +276,19 @@
       </property>
       <property name="text">
        <string>14 Nov</string>
+      </property>
+     </widget>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>10</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="value">
+       <number>24</number>
       </property>
      </widget>
     </widget>

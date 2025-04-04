@@ -6,7 +6,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
+    connect(ui->homeOptions, SIGNAL(released()), this, SLOT(openOptions()));
 }
+
+void MainWindow::openBolus(){
+
+}
+
+void MainWindow::openOptions(){
+
+}
+
 
 MainWindow::~MainWindow()
 {
