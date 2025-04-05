@@ -6,7 +6,13 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //set initial page
     ui->stackedWidget->setCurrentIndex(0);
+
+    //setup timer for powering on the insulin pump
+    powerOnTimer = new QTimer(this);
+
     //CGM Graph setup
     cgmLine = new QLineSeries();
     QPen dottedLine(Qt::black);
@@ -35,23 +41,29 @@ MainWindow::MainWindow(QWidget *parent)
     /*
      * Connecting slots to change pages
      * Page Indices
-     * 0: Home Page
-     * 1: CGM Home Page
-     * 2: Bolus Page
-     * 3: Carbs Calculator
+     * 0: Power On Page
+     * 1: Home Page
+     * 2: CGM Home Page
+     * 3: Bolus Page
+     * 4: Carbs Calculator
     */
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
     connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+    connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
+
+    //functions for the power on page
+    connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(chargePump()));
+    connect(powerOnTimer, SIGNAL(timeout()), this, SLOT(increaseBattery()));
 }
 
 void MainWindow::openHome(){
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::openBolus(){
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 
 void MainWindow::openOptions(){
@@ -59,9 +71,24 @@ void MainWindow::openOptions(){
 }
 
 void MainWindow::openCarbs(){
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidget->setCurrentIndex(4);
 }
 
+//start timer to charge battery
+void MainWindow::chargePump(){
+    powerOnTimer->start(100);
+}
+
+//slot to increase the battery by 1 every 100 miliseconds
+void MainWindow::increaseBattery(){
+    if (ui->batteryIndicator->value() == 100){
+        powerOnTimer->stop();
+        ui->homeButton->setEnabled(true);
+    }
+    else{
+        ui->batteryIndicator->setValue(ui->batteryIndicator->value() + 1);
+    }
+}
 
 MainWindow::~MainWindow()
 {

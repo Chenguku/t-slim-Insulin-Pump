@@ -4,6 +4,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QChart>
 #include <QVBoxLayout>
+#include <QTimer>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -26,11 +27,14 @@ private:
     QLineSeries *cgmLine;
     QChart *cgmChart;
     QChartView *cgmView;
+    QTimer *powerOnTimer;
 
 private slots:
+    void chargePump();
     void openHome();
     void openBolus();
     void openOptions();
     void openCarbs();
+    void increaseBattery();
 };
 #endif // MAINWINDOW_H
