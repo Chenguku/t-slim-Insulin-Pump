@@ -7,14 +7,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
-
-    /*
-     * Connecting slots to change pages
-     * Page Indices
-     * 0: Home Page
-     * 1: Bolus Page
-     * 2: Carbs Calculator
-    */
     //CGM Graph setup
     cgmLine = new QLineSeries();
     QPen dottedLine(Qt::black);
@@ -44,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
      * Connecting slots to change pages
      * Page Indices
      * 0: Home Page
-     * 1: Something
+     * 1: CGM Home Page
      * 2: Bolus Page
      * 3: Carbs Calculator
     */
