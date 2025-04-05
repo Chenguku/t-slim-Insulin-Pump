@@ -8,7 +8,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
 
-    //connecting slots to change pages
+    /*
+     * Connecting slots to change pages
+     * Page Indices
+     * 0: Home Page
+     * 1: Bolus Page
+     * 2: Carbs Calculator
+    */
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
