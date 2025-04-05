@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
 
-<<<<<<< HEAD
     /*
      * Connecting slots to change pages
      * Page Indices
@@ -16,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
      * 1: Bolus Page
      * 2: Carbs Calculator
     */
-=======
     //CGM Graph setup
     cgmLine = new QLineSeries();
     QPen dottedLine(Qt::black);
@@ -42,8 +40,14 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(ui->CGMGraph);
     layout->addWidget(cgmView);
 
-    //connecting slots to change pages
->>>>>>> 943d763bb2f7075864b0fea9bc6e0f368297dc53
+    /*
+     * Connecting slots to change pages
+     * Page Indices
+     * 0: Home Page
+     * 1: Something
+     * 2: Bolus Page
+     * 3: Carbs Calculator
+    */
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
