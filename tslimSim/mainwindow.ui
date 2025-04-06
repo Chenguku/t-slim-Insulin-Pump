@@ -83,14 +83,30 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>322</x>
-        <y>460</y>
+        <x>250</x>
+        <y>450</y>
         <width>121</width>
         <height>25</height>
        </rect>
       </property>
       <property name="text">
        <string>Home</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="CGMHomeButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>450</y>
+        <width>121</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>CGM Home</string>
       </property>
      </widget>
     </widget>
@@ -314,7 +330,7 @@
        </rect>
       </property>
       <property name="value">
-       <number>24</number>
+       <number>0</number>
       </property>
      </widget>
      <widget class="QLabel" name="time">
@@ -337,6 +353,19 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="powerScreenButton">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>80</y>
+        <width>141</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Power Screen</string>
       </property>
      </widget>
     </widget>
@@ -418,7 +447,7 @@
        </rect>
       </property>
       <property name="value">
-       <number>24</number>
+       <number>0</number>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_2">
@@ -533,6 +562,19 @@
       </property>
       <property name="text">
        <string>3:45 hrs</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="powerScreenButton_2">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>60</y>
+        <width>141</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Power Screen</string>
       </property>
      </widget>
     </widget>

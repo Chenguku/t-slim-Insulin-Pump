@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     //setup timer for powering on the insulin pump
     powerOnTimer = new QTimer(this);
 
+    //initialize the battery
+    currentBattery = 0;
+
     //CGM Graph setup
     cgmLine = new QLineSeries();
     QPen dottedLine(Qt::black);
@@ -47,19 +50,30 @@ MainWindow::MainWindow(QWidget *parent)
      * 3: Bolus Page
      * 4: Carbs Calculator
     */
+    connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
+    connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
     connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
+    connect(ui->CGMHomeButton, SIGNAL(released()), this, SLOT(openCGM()));
 
     //functions for the power on page
     connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(chargePump()));
     connect(powerOnTimer, SIGNAL(timeout()), this, SLOT(increaseBattery()));
 }
 
+void MainWindow::openPowerScreen(){
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
 void MainWindow::openHome(){
     ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::openCGM(){
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 void MainWindow::openBolus(){
@@ -82,11 +96,21 @@ void MainWindow::chargePump(){
 //slot to increase the battery by 1 every 100 miliseconds
 void MainWindow::increaseBattery(){
     if (ui->batteryIndicator->value() == 100){
+        //stop the timer after you reach 100% battery
         powerOnTimer->stop();
+
+        //allow the users to go to the home pages
         ui->homeButton->setEnabled(true);
+        ui->CGMHomeButton->setEnabled(true);
+
+        //on the home pages, set the battery gauge to the current battery percentage (should be 100)
+        ui->battery->setValue(currentBattery);
+        ui->battery_2->setValue(currentBattery);
+
     }
     else{
-        ui->batteryIndicator->setValue(ui->batteryIndicator->value() + 1);
+        currentBattery++;
+        ui->batteryIndicator->setValue(currentBattery);
     }
 }
 

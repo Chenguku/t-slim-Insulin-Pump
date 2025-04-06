@@ -34,6 +34,7 @@ public:
     QLabel *label;
     QPushButton *powerOnButton;
     QPushButton *homeButton;
+    QPushButton *CGMHomeButton;
     QWidget *home;
     QProgressBar *battery;
     QLabel *date;
@@ -48,6 +49,7 @@ public:
     QLabel *insulinOnBoard;
     QProgressBar *insulinGauge;
     QLabel *time;
+    QPushButton *powerScreenButton;
     QWidget *homeCGM;
     QLabel *time_2;
     QLabel *date_2;
@@ -60,6 +62,7 @@ public:
     QLabel *units_2;
     QFrame *line;
     QLabel *remainingTime_2;
+    QPushButton *powerScreenButton_2;
     QWidget *ManualBolus;
     QPushButton *backButton;
     QPushButton *carbsButton;
@@ -124,7 +127,11 @@ public:
         homeButton = new QPushButton(powerPage);
         homeButton->setObjectName(QString::fromUtf8("homeButton"));
         homeButton->setEnabled(false);
-        homeButton->setGeometry(QRect(322, 460, 121, 25));
+        homeButton->setGeometry(QRect(250, 450, 121, 25));
+        CGMHomeButton = new QPushButton(powerPage);
+        CGMHomeButton->setObjectName(QString::fromUtf8("CGMHomeButton"));
+        CGMHomeButton->setEnabled(false);
+        CGMHomeButton->setGeometry(QRect(400, 450, 121, 25));
         stackedWidget->addWidget(powerPage);
         home = new QWidget();
         home->setObjectName(QString::fromUtf8("home"));
@@ -198,7 +205,7 @@ public:
         insulinGauge = new QProgressBar(home);
         insulinGauge->setObjectName(QString::fromUtf8("insulinGauge"));
         insulinGauge->setGeometry(QRect(480, 10, 121, 41));
-        insulinGauge->setValue(24);
+        insulinGauge->setValue(0);
         time = new QLabel(home);
         time->setObjectName(QString::fromUtf8("time"));
         time->setGeometry(QRect(250, 0, 111, 31));
@@ -207,6 +214,9 @@ public:
         font5.setPointSize(24);
         time->setFont(font5);
         time->setAlignment(Qt::AlignCenter);
+        powerScreenButton = new QPushButton(home);
+        powerScreenButton->setObjectName(QString::fromUtf8("powerScreenButton"));
+        powerScreenButton->setGeometry(QRect(630, 80, 141, 71));
         stackedWidget->addWidget(home);
         homeCGM = new QWidget();
         homeCGM->setObjectName(QString::fromUtf8("homeCGM"));
@@ -230,7 +240,7 @@ public:
         insulinGauge_2 = new QProgressBar(homeCGM);
         insulinGauge_2->setObjectName(QString::fromUtf8("insulinGauge_2"));
         insulinGauge_2->setGeometry(QRect(480, 10, 121, 41));
-        insulinGauge_2->setValue(24);
+        insulinGauge_2->setValue(0);
         pushButton_2 = new QPushButton(homeCGM);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
         pushButton_2->setGeometry(QRect(20, 460, 281, 81));
@@ -258,6 +268,9 @@ public:
         remainingTime_2->setGeometry(QRect(360, 420, 111, 31));
         remainingTime_2->setFont(font3);
         remainingTime_2->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 0)"));
+        powerScreenButton_2 = new QPushButton(homeCGM);
+        powerScreenButton_2->setObjectName(QString::fromUtf8("powerScreenButton_2"));
+        powerScreenButton_2->setGeometry(QRect(630, 60, 141, 71));
         stackedWidget->addWidget(homeCGM);
         ManualBolus = new QWidget();
         ManualBolus->setObjectName(QString::fromUtf8("ManualBolus"));
@@ -380,6 +393,7 @@ public:
         label->setText(QCoreApplication::translate("MainWindow", "t:slim X2 Insulin Pump", nullptr));
         powerOnButton->setText(QCoreApplication::translate("MainWindow", "Power On", nullptr));
         homeButton->setText(QCoreApplication::translate("MainWindow", "Home", nullptr));
+        CGMHomeButton->setText(QCoreApplication::translate("MainWindow", "CGM Home", nullptr));
         date->setText(QCoreApplication::translate("MainWindow", "14 Nov", nullptr));
         homeBolus->setText(QCoreApplication::translate("MainWindow", "Bolus", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "Options", nullptr));
@@ -389,6 +403,7 @@ public:
         units->setText(QCoreApplication::translate("MainWindow", "2.5u", nullptr));
         insulinOnBoard->setText(QCoreApplication::translate("MainWindow", "Insulin on Board (IOB)", nullptr));
         time->setText(QCoreApplication::translate("MainWindow", "10:20", nullptr));
+        powerScreenButton->setText(QCoreApplication::translate("MainWindow", "Power Screen", nullptr));
         time_2->setText(QCoreApplication::translate("MainWindow", "10:20", nullptr));
         date_2->setText(QCoreApplication::translate("MainWindow", "14 Nov", nullptr));
         pushButton_2->setText(QCoreApplication::translate("MainWindow", "Bolus", nullptr));
@@ -396,6 +411,7 @@ public:
         insulinOnBoard_2->setText(QCoreApplication::translate("MainWindow", "Insulin on Board (IOB)", nullptr));
         units_2->setText(QCoreApplication::translate("MainWindow", "2.5u", nullptr));
         remainingTime_2->setText(QCoreApplication::translate("MainWindow", "3:45 hrs", nullptr));
+        powerScreenButton_2->setText(QCoreApplication::translate("MainWindow", "Power Screen", nullptr));
         backButton->setText(QCoreApplication::translate("MainWindow", "Back", nullptr));
         carbsButton->setText(QCoreApplication::translate("MainWindow", "Carbs", nullptr));
         carbsLabel->setText(QCoreApplication::translate("MainWindow", "Carbs", nullptr));

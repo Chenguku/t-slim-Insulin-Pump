@@ -28,13 +28,16 @@ private:
     QChart *cgmChart;
     QChartView *cgmView;
     QTimer *powerOnTimer;
+    int currentBattery;
 
 private slots:
-    void chargePump();
+    void openPowerScreen();
     void openHome();
     void openBolus();
     void openOptions();
     void openCarbs();
+    void openCGM();
     void increaseBattery();
+    void chargePump();
 };
 #endif // MAINWINDOW_H
