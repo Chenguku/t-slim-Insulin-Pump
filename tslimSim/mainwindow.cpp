@@ -14,11 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
      * 0: Home Page
      * 1: Bolus Page
      * 2: Carbs Calculator
+     * 3: Glucose modifier
     */
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
     connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+    connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
+    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
 }
 
 void MainWindow::openHome(){
@@ -36,6 +39,15 @@ void MainWindow::openOptions(){
 void MainWindow::openCarbs(){
     ui->stackedWidget->setCurrentIndex(2);
 }
+
+void MainWindow::openGlucose(){
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
+
+
+//getters
+Profile* MainWindow::getCurProfile() const { return curProfile; }
 
 
 MainWindow::~MainWindow()

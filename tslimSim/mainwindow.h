@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "profile.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,13 +16,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
+    //getters
+    Profile* getCurProfile() const;
+
 private:
     Ui::MainWindow *ui;
+    Profile curProfile;
 
 private slots:
     void openHome();
     void openBolus();
     void openOptions();
     void openCarbs();
+    void openGlucose();
 };
 #endif // MAINWINDOW_H
