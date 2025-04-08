@@ -14,8 +14,9 @@ Use cases - Jason Li
 Sequence diagrams - Daniel Yang
 
 
-Implementation:
+Implementation (classes):
 
-
-
-
+boluscalculator - Daniel Yang
+cgm - Daniel Yang
+mainwindow - Stanley Huang, Jason Li, Daniel Yang
+profile - Methirah Herath, Daniel Yang
