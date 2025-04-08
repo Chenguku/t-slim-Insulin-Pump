@@ -1,0 +1,43 @@
+title Normal Operation: Manual Insulin \nBolus Delivery (auto-populated from CGM)
+
+participant MainWindow
+participant BolusCalculator
+participant CGM
+
+
+activate MainWindow
+
+MainWindow->MainWindow: startup()
+
+activate CGM
+MainWindow->CGM: startCGM()
+
+MainWindow->MainWindow: openHome()
+MainWindow->BolusCalculator: openBolus()
+
+
+activate BolusCalculator
+BolusCalculator->BolusCalculator: enterCarbs(38)
+
+BolusCalculator->CGM: getBloodGlucose()
+
+CGM->BolusCalculator: getCurrentBG()
+
+BolusCalculator->BolusCalculator: promptCorrection()
+
+BolusCalculator->BolusCalculator: deliverDose("over time")
+
+BolusCalculator->BolusCalculator: useDefaultDeliverySettings()
+
+BolusCalculator->BolusCalculator: confirmDose()
+
+
+
+BolusCalculator->MainWindow: returnToHome()
+deactivate BolusCalculator
+
+MainWindow->MainWindow:displayCurrentBolus()
+deactivate MainWindow
+deactivate CGM
+
+
