@@ -1,0 +1,31 @@
+title Normal Operation: Manual Insulin \nBolus Delivery (manually entered glucose)
+
+activate MainWindow
+
+MainWindow->MainWindow: startup()
+MainWindow->MainWindow: openHome()
+MainWindow->BolusCalculator: openBolus()
+
+
+activate BolusCalculator
+BolusCalculator->BolusCalculator: enterCarbs(38)
+
+BolusCalculator->BolusCalculator: setBloodGlucose(10)
+
+BolusCalculator->BolusCalculator: promptCorrection()
+
+BolusCalculator->BolusCalculator: deliverDose("over time")
+
+BolusCalculator->BolusCalculator: useDefaultDeliverySettings()
+
+BolusCalculator->BolusCalculator: confirmDose()
+
+
+
+BolusCalculator->MainWindow: returnToHome()
+deactivate BolusCalculator
+
+MainWindow->MainWindow:displayCurrentBolus()
+deactivate MainWindow
+
+
