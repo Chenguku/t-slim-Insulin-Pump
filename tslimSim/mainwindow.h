@@ -23,5 +23,7 @@ private slots:
     void openBolus();
     void openOptions();
     void openCarbs();
+    void openMyPump();
+    void openPersonalProfiles();
 };
 #endif // MAINWINDOW_H

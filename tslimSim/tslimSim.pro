@@ -10,12 +10,14 @@ CONFIG += c++11
 
 SOURCES += \
     cgm.cpp \
+    insulindeliveryprofile.cpp \
     main.cpp \
     mainwindow.cpp \
     profile.cpp
 
 HEADERS += \
     cgm.h \
+    insulindeliveryprofile.h \
     mainwindow.h \
     profile.h
 
