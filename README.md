@@ -15,10 +15,11 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 
 ## Design Documentation:
 
-| Design Document   | Created by: |
-|-------------------|-------------|
-| Use Cases         | Jason Li    | 
-| Sequence Diagrams | Daniel Yang |
+| Design Document   | Created by:   |
+|-------------------|---------------|
+| Use Cases         | Jason Li      | 
+| Sequence Diagrams | Daniel Yang   |
+| Use Case Diagram  | Stanley Huang |
 
 ## Feature Implementation:
 
