@@ -79,7 +79,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
     connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
->>>>>>> 771f4c1d94783a8812561331773b2833e327b1ea
 }
 
 void MainWindow::openPowerScreen(){
@@ -109,11 +108,11 @@ void MainWindow::openOptions(){
 }
 
 void MainWindow::openMyPump(){
-    ui->stackedWidget->setCurrentIndex(5);
+    ui->stackedWidget->setCurrentIndex(7);
 }
 
 void MainWindow::openPersonalProfiles(){
-    ui->stackedWidget->setCurrentIndex(7);
+    ui->stackedWidget->setCurrentIndex(8);
 }
 
 //start timer to charge battery

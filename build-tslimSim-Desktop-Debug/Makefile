@@ -52,11 +52,15 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../tslimSim/cgm.cpp \
+SOURCES       = ../tslimSim/boluscalculator.cpp \
+		../tslimSim/cgm.cpp \
+		../tslimSim/insulindeliveryprofile.cpp \
 		../tslimSim/main.cpp \
 		../tslimSim/mainwindow.cpp \
 		../tslimSim/profile.cpp moc_mainwindow.cpp
-OBJECTS       = cgm.o \
+OBJECTS       = boluscalculator.o \
+		cgm.o \
+		insulindeliveryprofile.o \
 		main.o \
 		mainwindow.o \
 		profile.o \
@@ -119,6 +123,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../tslimSim/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -139,9 +144,13 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../tslimSim/tslimSim.pro ../tslimSim/cgm.h \
+		../tslimSim/tslimSim.pro ../tslimSim/boluscalculator.h \
+		../tslimSim/cgm.h \
+		../tslimSim/insulindeliveryprofile.h \
 		../tslimSim/mainwindow.h \
-		../tslimSim/profile.h ../tslimSim/cgm.cpp \
+		../tslimSim/profile.h ../tslimSim/boluscalculator.cpp \
+		../tslimSim/cgm.cpp \
+		../tslimSim/insulindeliveryprofile.cpp \
 		../tslimSim/main.cpp \
 		../tslimSim/mainwindow.cpp \
 		../tslimSim/profile.cpp
@@ -214,6 +223,7 @@ Makefile: ../tslimSim/tslimSim.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -294,6 +304,7 @@ Makefile: ../tslimSim/tslimSim.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -330,8 +341,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../tslimSim/cgm.h ../tslimSim/mainwindow.h ../tslimSim/profile.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../tslimSim/cgm.cpp ../tslimSim/main.cpp ../tslimSim/mainwindow.cpp ../tslimSim/profile.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../tslimSim/boluscalculator.h ../tslimSim/cgm.h ../tslimSim/insulindeliveryprofile.h ../tslimSim/mainwindow.h ../tslimSim/profile.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../tslimSim/boluscalculator.cpp ../tslimSim/cgm.cpp ../tslimSim/insulindeliveryprofile.cpp ../tslimSim/main.cpp ../tslimSim/mainwindow.cpp ../tslimSim/profile.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../tslimSim/mainwindow.ui $(DISTDIR)/
 
 
@@ -368,6 +379,7 @@ compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
 moc_mainwindow.cpp: ../tslimSim/mainwindow.h \
+		../tslimSim/profile.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include '/media/sf_COMP3004/Group Project/build-tslimSim-Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I'/media/sf_COMP3004/Group Project/tslimSim' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCharts -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../tslimSim/mainwindow.h -o moc_mainwindow.cpp
@@ -393,13 +405,23 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
+boluscalculator.o: ../tslimSim/boluscalculator.cpp ../tslimSim/boluscalculator.h \
+		../tslimSim/profile.h \
+		../tslimSim/mainwindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o boluscalculator.o ../tslimSim/boluscalculator.cpp
+
 cgm.o: ../tslimSim/cgm.cpp ../tslimSim/cgm.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cgm.o ../tslimSim/cgm.cpp
 
-main.o: ../tslimSim/main.cpp ../tslimSim/mainwindow.h
+insulindeliveryprofile.o: ../tslimSim/insulindeliveryprofile.cpp ../tslimSim/insulindeliveryprofile.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o insulindeliveryprofile.o ../tslimSim/insulindeliveryprofile.cpp
+
+main.o: ../tslimSim/main.cpp ../tslimSim/mainwindow.h \
+		../tslimSim/profile.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../tslimSim/main.cpp
 
 mainwindow.o: ../tslimSim/mainwindow.cpp ../tslimSim/mainwindow.h \
+		../tslimSim/profile.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../tslimSim/mainwindow.cpp
 

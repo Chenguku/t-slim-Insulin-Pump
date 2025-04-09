@@ -29,15 +29,12 @@ public:
 
 private:
     Ui::MainWindow *ui;
-<<<<<<< HEAD
     QLineSeries *cgmLine;
     QChart *cgmChart;
     QChartView *cgmView;
     QTimer *powerOnTimer;
     int currentBattery;
-=======
     Profile* curProfile;
->>>>>>> 771f4c1d94783a8812561331773b2833e327b1ea
 
 private slots:
     void openPowerScreen();
@@ -45,14 +42,11 @@ private slots:
     void openBolus();
     void openOptions();
     void openCarbs();
-<<<<<<< HEAD
     void openCGM();
     void increaseBattery();
     void chargePump();
-=======
     void openMyPump();
     void openPersonalProfiles();
     void openGlucose();
->>>>>>> 771f4c1d94783a8812561331773b2833e327b1ea
 };
 #endif // MAINWINDOW_H
