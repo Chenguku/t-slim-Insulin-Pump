@@ -66,8 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->optionsButton_2, SIGNAL(released()), this, SLOT(openOptions()));
 
     //functions for the power on page
-    connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(chargePump()));
+    connect(ui->powerOnButton, SIGNAL(pressed()), this, SLOT(chargePump()));
     connect(powerOnTimer, SIGNAL(timeout()), this, SLOT(increaseBattery()));
+    connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(stopCharging()));
 
     connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
     connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
@@ -118,7 +119,7 @@ void MainWindow::openPersonalProfiles(){
 
 //start timer to charge battery
 void MainWindow::chargePump(){
-    powerOnTimer->start(100);
+    powerOnTimer->start(10);
 }
 
 //slot to increase the battery by 1 every 100 miliseconds
@@ -140,6 +141,10 @@ void MainWindow::increaseBattery(){
         currentBattery++;
         ui->batteryIndicator->setValue(currentBattery);
     }
+}
+
+void MainWindow::stopCharging(){
+    powerOnTimer->stop();
 }
 
 //getters
