@@ -13,8 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     //setup timer for powering on the insulin pump
     powerOnTimer = new QTimer(this);
 
-    //setup timer for simulation time
+    //setup simulation time
     simulationTimer = new QTimer(this);
+    simulationTime = 0;
 
     //initialize the battery
     currentBattery = 0;
@@ -167,9 +168,12 @@ void MainWindow::simulateBackground(){
 }
 
 void MainWindow::updateBattery(){
-    int curBattery = ui->battery->value();
-    ui->battery->setValue(curBattery - 1);
-    ui->battery_2->setValue(curBattery - 1);
+    if(currentBattery == 0){
+        return;
+    }
+    currentBattery--;
+    ui->battery->setValue(currentBattery);
+    ui->battery_2->setValue(currentBattery);
 }
 
 //getters
