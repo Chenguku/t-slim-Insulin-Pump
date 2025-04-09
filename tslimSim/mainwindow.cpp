@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->CGMHomeButton, SIGNAL(released()), this, SLOT(openCGM()));
+    connect(ui->optionsButton_2, SIGNAL(released()), this, SLOT(openOptions()));
 
     //functions for the power on page
     connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(chargePump()));
