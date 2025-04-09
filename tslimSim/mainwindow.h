@@ -22,13 +22,15 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Profile curProfile;
+    Profile* curProfile;
 
 private slots:
     void openHome();
     void openBolus();
     void openOptions();
     void openCarbs();
+    void openMyPump();
+    void openPersonalProfiles();
     void openGlucose();
 };
 #endif // MAINWINDOW_H
