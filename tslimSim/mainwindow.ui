@@ -27,7 +27,7 @@
      </rect>
     </property>
     <widget class="QWidget" name="powerPage">
-     <widget class="QProgressBar" name="batteryIndicator">
+     <widget class="QProgressBar" name="progressIndicator">
       <property name="geometry">
        <rect>
         <x>320</x>

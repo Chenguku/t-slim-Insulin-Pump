@@ -13,8 +13,11 @@ MainWindow::MainWindow(QWidget *parent)
     //setup timer for powering on the insulin pump
     powerOnTimer = new QTimer(this);
 
+    //setup timer for simulation time
+    simulationTimer = new QTimer(this);
+
     //initialize the battery
-    currentBattery = 0;
+    loadProgress = 0;
 
     //CGM Graph setup
     cgmLine = new QLineSeries();
@@ -66,8 +69,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->optionsButton_2, SIGNAL(released()), this, SLOT(openOptions()));
 
     //functions for the power on page
-    connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(chargePump()));
-    connect(powerOnTimer, SIGNAL(timeout()), this, SLOT(increaseBattery()));
+    connect(ui->powerOnButton, SIGNAL(pressed()), this, SLOT(loadTimer()));
+    connect(powerOnTimer, SIGNAL(timeout()), this, SLOT(loadSimulation()));
 
     connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
     connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
@@ -80,6 +83,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
     connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
+
+    connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
 }
 
 void MainWindow::openPowerScreen(){
@@ -88,9 +93,15 @@ void MainWindow::openPowerScreen(){
 
 void MainWindow::openHome(){
     ui->stackedWidget->setCurrentIndex(1);
+    if(!simulationTimer->isActive()){
+        simulationTimer->start(1000);
+    }
 }
 void MainWindow::openCGM(){
     ui->stackedWidget->setCurrentIndex(2);
+    if(!simulationTimer->isActive()){
+        simulationTimer->start(1000);
+    }
 }
 
 void MainWindow::openBolus(){
@@ -117,13 +128,13 @@ void MainWindow::openPersonalProfiles(){
 }
 
 //start timer to charge battery
-void MainWindow::chargePump(){
-    powerOnTimer->start(100);
+void MainWindow::loadTimer(){
+    powerOnTimer->start(20);
 }
 
 //slot to increase the battery by 1 every 100 miliseconds
-void MainWindow::increaseBattery(){
-    if (ui->batteryIndicator->value() == 100){
+void MainWindow::loadSimulation(){
+    if (ui->progressIndicator->value() == 100){
         //stop the timer after you reach 100% battery
         powerOnTimer->stop();
 
@@ -132,14 +143,21 @@ void MainWindow::increaseBattery(){
         ui->CGMHomeButton->setEnabled(true);
 
         //on the home pages, set the battery gauge to the current battery percentage (should be 100)
-        ui->battery->setValue(currentBattery);
-        ui->battery_2->setValue(currentBattery);
-
+        ui->battery->setValue(loadProgress);
+        ui->battery_2->setValue(loadProgress);
     }
     else{
-        currentBattery++;
-        ui->batteryIndicator->setValue(currentBattery);
+        loadProgress++;
+        ui->progressIndicator->setValue(loadProgress);
     }
+}
+
+//triggered every second after simulation is loaded. handles background tasks like battery, basal insulin, time
+void MainWindow::simulateBackground(){
+    //update battery
+    int curBattery = ui->battery->value();
+    ui->battery->setValue(curBattery - 1);
+    ui->battery_2->setValue(curBattery - 1);
 }
 
 //getters

@@ -1,6 +1,7 @@
 #ifndef CGM_H
 #define CGM_H
 
+#include "profile.h"
 
 class CGM
 {
@@ -12,13 +13,12 @@ public:
     float getCurrentBG() const;
     void setCurrentBG(float cbg);
 
-    void increaseBG(float x);
-    void decreaseBG(float x);
+    void adjustBG(float x);
 
 private:
     bool isConnected;
     float currentBloodGlucose;
-
+    Profile *activeProfile;
 };
 
 #endif // CGM_H

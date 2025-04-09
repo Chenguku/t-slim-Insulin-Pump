@@ -7,6 +7,5 @@ bool CGM::getStatus() const { return isConnected; }
 float CGM::getCurrentBG() const     { return currentBloodGlucose; }
 void CGM::setCurrentBG(float cbg)   { currentBloodGlucose = cbg; }
 
-void CGM::increaseBG(float x)       { currentBloodGlucose += x; }
-void CGM::decreaseBG(float x)       { currentBloodGlucose += x; }
+void CGM::adjustBG(float x)       { currentBloodGlucose += x; }
 

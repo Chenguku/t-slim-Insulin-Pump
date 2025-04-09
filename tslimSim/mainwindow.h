@@ -33,7 +33,9 @@ private:
     QChart *cgmChart;
     QChartView *cgmView;
     QTimer *powerOnTimer;
+    QTimer *simulationTimer;
     int currentBattery;
+    int loadProgress;
     Profile* curProfile;
 
 private slots:
@@ -43,10 +45,11 @@ private slots:
     void openOptions();
     void openCarbs();
     void openCGM();
-    void increaseBattery();
-    void chargePump();
+    void loadSimulation();
+    void loadTimer();
     void openMyPump();
     void openPersonalProfiles();
     void openGlucose();
+    void simulateBackground();
 };
 #endif // MAINWINDOW_H
