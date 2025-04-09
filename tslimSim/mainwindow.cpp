@@ -14,23 +14,28 @@ MainWindow::MainWindow(QWidget *parent)
      * 0: Home Page
      * 1: Bolus Page
      * 2: Carbs Calculator
-     * 3: Options Page
-     * 4: My Pump Page
-     * 5: Personal Profiles Page
-     * 3: Glucose modifier
+     * 3: Glucose Modifier
+     * 4: Options Page
+     * 5: My Pump Page
+     * 6: Personal Profiles Page
     */
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
+    
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
     connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
-    connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
-    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openHome()));
-    connect(ui->myPumpButton, SIGNAL(released()), this, SLOT(openMyPump()));
-    connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openOptions()));
-    connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
-    connect(ui->backButton_5, SIGNAL(released()), this, SLOT(openMyPump()));
+
     connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
     connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
+    
+    connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openHome()));
+
+    connect(ui->myPumpButton, SIGNAL(released()), this, SLOT(openMyPump()));
+    connect(ui->backButton_5, SIGNAL(released()), this, SLOT(openOptions()));
+
+    connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
+    connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
 }
 
 void MainWindow::openHome(){
@@ -45,20 +50,22 @@ void MainWindow::openCarbs(){
     ui->stackedWidget->setCurrentIndex(2);
 }
 
-void MainWindow::openOptions(){
-    ui->stackedWidget->setCurrentIndex(3);
-}
-
-void MainWindow::openMyPump(){
-    ui->stackedWidget->setCurrentIndex(4);
-}
-
-void MainWindow::openPersonalProfiles(){
-    ui->stackedWidget->setCurrentIndex(5);
-}
 void MainWindow::openGlucose(){
     ui->stackedWidget->setCurrentIndex(3);
 }
+
+void MainWindow::openOptions(){
+    ui->stackedWidget->setCurrentIndex(4);
+}
+
+void MainWindow::openMyPump(){
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
+void MainWindow::openPersonalProfiles(){
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
 
 
 

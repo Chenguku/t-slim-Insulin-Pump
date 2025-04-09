@@ -22,7 +22,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Profile curProfile;
+    Profile* curProfile;
 
 private slots:
     void openHome();
