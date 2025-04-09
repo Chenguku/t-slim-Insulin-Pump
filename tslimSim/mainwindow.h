@@ -46,7 +46,9 @@ private slots:
     void openCarbs();
     void openCGM();
     void loadSimulation();
-    void loadTimer();
+    void increaseBattery();
+    void chargePump();
+    void stopCharging();
     void openMyPump();
     void openPersonalProfiles();
     void openGlucose();
