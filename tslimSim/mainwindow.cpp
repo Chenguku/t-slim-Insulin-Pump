@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     simulationTimer = new QTimer(this);
 
     //initialize the battery
-    loadProgress = 0;
+    currentBattery = 0;
 
     //CGM Graph setup
     cgmLine = new QLineSeries();
@@ -138,7 +138,7 @@ void MainWindow::stopCharging(){
 }
 
 //slot to increase the battery by 1 every 100 miliseconds
-void MainWindow::loadSimulation(){
+void MainWindow::increaseBattery(){
     if (ui->progressIndicator->value() == 100){
         //stop the timer after you reach 100% battery
         powerOnTimer->stop();
@@ -148,21 +148,29 @@ void MainWindow::loadSimulation(){
         ui->CGMHomeButton->setEnabled(true);
 
         //on the home pages, set the battery gauge to the current battery percentage (should be 100)
-        ui->battery->setValue(loadProgress);
-        ui->battery_2->setValue(loadProgress);
+        ui->battery->setValue(currentBattery);
+        ui->battery_2->setValue(currentBattery);
     }
     else{
-        loadProgress++;
-        ui->progressIndicator->setValue(loadProgress);
+        currentBattery++;
+        ui->progressIndicator->setValue(currentBattery);
     }
 }
 
-//triggered every second after simulation is loaded. handles background tasks like battery, basal insulin, time
+//triggered every second after simulation is loaded. calls handlers for background tasks
 void MainWindow::simulateBackground(){
-    //update battery
+    if(simulationTime % 3 == 0){
+        updateBattery();
+    }
+
+    simulationTime++;
+}
+
+void MainWindow::updateBattery(){
     int curBattery = ui->battery->value();
     ui->battery->setValue(curBattery - 1);
     ui->battery_2->setValue(curBattery - 1);
+}
 
 //getters
 Profile* MainWindow::getCurProfile() const { return curProfile; }

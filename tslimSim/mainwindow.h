@@ -35,7 +35,7 @@ private:
     QTimer *powerOnTimer;
     QTimer *simulationTimer;
     int currentBattery;
-    int loadProgress;
+    int simulationTime;
     Profile* curProfile;
 
 private slots:
@@ -45,7 +45,6 @@ private slots:
     void openOptions();
     void openCarbs();
     void openCGM();
-    void loadSimulation();
     void increaseBattery();
     void chargePump();
     void stopCharging();
@@ -53,5 +52,6 @@ private slots:
     void openPersonalProfiles();
     void openGlucose();
     void simulateBackground();
+    void updateBattery();
 };
 #endif // MAINWINDOW_H
