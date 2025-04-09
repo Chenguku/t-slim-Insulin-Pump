@@ -49,11 +49,16 @@ MainWindow::MainWindow(QWidget *parent)
      * 2: CGM Home Page
      * 3: Bolus Page
      * 4: Carbs Calculator
+     * 5: Glucose Modifier
+     * 6: Options Page
+     * 7: My Pump Page
+     * 8: Personal Profiles Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
+    
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
     connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
@@ -62,6 +67,19 @@ MainWindow::MainWindow(QWidget *parent)
     //functions for the power on page
     connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(chargePump()));
     connect(powerOnTimer, SIGNAL(timeout()), this, SLOT(increaseBattery()));
+
+    connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
+    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
+    
+    connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openHome()));
+
+    connect(ui->myPumpButton, SIGNAL(released()), this, SLOT(openMyPump()));
+    connect(ui->backButton_5, SIGNAL(released()), this, SLOT(openOptions()));
+
+    connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
+    connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
+>>>>>>> 771f4c1d94783a8812561331773b2833e327b1ea
 }
 
 void MainWindow::openPowerScreen(){
@@ -71,7 +89,6 @@ void MainWindow::openPowerScreen(){
 void MainWindow::openHome(){
     ui->stackedWidget->setCurrentIndex(1);
 }
-
 void MainWindow::openCGM(){
     ui->stackedWidget->setCurrentIndex(2);
 }
@@ -79,13 +96,24 @@ void MainWindow::openCGM(){
 void MainWindow::openBolus(){
     ui->stackedWidget->setCurrentIndex(3);
 }
-
-void MainWindow::openOptions(){
-
-}
-
 void MainWindow::openCarbs(){
     ui->stackedWidget->setCurrentIndex(4);
+}
+
+void MainWindow::openGlucose(){
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
+void MainWindow::openOptions(){
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+void MainWindow::openMyPump(){
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
+void MainWindow::openPersonalProfiles(){
+    ui->stackedWidget->setCurrentIndex(7);
 }
 
 //start timer to charge battery
@@ -113,6 +141,9 @@ void MainWindow::increaseBattery(){
         ui->batteryIndicator->setValue(currentBattery);
     }
 }
+
+//getters
+Profile* MainWindow::getCurProfile() const { return curProfile; }
 
 MainWindow::~MainWindow()
 {

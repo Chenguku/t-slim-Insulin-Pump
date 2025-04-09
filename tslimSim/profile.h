@@ -5,29 +5,24 @@
 class Profile
 {
 public:
-    Profile(float basalRate, float carbRatio, float correctionFactor, float targetGlucose);
+    Profile();
 
     //print function
     void print() const;
 
     //getters
-    float getBasalRate() const;
-    float getCarbRatio() const;
-    float getCorrectionFactor() const;
-    float getTargetGlucose() const;
-
-    //setters
-    void setBasalRate(float b);
-    void setCarbRatio(float c);
-    void setCorrectionFactor(float cf);
-    void setTargetGlucose(float g);
+    
 
 private:
+<<<<<<< HEAD
     std::string name;
     float basalRate;
     float carbRatio;
     float correctionFactor;
     float targetGlucose;
+=======
+
+>>>>>>> 771f4c1d94783a8812561331773b2833e327b1ea
 };
 
 #endif // PROFILE_H
