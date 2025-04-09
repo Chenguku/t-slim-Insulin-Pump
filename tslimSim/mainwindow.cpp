@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
      * 3: Options Page
      * 4: My Pump Page
      * 5: Personal Profiles Page
+     * 3: Glucose modifier
     */
     connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
@@ -28,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openOptions()));
     connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
     connect(ui->backButton_5, SIGNAL(released()), this, SLOT(openMyPump()));
+    connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
+    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
 }
 
 void MainWindow::openHome(){
@@ -53,6 +56,15 @@ void MainWindow::openMyPump(){
 void MainWindow::openPersonalProfiles(){
     ui->stackedWidget->setCurrentIndex(5);
 }
+void MainWindow::openGlucose(){
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
+
+
+//getters
+Profile* MainWindow::getCurProfile() const { return curProfile; }
+
 
 MainWindow::~MainWindow()
 {
