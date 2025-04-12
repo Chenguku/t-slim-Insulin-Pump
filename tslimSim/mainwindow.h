@@ -45,7 +45,6 @@ private slots:
     void openCGM();
     void increaseBattery();
     void chargePump();
-    void stopCharging();
     void openMyPump();
     void openPersonalProfiles();
     void openGlucose();

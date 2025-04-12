@@ -143,10 +143,6 @@ void MainWindow::increaseBattery(){
     }
 }
 
-void MainWindow::stopCharging(){
-    powerOnTimer->stop();
-}
-
 //getters
 Profile* MainWindow::getCurProfile() const { return curProfile; }
 
