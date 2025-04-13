@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , bolusCalc(new BolusCalculator(0,0)) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -87,6 +88,77 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
 
     connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
+    connect(ui->pushButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+
+
+    //connnecting number carb buttons (by looping through and connecting each button, 0-9)
+    for (int i = 0; i <= 9; ++i) {
+        QString buttonName = QString("numberButton_%1").arg(i);
+        QPushButton* button = findChild<QPushButton*>(buttonName);
+
+        //use a lambda to connect inputNumber to the button
+        connect(button, &QPushButton::released, this, [this, i]() {
+            inputNumber(i, *ui->textEdit_2);
+        });
+    }
+
+
+
+    //same but for the glucose buttons
+    for (int i = 10; i <= 19; ++i) {
+        QString buttonName = QString("numberButton_%1").arg(i);
+        QPushButton* button = findChild<QPushButton*>(buttonName);
+
+        //use a lambda to connect inputNumber to the button
+        connect(button, &QPushButton::released, this, [this, i]() {
+            inputNumber(i-10, *ui->textEdit_3);
+        });
+
+    }
+
+
+    //connect the +/- buttons
+    connect(ui->plusButton, &QPushButton::released, this, [this]() {
+        flipSign(*ui->textEdit_2);
+    });
+    connect(ui->plusButton_2, &QPushButton::released, this, [this]() {
+        flipSign(*ui->textEdit_3);
+    });
+
+    //connect the backspace buttons
+    connect(ui->XButton, &QPushButton::released, this, [this]() {
+        backspace(*ui->textEdit_2);
+    });
+    connect(ui->XButton_2, &QPushButton::released, this, [this]() {
+        backspace(*ui->textEdit_3);
+    });
+
+
+    //connect the "check" buttons, this will confirm the grams/glucose/bolus values
+    connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
+        QString currentText = ui->textEdit_2->toPlainText(); //this lambda will set the carb value in the bolus calculator
+        if (!currentText.isEmpty()) {
+            float carbValue = currentText.toDouble();
+            bolusCalc->setCarbValue(carbValue);
+            std::cout << "Carbs:" << bolusCalc->getCarbValue() << std::endl;
+            checkValue(*ui->textEdit_2, *ui->carbsButton, " grams");
+        }
+    });
+    connect(ui->checkButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+
+
+    connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
+        QString currentText = ui->textEdit_3->toPlainText(); //this lambda will set the blood glucose level in the bolus calculator
+        if (!currentText.isEmpty()) {
+            float bgLevel = currentText.toDouble();
+            bolusCalc->setBloodGlucose(bgLevel);
+            std::cout << "Blood Glucose:" << bolusCalc->getBloodGlucose() << std::endl;
+            checkValue(*ui->textEdit_3, *ui->glucoseButton, " mmol/L");
+        }
+    });
+    connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(openBolus()));
+
+
 }
 
 void MainWindow::openPowerScreen(){
@@ -128,6 +200,46 @@ void MainWindow::openMyPump(){
 void MainWindow::openPersonalProfiles(){
     ui->stackedWidget->setCurrentIndex(8);
 }
+
+
+void MainWindow::inputNumber(int num, QTextEdit& edit){
+    QString currentText = edit.toPlainText();
+    currentText += QString::number(num);
+    edit.setPlainText(currentText);
+}
+
+void MainWindow::flipSign(QTextEdit& edit){
+    QString currentText = edit.toPlainText();
+    if (currentText.isEmpty()) return; //sanity check
+    if (currentText.startsWith('-')) {
+        currentText.remove(0, 1);  //remove the minus sign
+    }
+    else {
+        currentText.prepend('-');  //add the minus sign
+    }
+    edit.setPlainText(currentText);
+}
+
+void MainWindow::backspace(QTextEdit& edit){
+    QString currentText = edit.toPlainText();
+    if (currentText.isEmpty()) return; //sanity check
+    else{
+        currentText.remove(currentText.length()-1, 1);
+    }
+    edit.setPlainText(currentText);
+}
+
+void MainWindow::checkValue(QTextEdit& edit, QPushButton& button, QString unit){
+    QString currentText = edit.toPlainText();
+    if (currentText.isEmpty()) return; //sanity check
+    else{
+        button.setText(currentText + unit);
+    }
+    edit.setPlainText("");
+}
+
+
+
 
 //start timer to charge battery
 void MainWindow::chargePump(){
@@ -182,5 +294,6 @@ Profile* MainWindow::getCurProfile() const { return curProfile; }
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete bolusCalc;
 }
 

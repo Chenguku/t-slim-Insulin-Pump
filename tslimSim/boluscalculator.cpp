@@ -19,3 +19,6 @@ float BolusCalculator::getExtendedBolus() const {}
 float BolusCalculator::getBolusRate() const {}
 
 
+//setters
+void BolusCalculator::setCarbValue(float c){ carbValue = c; }
+void BolusCalculator::setBloodGlucose(float bg){ bloodGlucose = bg; }

@@ -5,10 +5,15 @@
 #include <QtCharts/QChart>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <QTextEdit>
+#include <QPushButton>
+#include <iostream>
 
 QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
+
+#include "boluscalculator.h"
 #include "profile.h"
 
 QT_BEGIN_NAMESPACE
@@ -37,6 +42,8 @@ private:
     int currentBattery;
     int simulationTime;
     Profile* curProfile;
+    BolusCalculator* bolusCalc;
+
 
 private slots:
     void openPowerScreen();
@@ -53,5 +60,12 @@ private slots:
     void openGlucose();
     void simulateBackground();
     void updateBattery();
+
+    //for carbs/glucose input screens
+    void inputNumber(int num, QTextEdit&);
+    void flipSign(QTextEdit&);
+    void backspace(QTextEdit&);
+    void checkValue(QTextEdit&, QPushButton&, QString);
+
 };
 #endif // MAINWINDOW_H
