@@ -5,6 +5,7 @@
 #include <QtCharts/QChart>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <QTextEdit>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -36,6 +37,7 @@ private:
     int currentBattery;
     Profile* curProfile;
 
+
 private slots:
     void openPowerScreen();
     void openHome();
@@ -48,5 +50,10 @@ private slots:
     void openMyPump();
     void openPersonalProfiles();
     void openGlucose();
+
+    //for carbs/glucose input screens
+    void inputNumber(int num, QTextEdit&);
+    void flipSign(QTextEdit&);
+    void backspace(QTextEdit&);
 };
 #endif // MAINWINDOW_H

@@ -80,6 +80,52 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
     connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
+
+    connect(ui->pushButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+
+
+    //connnecting number carb buttons (by looping through and connecting each button, 0-9)
+    for (int i = 0; i <= 9; ++i) {
+        QString buttonName = QString("numberButton_%1").arg(i);
+        QPushButton* button = findChild<QPushButton*>(buttonName);
+
+        //use a lambda to connect inputNumber to the button
+        connect(button, &QPushButton::released, this, [this, i]() {
+            inputNumber(i, *ui->textEdit_2);
+        });
+    }
+
+
+
+    //same but for the glucose buttons
+    for (int i = 10; i <= 19; ++i) {
+        QString buttonName = QString("numberButton_%1").arg(i);
+        QPushButton* button = findChild<QPushButton*>(buttonName);
+
+        //use a lambda to connect inputNumber to the button
+        connect(button, &QPushButton::released, this, [this, i]() {
+            inputNumber(i-10, *ui->textEdit_3);
+        });
+
+    }
+
+
+    //connect the +/- buttons
+    connect(ui->plusButton, &QPushButton::released, this, [this]() {
+        flipSign(*ui->textEdit_2);
+    });
+    connect(ui->plusButton_2, &QPushButton::released, this, [this]() {
+        flipSign(*ui->textEdit_3);
+    });
+
+    //connect the backspace buttons
+    connect(ui->XButton, &QPushButton::released, this, [this]() {
+        backspace(*ui->textEdit_2);
+    });
+    connect(ui->XButton_2, &QPushButton::released, this, [this]() {
+        backspace(*ui->textEdit_3);
+    });
+
 }
 
 void MainWindow::openPowerScreen(){
@@ -115,6 +161,36 @@ void MainWindow::openMyPump(){
 void MainWindow::openPersonalProfiles(){
     ui->stackedWidget->setCurrentIndex(8);
 }
+
+
+void MainWindow::inputNumber(int num, QTextEdit& edit){
+    QString currentText = edit.toPlainText();
+    currentText += QString::number(num);
+    edit.setPlainText(currentText);
+}
+
+void MainWindow::flipSign(QTextEdit& edit){
+    QString currentText = edit.toPlainText();
+    if (currentText.isEmpty()) return; //sanity check
+    if (currentText.startsWith('-')) {
+        currentText.remove(0, 1);  //remove the minus sign
+    }
+    else {
+        currentText.prepend('-');  //add the minus sign
+    }
+    edit.setPlainText(currentText);
+}
+
+void MainWindow::backspace(QTextEdit& edit){
+    QString currentText = edit.toPlainText();
+    if (currentText.isEmpty()) return; //sanity check
+    else{
+        currentText.remove(currentText.length()-1, 1);
+    }
+    edit.setPlainText(currentText);
+}
+
+
 
 //start timer to charge battery
 void MainWindow::chargePump(){
