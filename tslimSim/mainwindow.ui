@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="powerPage">
      <widget class="QProgressBar" name="batteryIndicator">
@@ -605,7 +605,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Carbs</string>
+       <string>0 grams</string>
       </property>
      </widget>
      <widget class="QLabel" name="carbsLabel">

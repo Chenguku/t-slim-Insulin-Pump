@@ -6,10 +6,14 @@
 #include <QVBoxLayout>
 #include <QTimer>
 #include <QTextEdit>
+#include <QPushButton>
+#include <iostream>
 
 QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
+
+#include "boluscalculator.h"
 #include "profile.h"
 
 QT_BEGIN_NAMESPACE
@@ -36,6 +40,7 @@ private:
     QTimer *powerOnTimer;
     int currentBattery;
     Profile* curProfile;
+    BolusCalculator* bolusCalc;
 
 
 private slots:
@@ -55,5 +60,7 @@ private slots:
     void inputNumber(int num, QTextEdit&);
     void flipSign(QTextEdit&);
     void backspace(QTextEdit&);
+    void checkValue(QTextEdit&, QPushButton&, QString);
+
 };
 #endif // MAINWINDOW_H

@@ -3,7 +3,6 @@
 
 
 #include "profile.h"
-#include "mainwindow.h"
 
 //define an insulin to carb ratio (1 : 1)
 #define ICR 1

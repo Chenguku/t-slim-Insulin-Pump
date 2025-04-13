@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , bolusCalc(new BolusCalculator(0,0)) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -126,6 +127,32 @@ MainWindow::MainWindow(QWidget *parent)
         backspace(*ui->textEdit_3);
     });
 
+
+    //connect the "check" buttons, this will confirm the grams/glucose/bolus values
+    connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
+        QString currentText = ui->textEdit_2->toPlainText(); //this lambda will set the carb value in the bolus calculator
+        if (!currentText.isEmpty()) {
+            float carbValue = currentText.toDouble();
+            bolusCalc->setCarbValue(carbValue);
+            std::cout << "Carbs:" << bolusCalc->getCarbValue() << std::endl;
+            checkValue(*ui->textEdit_2, *ui->carbsButton, " grams");
+        }
+    });
+    connect(ui->checkButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+
+
+    connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
+        QString currentText = ui->textEdit_3->toPlainText(); //this lambda will set the blood glucose level in the bolus calculator
+        if (!currentText.isEmpty()) {
+            float bgLevel = currentText.toDouble();
+            bolusCalc->setBloodGlucose(bgLevel);
+            std::cout << "Blood Glucose:" << bolusCalc->getBloodGlucose() << std::endl;
+            checkValue(*ui->textEdit_3, *ui->glucoseButton, " mmol/L");
+        }
+    });
+    connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(openBolus()));
+
+
 }
 
 void MainWindow::openPowerScreen(){
@@ -190,6 +217,16 @@ void MainWindow::backspace(QTextEdit& edit){
     edit.setPlainText(currentText);
 }
 
+void MainWindow::checkValue(QTextEdit& edit, QPushButton& button, QString unit){
+    QString currentText = edit.toPlainText();
+    if (currentText.isEmpty()) return; //sanity check
+    else{
+        button.setText(currentText + unit);
+    }
+    edit.setPlainText("");
+}
+
+
 
 
 //start timer to charge battery
@@ -224,5 +261,6 @@ Profile* MainWindow::getCurProfile() const { return curProfile; }
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete bolusCalc;
 }
 
