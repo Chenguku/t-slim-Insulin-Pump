@@ -167,23 +167,27 @@ void MainWindow::stopCharging(){
 
 // The next few functions are for the pin lock screen
 void MainWindow::submitPasscode(){
+    //check if the passcode entered is the same as the actual passcode
     if (ui->passcodeLabel->text().toInt() == passcode){
         ui->stackedWidget->setCurrentIndex(1);
         ui->passcodeIncorrectLabel->setText("");
     }
     else{
+        //delete the user's previous entry, and tell them the passcode they entered was incorrect
         ui->passcodeLabel->setText("");
         ui->passcodeIncorrectLabel->setText("Incorrect Passcode");
+        //clear the passcode after 2 seconds
+        QTimer::singleShot(2000, [this](){
+            ui->passcodeIncorrectLabel->setText("");
+        });
     }
 }
 
 void MainWindow::lsDeleteButton(){
-    if (ui->passcodeLabel->text() == "") return;
-    else{
-        QString temp = ui->passcodeLabel->text();
-        temp.chop(1);
-        ui->passcodeLabel->setText(temp);
-    }
+    //chop functions removes the last letter of a QString, does nothing if the QString is empty
+    QString temp = ui->passcodeLabel->text();
+    temp.chop(1);
+    ui->passcodeLabel->setText(temp);
 }
 
 void MainWindow::lsButtonOne(){
@@ -235,6 +239,7 @@ void MainWindow::lsButtonZero(){
     QString curPasscode = ui->passcodeLabel->text();
     ui->passcodeLabel->setText(curPasscode + "0");
 }
+//end of pin lock screen functions
 
 //getters
 Profile* MainWindow::getCurProfile() const { return curProfile; }
