@@ -21,6 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
     //initialize the battery
     currentBattery = 0;
 
+    //initialize CGM
+    GlucoseReader_Sine *cgmreader = new GlucoseReader_Sine();
+    cgm = CGM();
+    cgm.setBGReader(cgmreader);
+
     //CGM Graph setup
     cgmLine = new QLineSeries();
     QPen dottedLine(Qt::black);
@@ -275,6 +280,7 @@ void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
         updateBattery();
     }
+    std::cout << cgm.readBG_mock() << std::endl;
 
     simulationTime++;
 }

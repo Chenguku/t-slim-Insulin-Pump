@@ -15,6 +15,7 @@ QT_CHARTS_USE_NAMESPACE
 
 #include "boluscalculator.h"
 #include "profile.h"
+#include "cgm.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,6 +38,7 @@ private:
     QLineSeries *cgmLine;
     QChart *cgmChart;
     QChartView *cgmView;
+    CGM cgm;
     QTimer *powerOnTimer;
     QTimer *simulationTimer;
     int currentBattery;

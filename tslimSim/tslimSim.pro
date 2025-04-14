@@ -12,6 +12,7 @@ CONFIG += c++11
 SOURCES += \
     boluscalculator.cpp \
     cgm.cpp \
+    glucosereader_mock.cpp \
     insulindeliveryprofile.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     boluscalculator.h \
     cgm.h \
+    glucosereader_mock.h \
     insulindeliveryprofile.h \
     mainwindow.h \
     profile.h

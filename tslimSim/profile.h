@@ -11,7 +11,10 @@ public:
     void print() const;
 
     //getters
-    
+    float getBasalRate() const;
+    float getCarbRatio() const;
+    float getCorrectionFactor() const;
+    float getTargetGlucose() const;
 
 private:
     std::string name;
