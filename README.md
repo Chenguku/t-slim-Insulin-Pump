@@ -29,6 +29,8 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | Home Screen  | Jason Li      |
 | Manual Bolus Delivery | Daniel Yang   |
 | Personal Profile | Methira Herath |
+| Lock Screen | Stanley Huang |
+| Pump Information and History | Stanley Huang |
 
 
 ## Class Implementation:
@@ -40,3 +42,5 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | mainwindow      | Stanley Huang, Jason Li, Daniel Yang, Methira Herath |
 | profile         | Methira Herath, Daniel Yang          |
 | insulindeliveryprofile | Methira Herath |
+| Event | Stanley Huang |
+| EventHistory | Stanley Huang | 
