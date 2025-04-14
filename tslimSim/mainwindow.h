@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QTextEdit>
 #include <QPushButton>
+#include <QTime>
 #include <iostream>
 
 QT_CHARTS_USE_NAMESPACE
@@ -42,6 +43,8 @@ private:
     QTimer *powerOnTimer;
     QTimer *simulationTimer;
     int currentBattery;
+    QDateTime displayTime;
+    int insulinOnBoard;
     int simulationTime;
     Profile* curProfile;
     BolusCalculator* bolusCalc;
@@ -62,6 +65,7 @@ private slots:
     void openGlucose();
     void simulateBackground();
     void updateBattery();
+    void updateTime();
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);

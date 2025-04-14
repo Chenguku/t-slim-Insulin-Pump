@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , displayTime(QDate(2024, 11, 14), QTime(0, 0, 0)) //initialize time that is displayed to the user
     , bolusCalc(new BolusCalculator(0,0)) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
@@ -268,6 +269,11 @@ void MainWindow::increaseBattery(){
         //on the home pages, set the battery gauge to the current battery percentage (should be 100)
         ui->battery->setValue(currentBattery);
         ui->battery_2->setValue(currentBattery);
+
+        //on the home pages, set the innsulin on board (default 100)
+        insulinOnBoard = 100;
+        ui->insulinGauge->setValue(insulinOnBoard);
+        ui->insulinGauge_2->setValue(insulinOnBoard);
     }
     else{
         currentBattery++;
@@ -280,6 +286,7 @@ void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
         updateBattery();
     }
+    updateTime();
     std::cout << cgm.readBG_mock() << std::endl;
 
     simulationTime++;
@@ -292,6 +299,14 @@ void MainWindow::updateBattery(){
     currentBattery--;
     ui->battery->setValue(currentBattery);
     ui->battery_2->setValue(currentBattery);
+}
+
+void MainWindow::updateTime(){
+    displayTime = displayTime.addSecs(300);
+    ui->time->setText(displayTime.toString("HH:mm"));
+    ui->time_2->setText(displayTime.toString("HH:mm"));
+    ui->date->setText(displayTime.toString("dd MMM"));
+    ui->date_2->setText(displayTime.toString("dd MMM"));
 }
 
 //getters

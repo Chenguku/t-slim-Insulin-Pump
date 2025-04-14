@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="powerPage">
      <widget class="QProgressBar" name="progressIndicator">
@@ -352,7 +352,7 @@
        </font>
       </property>
       <property name="text">
-       <string>10:20</string>
+       <string>00:00</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -389,7 +389,7 @@
        </font>
       </property>
       <property name="text">
-       <string>10:20</string>
+       <string>00:00</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
