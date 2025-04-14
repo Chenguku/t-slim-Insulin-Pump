@@ -1055,7 +1055,7 @@
        <string>5</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="plusButton_2">
+     <widget class="QPushButton" name="decimalButton">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -1064,8 +1064,15 @@
         <height>81</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>+/=</string>
+       <string>.</string>
       </property>
      </widget>
      <widget class="QPushButton" name="numberButton_10">
