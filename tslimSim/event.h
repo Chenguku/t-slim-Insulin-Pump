@@ -6,7 +6,7 @@ class Event{
         Event();
         Event(int);
         //make event an abstract class, events will implement log functions
-        //virtual void log() = 0;
+        virtual void log() = 0;
 
         //getters
         int getEventTime() const;
