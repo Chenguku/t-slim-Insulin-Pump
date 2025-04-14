@@ -351,9 +351,6 @@ void MainWindow::updateTime(){
     ui->date->setText(displayTime.toString("dd MMM"));
     ui->date_2->setText(displayTime.toString("dd MMM"));
 }
-void MainWindow::stopCharging(){
-     powerOnTimer->stop();
-}
 
 // The next few functions are for the pin lock screen
 void MainWindow::submitPasscode(){

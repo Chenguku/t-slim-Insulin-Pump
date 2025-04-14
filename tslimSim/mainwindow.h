@@ -54,8 +54,9 @@ private:
     int                 insulinOnBoard;
     int                 simulationTime;
     BolusCalculator*    bolusCalc;
-    int passcode;
-    EventHistory events;
+    int                 passcode;
+    EventHistory        events;
+    Profile*            curProfile;
 
 
 private slots:

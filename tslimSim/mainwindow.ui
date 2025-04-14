@@ -26,11 +26,9 @@
       <height>600</height>
      </rect>
     </property>
-<<<<<<< HEAD
     <property name="currentIndex">
      <number>1</number>
     </property>
-=======
     <widget class="QWidget" name="pinLockScreen">
      <widget class="QLabel" name="lockScreenLabel">
       <property name="geometry">
@@ -257,7 +255,6 @@
       </property>
      </widget>
     </widget>
->>>>>>> stanley
     <widget class="QWidget" name="powerPage">
      <widget class="QProgressBar" name="progressIndicator">
       <property name="geometry">
