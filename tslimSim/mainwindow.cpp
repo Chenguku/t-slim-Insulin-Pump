@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
      * 7: Options Page
      * 8: My Pump Page
      * 9: Personal Profiles Page
+     * 10: History Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
@@ -99,7 +100,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lockScreen_b7, SIGNAL(released()), this, SLOT(lsButtonSeven()));
     connect(ui->lockScreen_b8, SIGNAL(released()), this, SLOT(lsButtonEight()));
     connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
+
+    //displayList();
 }
+
+/*
+ * This was a test functioon, you can remove this
+void MainWindow::displayList(){
+    std::vector<Event*> temp = events.lastTenEvents();
+    for (int i = 0; i < events.getNumEvents(); i++){
+        ui->timeList->addItem(QString::number(temp[i]->getEventTime()));
+    }
+}
+*/
 
 void MainWindow::openPowerScreen(){
     ui->stackedWidget->setCurrentIndex(1);

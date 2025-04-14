@@ -9,7 +9,11 @@
 QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
+
+#include <vector>
+
 #include "profile.h"
+#include "eventhistory.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,6 +27,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    //void displayList(); test function
 
     //getters
     Profile* getCurProfile() const;
@@ -39,6 +44,7 @@ private:
     int currentBattery;
     Profile* curProfile;
     int passcode;
+    EventHistory events;
 
 private slots:
     void openPowerScreen();

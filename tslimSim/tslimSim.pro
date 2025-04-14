@@ -12,6 +12,8 @@ CONFIG += c++11
 SOURCES += \
     boluscalculator.cpp \
     cgm.cpp \
+    event.cpp \
+    eventhistory.cpp \
     insulindeliveryprofile.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -20,6 +22,8 @@ SOURCES += \
 HEADERS += \
     boluscalculator.h \
     cgm.h \
+    event.h \
+    eventhistory.h \
     insulindeliveryprofile.h \
     mainwindow.h \
     profile.h
