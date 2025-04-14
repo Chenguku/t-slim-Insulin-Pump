@@ -29,18 +29,14 @@ public:
     ~MainWindow();
 
 
-    //getters
-    Profile* getCurProfile() const;
-
 private:
-    Ui::MainWindow *ui;
-    QLineSeries *cgmLine;
-    QChart *cgmChart;
-    QChartView *cgmView;
-    QTimer *powerOnTimer;
-    int currentBattery;
-    Profile* curProfile;
-    BolusCalculator* bolusCalc;
+    Ui::MainWindow      *ui;
+    QLineSeries         *cgmLine;
+    QChart              *cgmChart;
+    QChartView          *cgmView;
+    QTimer              *powerOnTimer;
+    int                 currentBattery;
+    BolusCalculator*    bolusCalc;
 
 
 private slots:
@@ -59,8 +55,10 @@ private slots:
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);
     void flipSign(QTextEdit&);
+    void addDecimal(QTextEdit&);
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
+
 
 };
 #endif // MAINWINDOW_H

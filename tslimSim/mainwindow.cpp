@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , bolusCalc(new BolusCalculator(0,0)) //initiate the bolus calculator with default values
+    , bolusCalc(new BolusCalculator(0,0, nullptr, 5)) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -111,14 +111,13 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
 
-    //connect the +/- buttons
+    //connect the +/- and decimal buttons
     connect(ui->plusButton, &QPushButton::released, this, [this]() {
         flipSign(*ui->textEdit_2);
     });
-    connect(ui->plusButton_2, &QPushButton::released, this, [this]() {
-        flipSign(*ui->textEdit_3);
+    connect(ui->decimalButton, &QPushButton::released, this, [this]() {
+        addDecimal(*ui->textEdit_3);
     });
-
     //connect the backspace buttons
     connect(ui->XButton, &QPushButton::released, this, [this]() {
         backspace(*ui->textEdit_2);
@@ -128,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
 
-    //connect the "check" buttons, this will confirm the grams/glucose/bolus values
+    //connect the "check" buttons, this will confirm the grams/glucose values
     connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_2->toPlainText(); //this lambda will set the carb value in the bolus calculator
         if (!currentText.isEmpty()) {
@@ -151,6 +150,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
     connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(openBolus()));
+
+
+    /*connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
+        std::cout << "Bolus:" << bolusCalc->getFinalBolus() << std::endl;
+    });*/
 
 
 }
@@ -208,6 +212,16 @@ void MainWindow::flipSign(QTextEdit& edit){
     edit.setPlainText(currentText);
 }
 
+void MainWindow::addDecimal(QTextEdit& edit){
+    QString currentText = edit.toPlainText();
+    if (currentText.isEmpty()) return; //sanity checks
+    else if (currentText.contains('.')) return;
+    else {
+        currentText.append('.');  //add the decimal
+    }
+    edit.setPlainText(currentText);
+}
+
 void MainWindow::backspace(QTextEdit& edit){
     QString currentText = edit.toPlainText();
     if (currentText.isEmpty()) return; //sanity check
@@ -255,8 +269,6 @@ void MainWindow::increaseBattery(){
     }
 }
 
-//getters
-Profile* MainWindow::getCurProfile() const { return curProfile; }
 
 MainWindow::~MainWindow()
 {

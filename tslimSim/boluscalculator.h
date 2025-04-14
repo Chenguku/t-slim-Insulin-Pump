@@ -3,22 +3,23 @@
 
 
 #include "profile.h"
+#include "insulindeliveryprofile.h"
 
-//define an insulin to carb ratio (1 : 1)
-#define ICR 1
+#define ICR 1 //insulin to carb ratio (1 : 1)
+#define CF  1 //correction factor, 1 unit per mmol/L
 
 
 class BolusCalculator
 {
 public:
-    BolusCalculator(float c, float bg);
+    BolusCalculator(float c, float bg, InsulinDeliveryProfile* curProfile, float IOB);
 
 
     //getters
     float getCarbValue() const;
     float getBloodGlucose() const;
 
-    float getCarbBolus() const;
+    float getFoodBolus() const;
     float getCorrectionBolus() const;
     float getTotalBolus() const;
     float getFinalBolus() const;
@@ -35,6 +36,8 @@ public:
 private:
     float carbValue;
     float bloodGlucose;
+    InsulinDeliveryProfile* curProfile;
+    float IOB;
 
 };
 
