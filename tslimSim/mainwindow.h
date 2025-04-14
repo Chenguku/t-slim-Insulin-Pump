@@ -35,6 +35,7 @@ private:
     QTimer *powerOnTimer;
     int currentBattery;
     Profile* curProfile;
+    int passcode;
 
 private slots:
     void openPowerScreen();
@@ -49,5 +50,18 @@ private slots:
     void openMyPump();
     void openPersonalProfiles();
     void openGlucose();
+    //slots for the pin lockscreen
+    void submitPasscode();
+    void lsDeleteButton();
+    void lsButtonOne();
+    void lsButtonTwo();
+    void lsButtonThree();
+    void lsButtonFour();
+    void lsButtonFive();
+    void lsButtonSix();
+    void lsButtonSeven();
+    void lsButtonEight();
+    void lsButtonNine();
+    void lsButtonZero();
 };
 #endif // MAINWINDOW_H
