@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     GlucoseReader_Sine *cgmreader = new GlucoseReader_Sine();
     cgm = CGM();
     cgm.setBGReader(cgmreader);
+    //passcode setup
+    passcode = 1234;
 
     //CGM Graph setup
     cgmLine = new QLineSeries();
@@ -55,15 +57,17 @@ MainWindow::MainWindow(QWidget *parent)
     /*
      * Connecting slots to change pages
      * Page Indices
-     * 0: Power On Page
-     * 1: Home Page
-     * 2: CGM Home Page
-     * 3: Bolus Page
-     * 4: Carbs Calculator
-     * 5: Glucose Modifier
-     * 6: Options Page
-     * 7: My Pump Page
-     * 8: Personal Profiles Page
+     * 0: Lock Screen
+     * 1: Power On Page
+     * 2: Home Page
+     * 3: CGM Home Page
+     * 4: Bolus Page
+     * 5: Carbs Calculator
+     * 6: Glucose Modifier
+     * 7: Options Page
+     * 8: My Pump Page
+     * 9: Personal Profiles Page
+     * 10: History Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
@@ -169,45 +173,66 @@ MainWindow::MainWindow(QWidget *parent)
     });*/
 
 
+    //functions for the lockscreen page
+    connect(ui->lockScreen_enterButton, SIGNAL(released()), this, SLOT(submitPasscode()));
+    connect(ui->lockScreen_deleteButton, SIGNAL(released()), this, SLOT(lsDeleteButton()));
+    connect(ui->lockScreen_b0, SIGNAL(released()), this, SLOT(lsButtonZero()));
+    connect(ui->lockScreen_b1, SIGNAL(released()), this, SLOT(lsButtonOne()));
+    connect(ui->lockScreen_b2, SIGNAL(released()), this, SLOT(lsButtonTwo()));
+    connect(ui->lockScreen_b3, SIGNAL(released()), this, SLOT(lsButtonThree()));
+    connect(ui->lockScreen_b4, SIGNAL(released()), this, SLOT(lsButtonFour()));
+    connect(ui->lockScreen_b5, SIGNAL(released()), this, SLOT(lsButtonFive()));
+    connect(ui->lockScreen_b6, SIGNAL(released()), this, SLOT(lsButtonSix()));
+    connect(ui->lockScreen_b7, SIGNAL(released()), this, SLOT(lsButtonSeven()));
+    connect(ui->lockScreen_b8, SIGNAL(released()), this, SLOT(lsButtonEight()));
+    connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
+
+    //displayList();
 }
 
+/*
+ * This was a test functioon, you can remove this
+void MainWindow::displayList(){
+    std::vector<Event*> temp = events.lastTenEvents();
+    for (int i = 0; i < events.getNumEvents(); i++){
+        ui->timeList->addItem(QString::number(temp[i]->getEventTime()));
+    }
+}
+*/
+
 void MainWindow::openPowerScreen(){
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::openHome(){
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(2);
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
     }
 }
 void MainWindow::openCGM(){
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentIndex(3);
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
     }
 }
 
 void MainWindow::openBolus(){
-    ui->stackedWidget->setCurrentIndex(3);
-}
-void MainWindow::openCarbs(){
     ui->stackedWidget->setCurrentIndex(4);
 }
-
-void MainWindow::openGlucose(){
+void MainWindow::openCarbs(){
     ui->stackedWidget->setCurrentIndex(5);
 }
 
-void MainWindow::openOptions(){
+void MainWindow::openGlucose(){
     ui->stackedWidget->setCurrentIndex(6);
 }
 
-void MainWindow::openMyPump(){
+void MainWindow::openOptions(){
     ui->stackedWidget->setCurrentIndex(7);
 }
 
-void MainWindow::openPersonalProfiles(){
+void MainWindow::openMyPump(){
     ui->stackedWidget->setCurrentIndex(8);
 }
 
@@ -260,6 +285,10 @@ void MainWindow::checkValue(QTextEdit& edit, QPushButton& button, QString unit){
 
 
 
+
+void MainWindow::openPersonalProfiles(){
+    ui->stackedWidget->setCurrentIndex(9);
+}
 
 //start timer to charge battery
 void MainWindow::chargePump(){
@@ -321,6 +350,93 @@ void MainWindow::updateTime(){
     ui->time_2->setText(displayTime.toString("HH:mm"));
     ui->date->setText(displayTime.toString("dd MMM"));
     ui->date_2->setText(displayTime.toString("dd MMM"));
+}
+void MainWindow::stopCharging(){
+     powerOnTimer->stop();
+}
+
+// The next few functions are for the pin lock screen
+void MainWindow::submitPasscode(){
+    //check if the passcode entered is the same as the actual passcode
+    if (ui->passcodeLabel->text().toInt() == passcode){
+        ui->stackedWidget->setCurrentIndex(1);
+        ui->passcodeIncorrectLabel->setText("");
+    }
+    else{
+        //delete the user's previous entry, and tell them the passcode they entered was incorrect
+        ui->passcodeLabel->setText("");
+        ui->passcodeIncorrectLabel->setText("Incorrect Passcode");
+        //clear the passcode after 2 seconds
+        QTimer::singleShot(2000, [this](){
+            ui->passcodeIncorrectLabel->setText("");
+        });
+    }
+}
+
+void MainWindow::lsDeleteButton(){
+    //chop functions removes the last letter of a QString, does nothing if the QString is empty
+    QString temp = ui->passcodeLabel->text();
+    temp.chop(1);
+    ui->passcodeLabel->setText(temp);
+}
+
+void MainWindow::lsButtonOne(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "1");
+}
+
+void MainWindow::lsButtonTwo(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "2");
+}
+
+void MainWindow::lsButtonThree(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "3");
+}
+
+void MainWindow::lsButtonFour(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "4");
+}
+
+void MainWindow::lsButtonFive(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "5");
+}
+
+void MainWindow::lsButtonSix(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "6");
+}
+
+void MainWindow::lsButtonSeven(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "7");
+}
+
+void MainWindow::lsButtonEight(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "8");
+}
+
+void MainWindow::lsButtonNine(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "9");
+}
+
+void MainWindow::lsButtonZero(){
+    QString curPasscode = ui->passcodeLabel->text();
+    ui->passcodeLabel->setText(curPasscode + "0");
+}
+//end of pin lock screen functions
+
+//getters
+Profile* MainWindow::getCurProfile() const { return curProfile; }
+
+//setters
+void MainWindow::setPasscode(int i){
+    passcode = i;
 }
 
 MainWindow::~MainWindow()
