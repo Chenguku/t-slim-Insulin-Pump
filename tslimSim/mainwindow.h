@@ -27,6 +27,9 @@ public:
     //getters
     Profile* getCurProfile() const;
 
+    //setters
+    void setPasscode(int);
+
 private:
     Ui::MainWindow *ui;
     QLineSeries *cgmLine;

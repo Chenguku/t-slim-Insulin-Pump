@@ -239,6 +239,11 @@ void MainWindow::lsButtonZero(){
 //getters
 Profile* MainWindow::getCurProfile() const { return curProfile; }
 
+//setters
+void MainWindow::setPasscode(int i){
+    passcode = i;
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
