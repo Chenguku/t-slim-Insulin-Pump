@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //set initial page
-    ui->stackedWidget->setCurrentIndex(10);
+    ui->stackedWidget->setCurrentIndex(0);
 
     //setup timer for powering on the insulin pump
     powerOnTimer = new QTimer(this);
