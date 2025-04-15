@@ -7,12 +7,14 @@
 #include <ctime>
 #include "event.h"
 
+#define RECENT_EVENTS   90
+
 class EventHistory{
     public:
         EventHistory();
         ~EventHistory();
         void addEvent(Event*);
-        std::vector<Event*> lastTenEvents();
+        std::vector<Event*> recentEvents();
 
         //test function
         void createEvents();

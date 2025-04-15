@@ -197,8 +197,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 //change function name, and everytime you open the history page, it should update recentEvents
 void MainWindow::displayList(){
-    recentEvents = events.lastTenEvents();
-    for (int i = 0; i < events.getNumEvents(); i++){
+    recentEvents = events.recentEvents();
+    for (std::size_t i = 0; i < recentEvents.size(); i++){
         ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
     }
 }
