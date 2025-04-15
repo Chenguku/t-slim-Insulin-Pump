@@ -54,6 +54,10 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(ui->CGMGraph);
     layout->addWidget(cgmView);
 
+
+    //pull glucose from cgm
+    pullBloodGlucose();
+
     /*
      * Connecting slots to change pages
      * Page Indices
@@ -283,6 +287,13 @@ void MainWindow::checkValue(QTextEdit& edit, QPushButton& button, QString unit){
     edit.setPlainText("");
 }
 
+void MainWindow::pullBloodGlucose() {
+    float glucose = cgm.getCurrentBG();  //pull current glucose
+    QString text = QString("%1 mmol/L").arg(glucose);
+    ui->glucoseButton->setText(text);
+    bolusCalc->setBloodGlucose(glucose);
+    std::cout << "Pulled BG: " << bolusCalc->getBloodGlucose() << std::endl;
+}
 
 
 
@@ -427,6 +438,8 @@ void MainWindow::lsButtonZero(){
     ui->passcodeLabel->setText(curPasscode + "0");
 }
 //end of pin lock screen functions
+
+
 
 //getters
 Profile* MainWindow::getCurProfile() const { return curProfile; }

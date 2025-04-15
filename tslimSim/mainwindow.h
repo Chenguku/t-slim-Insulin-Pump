@@ -82,7 +82,7 @@ private slots:
     void addDecimal(QTextEdit&);
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
-
+    void pullBloodGlucose();
 
     //slots for the pin lockscreen
     void submitPasscode();
