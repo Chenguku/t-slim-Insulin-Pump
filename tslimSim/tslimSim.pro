@@ -13,6 +13,8 @@ SOURCES += \
     boluscalculator.cpp \
     cgm.cpp \
     glucosereader_mock.cpp \
+    event.cpp \
+    eventhistory.cpp \
     insulindeliveryprofile.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -22,6 +24,8 @@ HEADERS += \
     boluscalculator.h \
     cgm.h \
     glucosereader_mock.h \
+    event.h \
+    eventhistory.h \
     insulindeliveryprofile.h \
     mainwindow.h \
     profile.h

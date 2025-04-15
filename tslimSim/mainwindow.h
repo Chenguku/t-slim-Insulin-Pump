@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QTime>
 #include <iostream>
+#include <vector>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -18,6 +19,9 @@ QT_CHARTS_USE_NAMESPACE
 #include "boluscalculator.h"
 #include "profile.h"
 #include "cgm.h"
+
+#include "profile.h"
+#include "eventhistory.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,6 +35,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    //void displayList(); test function
+    //getters
+    Profile* getCurProfile() const;
+
+    //setters
+    void setPasscode(int);
 
 private:
     Ui::MainWindow      *ui;
@@ -49,6 +59,9 @@ private:
     int                 insulinOnBoard;
     int                 simulationTime;
     BolusCalculator*    bolusCalc;
+    int                 passcode;
+    EventHistory        events;
+    Profile*            curProfile;
 
 
 private slots:
@@ -75,7 +88,20 @@ private slots:
     void addDecimal(QTextEdit&);
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
+    void pullBloodGlucose();
 
-
+    //slots for the pin lockscreen
+    void submitPasscode();
+    void lsDeleteButton();
+    void lsButtonOne();
+    void lsButtonTwo();
+    void lsButtonThree();
+    void lsButtonFour();
+    void lsButtonFive();
+    void lsButtonSix();
+    void lsButtonSeven();
+    void lsButtonEight();
+    void lsButtonNine();
+    void lsButtonZero();
 };
 #endif // MAINWINDOW_H
