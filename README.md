@@ -20,6 +20,8 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | Use Cases         | Jason Li      | 
 | Sequence Diagrams | Daniel Yang   |
 | Use Case Diagram  | Stanley Huang |
+| State Machine Diagrams  | Stanley Huang |
+| UML Diagram | Methira Herath |
 
 ## Feature Implementation:
 
@@ -38,9 +40,10 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | Class           | Contributors:                        |
 |-----------------|--------------------------------------|
 | BolusCalculator | Daniel Yang                          |
-| CGM             | Daniel Yang                          |
+| CGM             | Daniel Yang, Jason Li                |
 | MainWindow      | Stanley Huang, Jason Li, Daniel Yang, Methira Herath |
 | Profile         | Methira Herath, Daniel Yang          |
 | InsulinDeliveryProfile | Methira Herath |
 | Event | Stanley Huang |
 | EventHistory | Stanley Huang | 
+| GlucoseReader_Mock | Jason Li |
