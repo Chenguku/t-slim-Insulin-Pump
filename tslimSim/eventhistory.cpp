@@ -2,6 +2,7 @@
 
 EventHistory::EventHistory(){
     numEvents = 0;
+    createEvents();
 }
 
 EventHistory::~EventHistory(){
@@ -36,12 +37,17 @@ std::vector<Event*> EventHistory::lastTenEvents(){
     return result;
 }
 
-/*
+
 void EventHistory::createEvents(){
+    std::string eventNames[3] = {"NRG", "SEN", "MIBR"};
+    std::string ratings[3] = {"ASS", "GOOD", "GOATED"};
+    int randomNum;
+    std::srand(std::time(nullptr));
     for (int i = 0; i < 10; i++){
-        addEvent(new Event(i));
+        randomNum = rand() % 3;
+        addEvent(new Event(i, eventNames[randomNum], ratings[randomNum]));
     }
 }
-*/
+
 
 

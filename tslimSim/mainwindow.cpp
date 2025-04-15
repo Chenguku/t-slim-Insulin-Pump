@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //set initial page
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(10);
 
     //setup timer for powering on the insulin pump
     powerOnTimer = new QTimer(this);
@@ -191,18 +191,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lockScreen_b8, SIGNAL(released()), this, SLOT(lsButtonEight()));
     connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
 
-    //displayList();
+    displayList();
+    connect(ui->timeList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displaySelectedItem()));
 }
 
-/*
- * This was a test functioon, you can remove this
+//change function name, and everytime you open the history page, it should update recentEvents
 void MainWindow::displayList(){
-    std::vector<Event*> temp = events.lastTenEvents();
+    recentEvents = events.lastTenEvents();
     for (int i = 0; i < events.getNumEvents(); i++){
-        ui->timeList->addItem(QString::number(temp[i]->getEventTime()));
+        ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
     }
 }
-*/
+
 
 void MainWindow::openPowerScreen(){
     ui->stackedWidget->setCurrentIndex(1);
@@ -438,6 +438,20 @@ void MainWindow::lsButtonZero(){
     ui->passcodeLabel->setText(curPasscode + "0");
 }
 //end of pin lock screen functions
+
+//pump information and history
+void MainWindow::displaySelectedItem(){
+    int currentIndex = ui->timeList->currentRow();
+
+    //eInfo should be polymorphic
+    std::string eName = recentEvents[currentIndex]->getEventName();
+    std::string eInfo = recentEvents[currentIndex]->getInformation();
+
+    ui->textBrowser->clear();
+    ui->textBrowser_2->clear();
+    ui->textBrowser->append(QString::fromStdString(eName));
+    ui->textBrowser_2->append(QString::fromStdString(eInfo));
+}
 
 
 

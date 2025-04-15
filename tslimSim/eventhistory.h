@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
+#include <ctime>
 #include "event.h"
 
 class EventHistory{
@@ -13,7 +15,7 @@ class EventHistory{
         std::vector<Event*> lastTenEvents();
 
         //test function
-        //void createEvents();
+        void createEvents();
 
         //getters
         int getNumEvents() const;

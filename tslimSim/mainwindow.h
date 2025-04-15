@@ -10,6 +10,7 @@
 #include <QTime>
 #include <iostream>
 #include <vector>
+#include <string>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -34,7 +35,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    //void displayList(); test function
+    void displayList();
     //getters
     Profile* getCurProfile() const;
 
@@ -57,6 +58,7 @@ private:
     int                 passcode;
     EventHistory        events;
     Profile*            curProfile;
+    std::vector<Event*> recentEvents;
 
 
 private slots:
@@ -97,5 +99,8 @@ private slots:
     void lsButtonEight();
     void lsButtonNine();
     void lsButtonZero();
+
+    //slots for the history page
+    void displaySelectedItem();
 };
 #endif // MAINWINDOW_H
