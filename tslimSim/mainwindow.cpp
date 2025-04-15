@@ -173,6 +173,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::openPowerScreen(){
     ui->stackedWidget->setCurrentIndex(0);
+    simulationTimer->stop();
 }
 
 void MainWindow::openHome(){
@@ -308,11 +309,15 @@ void MainWindow::simulateBackground(){
 
 void MainWindow::updateBattery(){
     if(currentBattery == 0){
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->homeButton->setEnabled(false);
+        ui->CGMHomeButton->setEnabled(false);
         return;
     }
     currentBattery--;
     ui->battery->setValue(currentBattery);
     ui->battery_2->setValue(currentBattery);
+    ui->progressIndicator->setValue(currentBattery);
 }
 
 void MainWindow::updateTime(){
