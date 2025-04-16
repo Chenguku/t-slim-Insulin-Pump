@@ -19,22 +19,57 @@ void EventHistory::addEvent(Event* e){
     numEvents++;
 }
 
-std::vector<Event*> EventHistory::recentEvents(){
+std::vector<Event*> EventHistory::recentEvents(QString filter){
     std::vector<Event*> result;
 
-    //start copying elements from most recent to least recent
-    if (numEvents < RECENT_EVENTS){
-        for (int i = numEvents - 1; i >= 0; i--){
-            result.push_back(eventsList[i]);
-        }
+    //start copying elements from most recent to least recent based on filter
+    if (filter == "CGM"){
+        result = recentCGMEvents();
     }
-    else{
-        for (int i = numEvents - 1; i >= numEvents - RECENT_EVENTS; i--){
-            result.push_back(eventsList[i]);
-        }
+    else if (filter == "Insulin Delivery"){
+        result = recentInsulinEvents();
+    }
+    else if (filter == "Warnings"){
+        result = recentWarningEvents();
     }
 
     return result;
+}
+
+std::vector<Event*> EventHistory::recentCGMEvents(){
+    std::vector<Event*> filtered;
+    for (int i = numEvents - 1; i >= 0; i--){
+        if (filtered.size() >= RECENT_EVENTS) break;
+        if (dynamic_cast<CGM*>(eventsList[i])){
+            filtered.push_back(eventsList[i]);
+        }
+    }
+    return filtered;
+}
+
+std::vector<Event*> EventHistory::recentInsulinEvents(){
+    std::vector<Event*> filtered;
+    for (int i = numEvents - 1; i >= 0; i--){
+        if (filtered.size() >= RECENT_EVENTS) break;
+        if (dynamic_cast<InsulinDeliveryProfile*>(eventsList[i])){
+            filtered.push_back(eventsList[i]);
+        }
+    }
+    return filtered;
+}
+
+std::vector<Event*> EventHistory::recentWarningEvents(){
+    /*
+     * Warnings class has not been created yet
+    std::vector<Event*> filtered;
+    for (int i = numEvents - 1; i >= 0; i--){
+        if (filtered.size() >= RECENT_EVENTS) break;
+        if (dynamic_cast<Warnings*>(eventsList[i])){
+            filtered.push_back(eventsList[i]);
+        }
+    }
+    return filtered;
+    */
 }
 
 /*

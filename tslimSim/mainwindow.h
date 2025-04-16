@@ -39,7 +39,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void displayList();
+    //void displayList();
     //getters
     Profile* getCurProfile() const;
 
@@ -90,7 +90,7 @@ private slots:
     void openExtendedBolus();
     void updateCGM();
     void openHistoryOptions();
-    void openHistoryDisplay();
+    void openHistoryDisplay(QString);
 
     // profile pages
     void openPersonalProfiles();

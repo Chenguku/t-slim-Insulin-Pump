@@ -185,9 +185,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->historyButton, SIGNAL(released()), this, SLOT(openHistoryOptions()));
     connect(ui->backButton_10, SIGNAL(released()), this, SLOT(openHistoryOptions()));
     //add something to determine which one was pressed
-    connect(ui->CGMReadingsButton, SIGNAL(released()), this, SLOT(openHistoryDisplay()));
-    connect(ui->InsulinDeliveryButton, SIGNAL(released()), this, SLOT(openHistoryDisplay()));
-    connect(ui->WarningsButton, SIGNAL(released()), this, SLOT(openHistoryDisplay()));
+    connect(ui->CGMReadingsButton, &QPushButton::released, this, [this](){
+        openHistoryDisplay("CGM");
+    });
+    connect(ui->InsulinDeliveryButton, &QPushButton::released, this, [this](){
+        openHistoryDisplay("Insulin Delivery");
+    });
+    connect(ui->WarningsButton, &QPushButton::released, this, [this](){
+        openHistoryDisplay("Warnings");
+    });
 
     //connnecting number carb buttons (by looping through and connecting each button, 0-9)
     for (int i = 0; i <= 9; ++i) {
@@ -396,7 +402,7 @@ void MainWindow::openCreateProfile(){
     ui->stackedWidget->setCurrentIndex(11);
 }
 
-void MainWindow::openHistoryDisplay(){
+void MainWindow::openHistoryDisplay(QString filter){
     ui->stackedWidget->setCurrentIndex(12);
 }
 
