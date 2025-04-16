@@ -317,15 +317,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lockScreen_b8, SIGNAL(released()), this, SLOT(lsButtonEight()));
     connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
 
+    connect(ui->timeList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displaySelectedItem()));
     //displayList();
 }
 
+//change function name, and everytime you open the history page, it should update recentEvents
 /*
- * This was a test functioon, you can remove this
+ * TEST CODE FOR INFORMATION HISTORY
 void MainWindow::displayList(){
-    std::vector<Event*> temp = events.lastTenEvents();
-    for (int i = 0; i < events.getNumEvents(); i++){
-        ui->timeList->addItem(QString::number(temp[i]->getEventTime()));
+    recentEvents = events.recentEvents();
+    for (std::size_t i = 0; i < recentEvents.size(); i++){
+        ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
     }
 }
 */
@@ -609,6 +611,24 @@ void MainWindow::onCreateProfile() {
     profilesPageWidget->addProfile(newProfile);
     openPersonalProfiles();
 }
+//pump information and history
+void MainWindow::displaySelectedItem(){
+    int currentIndex = ui->timeList->currentRow();
+
+    /*
+     * These don't currently work
+    //eInfo should be polymorphic
+    std::string eName = recentEvents[currentIndex]->getEventName();
+    std::string eInfo = recentEvents[currentIndex]->getInformation();
+
+    ui->textBrowser->clear();
+    ui->textBrowser_2->clear();
+    ui->textBrowser->append(QString::fromStdString(eName));
+    ui->textBrowser_2->append(QString::fromStdString(eInfo));
+    */
+}
+
+
 
 //getters
 Profile* MainWindow::getCurProfile() const { return profilesPageWidget->getActiveProfile(); }

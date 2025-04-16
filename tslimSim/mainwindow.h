@@ -11,6 +11,7 @@
 #include <QTime>
 #include <iostream>
 #include <vector>
+#include <string>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -38,7 +39,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    //void displayList(); test function
+    void displayList();
     //getters
     Profile* getCurProfile() const;
 
@@ -67,6 +68,8 @@ private:
     Profile             *curProfile;
     ProfilesPageWidget  *profilesPageWidget;
     ProfileFormWidget   *profileFormWidget;
+    std::vector<Event*> recentEvents;
+
 
 private slots:
     void openPowerScreen();
@@ -114,5 +117,8 @@ private slots:
     void lsButtonEight();
     void lsButtonNine();
     void lsButtonZero();
+
+    //slots for the history page
+    void displaySelectedItem();
 };
 #endif // MAINWINDOW_H
