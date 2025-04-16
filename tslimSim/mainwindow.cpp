@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -55,6 +56,28 @@ MainWindow::MainWindow(QWidget *parent)
     layout->addWidget(cgmView);
 
 
+
+    // profiles page widget
+    if (!ui->Profiles->layout()) {
+        QVBoxLayout *layout = new QVBoxLayout(ui->ProfileForm);
+        layout->setContentsMargins(0, 100, 0, 0);
+        ui->Profiles->setLayout(layout);
+    }
+    profilesPageWidget = new ProfilesPageWidget(this);
+    ui->Profiles->layout()->addWidget(profilesPageWidget);
+    layout->setAlignment(profilesPageWidget, Qt::AlignLeft);
+
+
+    // add profile form widget
+    if (!ui->ProfileForm->layout()) {
+        QVBoxLayout *layout = new QVBoxLayout(ui->ProfileForm);
+        layout->setContentsMargins(0, 100, 0, 0);
+        ui->ProfileForm->setLayout(layout);
+    }
+    profileFormWidget = new ProfileFormWidget(this);
+    ui->ProfileForm->layout()->addWidget(profileFormWidget);
+    layout->setAlignment(profileFormWidget, Qt::AlignLeft);
+
     //pull glucose from cgm
     pullBloodGlucose();
 
@@ -104,6 +127,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
     connect(ui->pushButton_2, SIGNAL(released()), this, SLOT(openBolus()));
 
+    connect(ui->addProfileButton, SIGNAL(released()), this, SLOT(openCreateProfile()));
+    connect(ui->profileForm_backButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
+    connect(ui->createProfileButton, SIGNAL(released()), this, SLOT(onCreateProfile()));
 
     //connnecting number carb buttons (by looping through and connecting each button, 0-9)
     for (int i = 0; i <= 9; ++i) {
@@ -240,6 +266,13 @@ void MainWindow::openMyPump(){
     ui->stackedWidget->setCurrentIndex(8);
 }
 
+void MainWindow::openPersonalProfiles(){
+    ui->stackedWidget->setCurrentIndex(9);
+}
+
+void MainWindow::openCreateProfile(){
+    ui->stackedWidget->setCurrentIndex(10);
+}
 
 void MainWindow::inputNumber(int num, QTextEdit& edit){
     QString currentText = edit.toPlainText();
@@ -293,12 +326,6 @@ void MainWindow::pullBloodGlucose() {
     ui->glucoseButton->setText(text);
     bolusCalc->setBloodGlucose(glucose);
     std::cout << "Pulled BG: " << bolusCalc->getBloodGlucose() << std::endl;
-}
-
-
-
-void MainWindow::openPersonalProfiles(){
-    ui->stackedWidget->setCurrentIndex(9);
 }
 
 //start timer to charge battery
@@ -439,10 +466,14 @@ void MainWindow::lsButtonZero(){
 }
 //end of pin lock screen functions
 
-
+void MainWindow::onCreateProfile() {
+    Profile* newProfile = profileFormWidget->getProfile();
+    profilesPageWidget->addProfile(newProfile);
+    openPersonalProfiles();
+}
 
 //getters
-Profile* MainWindow::getCurProfile() const { return curProfile; }
+Profile* MainWindow::getCurProfile() const { return profilesPageWidget->getActiveProfile(); }
 
 //setters
 void MainWindow::setPasscode(int i){

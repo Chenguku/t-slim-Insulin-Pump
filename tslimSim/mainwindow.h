@@ -14,13 +14,15 @@
 QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
+#include <QTableWidget>
 
 #include "boluscalculator.h"
 #include "profile.h"
 #include "cgm.h"
-
 #include "profile.h"
 #include "eventhistory.h"
+#include "profileformwidget.h"
+#include "profilespagewidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -53,11 +55,12 @@ private:
     QDateTime           displayTime;
     int                 insulinOnBoard;
     int                 simulationTime;
-    BolusCalculator*    bolusCalc;
+    BolusCalculator     *bolusCalc;
     int                 passcode;
     EventHistory        events;
-    Profile*            curProfile;
-
+    Profile             *curProfile;
+    ProfilesPageWidget  *profilesPageWidget;
+    ProfileFormWidget   *profileFormWidget;
 
 private slots:
     void openPowerScreen();
@@ -70,11 +73,15 @@ private slots:
     void chargePump();
     void stopCharging();
     void openMyPump();
-    void openPersonalProfiles();
     void openGlucose();
     void simulateBackground();
     void updateBattery();
     void updateTime();
+
+    // profile pages
+    void openPersonalProfiles();
+    void openCreateProfile();
+    void onCreateProfile();
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);
