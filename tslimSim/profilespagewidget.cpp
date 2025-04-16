@@ -26,8 +26,6 @@ ProfilesPageWidget::ProfilesPageWidget(QWidget *parent)
 
 ProfilesPageWidget::~ProfilesPageWidget()
 {
-    // If this widget owns the profiles, then delete them here.
-    // (If they are managed elsewhere, you may not want to delete them.)
     for (auto p : profiles)
         delete p;
 }
@@ -63,7 +61,6 @@ void ProfilesPageWidget::refreshTable()
             {
                 activeIndex = i;
                 emit activeProfileChanged(profiles[i]);
-                qDebug() << "Active profile changed to index:" << i;
             }
         });
 
