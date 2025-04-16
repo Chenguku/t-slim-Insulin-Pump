@@ -191,18 +191,20 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lockScreen_b8, SIGNAL(released()), this, SLOT(lsButtonEight()));
     connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
 
-    displayList();
     connect(ui->timeList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displaySelectedItem()));
+    //displayList();
 }
 
 //change function name, and everytime you open the history page, it should update recentEvents
+/*
+ * TEST CODE FOR INFORMATION HISTORY
 void MainWindow::displayList(){
     recentEvents = events.recentEvents();
     for (std::size_t i = 0; i < recentEvents.size(); i++){
         ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
     }
 }
-
+*/
 
 void MainWindow::openPowerScreen(){
     ui->stackedWidget->setCurrentIndex(1);
@@ -443,6 +445,8 @@ void MainWindow::lsButtonZero(){
 void MainWindow::displaySelectedItem(){
     int currentIndex = ui->timeList->currentRow();
 
+    /*
+     * These don't currently work
     //eInfo should be polymorphic
     std::string eName = recentEvents[currentIndex]->getEventName();
     std::string eInfo = recentEvents[currentIndex]->getInformation();
@@ -451,6 +455,7 @@ void MainWindow::displaySelectedItem(){
     ui->textBrowser_2->clear();
     ui->textBrowser->append(QString::fromStdString(eName));
     ui->textBrowser_2->append(QString::fromStdString(eInfo));
+    */
 }
 
 

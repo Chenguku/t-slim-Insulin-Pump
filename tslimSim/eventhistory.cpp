@@ -2,7 +2,7 @@
 
 EventHistory::EventHistory(){
     numEvents = 0;
-    createEvents();
+    //createEvents();
 }
 
 EventHistory::~EventHistory(){
@@ -37,7 +37,8 @@ std::vector<Event*> EventHistory::recentEvents(){
     return result;
 }
 
-
+/*
+ * Test function
 void EventHistory::createEvents(){
     std::string eventNames[5] = {"NRG", "SEN", "MIBR", "G2", "KRU"};
     std::string ratings[5] = {"FNS", "N4RRATE", "ASPAS", "JAWGEMO", "SHYY"};
@@ -48,6 +49,7 @@ void EventHistory::createEvents(){
         addEvent(new Event(i+1, eventNames[randomNum], ratings[randomNum]));
     }
 }
+*/
 
 
 

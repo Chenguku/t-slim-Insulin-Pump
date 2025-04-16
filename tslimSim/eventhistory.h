@@ -17,7 +17,7 @@ class EventHistory{
         std::vector<Event*> recentEvents();
 
         //test function
-        void createEvents();
+        //void createEvents();
 
         //getters
         int getNumEvents() const;
