@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 #include <QtCharts/QChart>
 #include <QVBoxLayout>
 #include <QTimer>
@@ -47,7 +48,11 @@ private:
     QLineSeries         *cgmLine;
     QChart              *cgmChart;
     QChartView          *cgmView;
+    QValueAxis          *xAxis;
+    QValueAxis          *yAxis;
+    int                 graphRange;
     CGM                 cgm;
+    bool                cgmConnected;
     QTimer              *powerOnTimer;
     QTimer              *simulationTimer;
     int                 currentBattery;
@@ -78,6 +83,7 @@ private slots:
     void updateTime();
     void openViewCalculation();
     void openExtendedBolus();
+    void updateCGM();
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);

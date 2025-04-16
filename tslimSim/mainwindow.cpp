@@ -39,14 +39,52 @@ MainWindow::MainWindow(QWidget *parent)
     cgmLine->setPen(dottedLine);
 
     //sample line
+    /*
     cgmLine->append(0, 8.9);
     cgmLine->append(2, 9.3);
     cgmLine->append(4, 7.2);
-
+    */
 
     cgmChart = new QChart();
     cgmChart->addSeries(cgmLine);
-    cgmChart->createDefaultAxes();
+
+    yAxis = new QValueAxis;
+    yAxis->setRange(0, 12);
+    yAxis->setLabelFormat("%.1f");
+    yAxis->setGridLineVisible(false);
+    yAxis->setMinorGridLineVisible(false);
+    cgmChart->addAxis(yAxis, Qt::AlignRight);
+    cgmLine->attachAxis(yAxis);
+    xAxis = new QValueAxis;
+    xAxis->setRange(0, 20);
+    xAxis->setLabelsVisible(false);
+    xAxis->setTickCount(0);
+    xAxis->setGridLineVisible(false);
+    xAxis->setMinorGridLineVisible(false);
+    cgmChart->addAxis(xAxis, Qt::AlignBottom);
+    cgmLine->attachAxis(xAxis);
+
+    QLineSeries *upperLimit = new QLineSeries();
+    upperLimit->append(0, 10);
+    upperLimit->append(1000, 10);
+    QPen yellowPen(Qt::yellow);
+    yellowPen.setWidth(1);
+    yellowPen.setStyle(Qt::SolidLine);
+    upperLimit->setPen(yellowPen);
+    QLineSeries *lowerLimit = new QLineSeries();
+    lowerLimit->append(0, 3.9);
+    lowerLimit->append(1000, 3.9);
+    QPen redPen(Qt::red);
+    redPen.setWidth(1);
+    redPen.setStyle(Qt::SolidLine);
+    lowerLimit->setPen(redPen);
+    cgmChart->addSeries(lowerLimit);
+    cgmChart->addSeries(upperLimit);
+    lowerLimit->attachAxis(xAxis);
+    lowerLimit->attachAxis(yAxis);
+    upperLimit->attachAxis(xAxis);
+    upperLimit->attachAxis(yAxis);
+
 
     cgmView = new QChartView(cgmChart);
     cgmView->setRenderHint(QPainter::Antialiasing);
@@ -256,6 +294,7 @@ void MainWindow::displayList(){
 
 void MainWindow::openPowerScreen(){
     ui->stackedWidget->setCurrentIndex(1);
+    simulationTimer->stop();
 }
 
 void MainWindow::openHome(){
@@ -269,6 +308,7 @@ void MainWindow::openCGM(){
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
     }
+    cgmConnected = true;
 }
 
 void MainWindow::openBolus(){
@@ -405,6 +445,9 @@ void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
         updateBattery();
     }
+    if(cgmConnected){
+        updateCGM();
+    }
     updateTime();
     std::cout << cgm.readBG_mock() << std::endl;
 
@@ -413,11 +456,15 @@ void MainWindow::simulateBackground(){
 
 void MainWindow::updateBattery(){
     if(currentBattery == 0){
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->homeButton->setEnabled(false);
+        ui->CGMHomeButton->setEnabled(false);
         return;
     }
     currentBattery--;
     ui->battery->setValue(currentBattery);
     ui->battery_2->setValue(currentBattery);
+    ui->progressIndicator->setValue(currentBattery);
 }
 
 void MainWindow::updateTime(){
@@ -426,6 +473,15 @@ void MainWindow::updateTime(){
     ui->time_2->setText(displayTime.toString("HH:mm"));
     ui->date->setText(displayTime.toString("dd MMM"));
     ui->date_2->setText(displayTime.toString("dd MMM"));
+}
+
+void MainWindow::updateCGM(){
+    cgm.basalDelivery(insulinOnBoard);
+    cgmLine->append(simulationTime, cgm.getCurrentBG());
+    if(simulationTime > 20){
+        xAxis->setRange(simulationTime - 20, simulationTime);
+        cgmLine->removePoints(0, 1);
+    }
 }
 
 // The next few functions are for the pin lock screen

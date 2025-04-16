@@ -21,7 +21,7 @@ GlucoseReader_Sine::GlucoseReader_Sine(float amp, float per, float mid){
 }
 
 float GlucoseReader_Sine::readBG_mock(){
-    float bg = amplitude * sin((1 / period) * (seed * M_PI / 32)) + midline;
-    seed ++;
+    float bg = amplitude * sin((1 / period) * (seed * M_PI / 64)) + midline;
+    seed++;
     return bg;
 }
