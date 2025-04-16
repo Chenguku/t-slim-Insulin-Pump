@@ -49,14 +49,14 @@ MainWindow::MainWindow(QWidget *parent)
     cgmChart->addSeries(cgmLine);
 
     yAxis = new QValueAxis;
-    yAxis->setRange(0, 12);
+    yAxis->setRange(0, 15);
     yAxis->setLabelFormat("%.1f");
     yAxis->setGridLineVisible(false);
     yAxis->setMinorGridLineVisible(false);
     cgmChart->addAxis(yAxis, Qt::AlignRight);
     cgmLine->attachAxis(yAxis);
     xAxis = new QValueAxis;
-    xAxis->setRange(0, 20);
+    xAxis->setRange(0, 36);
     xAxis->setLabelsVisible(false);
     xAxis->setTickCount(0);
     xAxis->setGridLineVisible(false);
@@ -413,8 +413,8 @@ void MainWindow::updateTime(){
 void MainWindow::updateCGM(){
     cgm.basalDelivery(insulinOnBoard);
     cgmLine->append(simulationTime, cgm.getCurrentBG());
-    if(simulationTime > 20){
-        xAxis->setRange(simulationTime - 20, simulationTime);
+    if(simulationTime > 36){
+        xAxis->setRange(simulationTime - 36, simulationTime);
         cgmLine->removePoints(0, 1);
     }
 }

@@ -22,4 +22,6 @@ public:
    float readBG_mock() override;
 };
 
+
+
 #endif // GLUCOSEREADER_MOCK_H
