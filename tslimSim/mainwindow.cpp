@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , displayTime(QDate(2024, 11, 14), QTime(0, 0, 0)) //initialize time that is displayed to the user
-    , bolusCalc(new BolusCalculator(0,0, nullptr, 5)) //initiate the bolus calculator with default values
+    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5,""), 5, 0, 0, 0)) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -72,6 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
      * 8: My Pump Page
      * 9: Personal Profiles Page
      * 10: History Page
+     * 11: View Calculations Page
+     * 12: Extended Bolus Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
@@ -148,14 +150,47 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //connect the "check" buttons, this will confirm the grams/glucose values
+    connect(ui->checkButton, &QPushButton::released, this, [this]() {
+        float carbs = bolusCalc->getCarbValue();
+        float bloodGlucose = bolusCalc->getBloodGlucose();
+        float unitsToDeliver = bolusCalc->getFinalBolus();
+
+        QString message = QString("Carbs: %1 g\nBG: %2 mmol/L\nUnits To Deliver: %3 units\n\nConfirm?").arg(carbs).arg(bloodGlucose).arg(unitsToDeliver);
+
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Confirm Dose", message, QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+            QMessageBox::StandardButton deliveryMethod = QMessageBox::question(this, "Delivery Method", "Would you like to deliver the bolus immediately?\nSelect 'No' to deliver it over an extended period.",
+                QMessageBox::Yes | QMessageBox::No
+            );
+
+            if (deliveryMethod == QMessageBox::Yes) {
+                //deliver immediately
+                std::cout << "Bolus delivery: immediate\n";
+            }
+            else {
+                //deliver over extended period
+                std::cout << "Bolus delivery: extended\n";
+                openExtendedBolus();
+            }
+        }
+        else { std::cout << "Bolus cancelled by user\n"; }
+    });
+
+
+
     connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_2->toPlainText(); //this lambda will set the carb value in the bolus calculator
         if (!currentText.isEmpty()) {
-            float carbValue = currentText.toDouble();
+            float carbValue = currentText.toFloat();
             bolusCalc->setCarbValue(carbValue);
             std::cout << "Carbs:" << bolusCalc->getCarbValue() << std::endl;
             checkValue(*ui->textEdit_2, *ui->carbsButton, " grams");
         }
+
+        //then set the text for the bolus units
+        ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
     connect(ui->checkButton_2, SIGNAL(released()), this, SLOT(openBolus()));
 
@@ -163,18 +198,33 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_3->toPlainText(); //this lambda will set the blood glucose level in the bolus calculator
         if (!currentText.isEmpty()) {
-            float bgLevel = currentText.toDouble();
+            float bgLevel = currentText.toFloat();
             bolusCalc->setBloodGlucose(bgLevel);
             std::cout << "Blood Glucose:" << bolusCalc->getBloodGlucose() << std::endl;
             checkValue(*ui->textEdit_3, *ui->glucoseButton, " mmol/L");
         }
+
+        //then set the text for the bolus units
+        ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
     connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(openBolus()));
 
 
-    /*connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
-        std::cout << "Bolus:" << bolusCalc->getFinalBolus() << std::endl;
-    });*/
+    //connect the view calculation ui elements
+    connect(ui->viewCalcButton, &QPushButton::released, this, [this]() {
+        writeCalculations(*ui->viewCalculationTextEdit);
+    });
+    connect(ui->viewCalcButton, SIGNAL(released()), this, SLOT(openViewCalculation()));
+    connect(ui->backButton_7, SIGNAL(released()), this, SLOT(openBolus()));
+
+
+    //connect the extended bolus ui elements, and populate default values (percentages and duration)
+    connect(ui->backButton_8, SIGNAL(released()), this, SLOT(openBolus()));
+    bolusCalc->populateDefaultValues();
+    ui->deliverNowButton->setText(QString("%1\%").arg(bolusCalc->getNow()));
+    ui->deliverLaterButton->setText(QString("%1\%").arg(bolusCalc->getLater()));
+    ui->durationButton->setText(QString("%1\%").arg(bolusCalc->getDuration()));
+
 
 
     //functions for the lockscreen page
@@ -222,6 +272,8 @@ void MainWindow::openCGM(){
 }
 
 void MainWindow::openBolus(){
+    //pull glucose from cgm before entering bolus
+    pullBloodGlucose();
     ui->stackedWidget->setCurrentIndex(4);
 }
 void MainWindow::openCarbs(){
@@ -240,6 +292,17 @@ void MainWindow::openMyPump(){
     ui->stackedWidget->setCurrentIndex(8);
 }
 
+void MainWindow::openPersonalProfiles(){
+    ui->stackedWidget->setCurrentIndex(9);
+}
+
+void MainWindow::openViewCalculation(){
+    ui->stackedWidget->setCurrentIndex(11);
+}
+
+void MainWindow::openExtendedBolus(){
+    ui->stackedWidget->setCurrentIndex(12);
+}
 
 void MainWindow::inputNumber(int num, QTextEdit& edit){
     QString currentText = edit.toPlainText();
@@ -295,11 +358,13 @@ void MainWindow::pullBloodGlucose() {
     std::cout << "Pulled BG: " << bolusCalc->getBloodGlucose() << std::endl;
 }
 
-
-
-void MainWindow::openPersonalProfiles(){
-    ui->stackedWidget->setCurrentIndex(9);
+void MainWindow::writeCalculations(QTextEdit& edit) {
+    edit.setText(""); //reset the text
+    //write calculations in boluscalculator class (do it tmr moment)
+    //edit.append(bolusCalc->logCalculations());
+    bolusCalc->logCalculations();
 }
+
 
 //start timer to charge battery
 void MainWindow::chargePump(){

@@ -14,6 +14,7 @@
 QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
+#include <QMessageBox>
 
 #include "boluscalculator.h"
 #include "profile.h"
@@ -75,6 +76,8 @@ private slots:
     void simulateBackground();
     void updateBattery();
     void updateTime();
+    void openViewCalculation();
+    void openExtendedBolus();
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);
@@ -83,6 +86,7 @@ private slots:
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
     void pullBloodGlucose();
+    void writeCalculations(QTextEdit&);
 
     //slots for the pin lockscreen
     void submitPasscode();
