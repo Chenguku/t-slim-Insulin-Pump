@@ -48,8 +48,15 @@ float BolusCalculator::getBolusRate(int hours) const {
 
 
 //setters
-void BolusCalculator::setCarbValue(float c){ carbValue = c; }
-void BolusCalculator::setBloodGlucose(float bg){ bloodGlucose = bg; }
+void BolusCalculator::setCarbValue(float c)         { carbValue = c; }
+void BolusCalculator::setBloodGlucose(float bg)     { bloodGlucose = bg; }
+void BolusCalculator::setIOB(float iob)             { IOB = iob; }
+void BolusCalculator::setNow(int now)               { deliverNowPercentage = now; }
+void BolusCalculator::setLater(int later)           { deliverLaterPercentage = later; }
+void BolusCalculator::setDuration(int dur)          { duration = dur; }
+
+
+
 
 
 
