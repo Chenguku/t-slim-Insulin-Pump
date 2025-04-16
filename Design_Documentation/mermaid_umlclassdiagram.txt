@@ -1,0 +1,86 @@
+---
+
+---
+classDiagram
+    Profile "1" --* "*" InsulinDeliveryProfile : composition
+    EventHistory "1" --* "*" Event : composition
+    GlucoseReader <|-- GlucoseReader_Sine : implements
+    MainWindow "1" --* "1" CGM
+    MainWindow "1" --* "1" BolusCalculator
+    MainWindow "1" --* "1" EventHistory
+    MainWindow "1" --* "1" Profile
+    MainWindow "1" --* "1" ProfileFormWidget
+    MainWindow "1" --* "1" ProfilesPageWidget
+    class MainWindow {
+
+    }
+
+    class Profile {
+        -String title
+        -QTime insulinDuration
+        -float maxBolus
+        -bool includeCarbs
+        +addTimeSetting(InsulinDeliveryProfile setting)
+        +clearTimeSettings() 
+    }
+
+    class InsulinDeliveryProfile {
+        -float basalRate
+        -float carbRatio
+        -float correctionFactor
+        -float targetGlucose
+        -QTime time
+    }
+    
+    class EventHistory {
+        -int numEvents
+        +recentEvents(filter) : List~Events~
+        -recentCGMEvents() : List~Events~
+        -recentInsulinEvents() : List~Events~
+        -recentWarningEvents() : List~Events~
+    }
+
+    class Event {
+        log()*
+        getInformation()*
+        -eventTime
+    }
+    <<Abstract>> Event
+
+    class ProfileFormWidget {
+
+    }
+
+    class ProfilesPageWidget {
+
+    }
+
+    class BolusCalculator {
+        -float carbValue
+        -float bloodGlucose
+        -float IOB
+        -int deliverNowPercentage
+        -int deliverLaterPercentage
+        -int duration
+        +getFinalBolus()
+
+    }
+
+    class CGM {
+        -float currentBloodGlucose
+        +adjustBG(float x)
+        +basalDelivery(int IOB) : float
+        +readBG() : float
+    }
+
+    class GlucoseReader {
+        readBG()* : float
+    }
+    <<Interface>> GlucoseReader
+
+    class GlucoseReader_Sine {
+        -int seed
+        -float amplitude
+        -float period
+        -float midline
+    }
