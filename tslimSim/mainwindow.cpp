@@ -131,11 +131,12 @@ MainWindow::MainWindow(QWidget *parent)
      * 6: Glucose Modifier
      * 7: Options Page
      * 8: My Pump Page
-     * 9: Personal Profiles Page
-     * 10: Create Profilles Page
-     * 11: History Page
-     * 12: View Calculations Page
-     * 13: Extended Bolus Page
+     * 9: History Options
+     * 10: Personal Profiles Page
+     * 11: Create Profilles Page
+     * 12: History Page
+     * 13: View Calculations Page
+     * 14: Extended Bolus Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
@@ -179,6 +180,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton_2, &QPushButton::released, this, [this]() {
         openBolus(true);
     });
+
+    connect(ui->backButton_9, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->historyButton, SIGNAL(released()), this, SLOT(openHistoryOptions()));
+    connect(ui->backButton_10, SIGNAL(released()), this, SLOT(openHistoryOptions()));
+    //add something to determine which one was pressed
+    connect(ui->CGMReadingsButton, SIGNAL(released()), this, SLOT(openHistoryDisplay()));
+    connect(ui->InsulinDeliveryButton, SIGNAL(released()), this, SLOT(openHistoryDisplay()));
+    connect(ui->WarningsButton, SIGNAL(released()), this, SLOT(openHistoryDisplay()));
 
     //connnecting number carb buttons (by looping through and connecting each button, 0-9)
     for (int i = 0; i <= 9; ++i) {
@@ -375,20 +384,28 @@ void MainWindow::openMyPump(){
     ui->stackedWidget->setCurrentIndex(8);
 }
 
-void MainWindow::openPersonalProfiles(){
+void MainWindow::openHistoryOptions(){
     ui->stackedWidget->setCurrentIndex(9);
 }
 
-void MainWindow::openCreateProfile(){
+void MainWindow::openPersonalProfiles(){
     ui->stackedWidget->setCurrentIndex(10);
 }
 
-void MainWindow::openViewCalculation(){
+void MainWindow::openCreateProfile(){
     ui->stackedWidget->setCurrentIndex(11);
 }
 
-void MainWindow::openExtendedBolus(){
+void MainWindow::openHistoryDisplay(){
     ui->stackedWidget->setCurrentIndex(12);
+}
+
+void MainWindow::openViewCalculation(){
+    ui->stackedWidget->setCurrentIndex(13);
+}
+
+void MainWindow::openExtendedBolus(){
+    ui->stackedWidget->setCurrentIndex(14);
 }
 
 void MainWindow::inputNumber(int num, QTextEdit& edit){
@@ -535,8 +552,11 @@ void MainWindow::updateCGM(){
 void MainWindow::submitPasscode(){
     //check if the passcode entered is the same as the actual passcode
     if (ui->passcodeLabel->text().toInt() == passcode){
+        //switch page if correct passcode
         ui->stackedWidget->setCurrentIndex(1);
+        //clear the text from the labels
         ui->passcodeIncorrectLabel->setText("");
+        ui->passcodeLabel->setText("");
     }
     else{
         //delete the user's previous entry, and tell them the passcode they entered was incorrect

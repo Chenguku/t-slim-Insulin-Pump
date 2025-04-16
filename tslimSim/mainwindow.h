@@ -89,6 +89,8 @@ private slots:
     void openViewCalculation();
     void openExtendedBolus();
     void updateCGM();
+    void openHistoryOptions();
+    void openHistoryDisplay();
 
     // profile pages
     void openPersonalProfiles();
