@@ -1,11 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , displayTime(QDate(2024, 11, 14), QTime(0, 0, 0)) //initialize time that is displayed to the user
-    , bolusCalc(new BolusCalculator(0,0, nullptr, 5)) //initiate the bolus calculator with default values
+    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 5, 0, 0, 0)) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -93,6 +94,28 @@ MainWindow::MainWindow(QWidget *parent)
     layout->addWidget(cgmView);
 
 
+
+    // profiles page widget
+    if (!ui->Profiles->layout()) {
+        QVBoxLayout *layout = new QVBoxLayout(ui->ProfileForm);
+        layout->setContentsMargins(0, 100, 0, 0);
+        ui->Profiles->setLayout(layout);
+    }
+    profilesPageWidget = new ProfilesPageWidget(this);
+    ui->Profiles->layout()->addWidget(profilesPageWidget);
+    layout->setAlignment(profilesPageWidget, Qt::AlignLeft);
+
+
+    // add profile form widget
+    if (!ui->ProfileForm->layout()) {
+        QVBoxLayout *layout = new QVBoxLayout(ui->ProfileForm);
+        layout->setContentsMargins(0, 100, 0, 0);
+        ui->ProfileForm->setLayout(layout);
+    }
+    profileFormWidget = new ProfileFormWidget(this);
+    ui->ProfileForm->layout()->addWidget(profileFormWidget);
+    layout->setAlignment(profileFormWidget, Qt::AlignLeft);
+
     //pull glucose from cgm
     pullBloodGlucose();
 
@@ -108,16 +131,25 @@ MainWindow::MainWindow(QWidget *parent)
      * 6: Glucose Modifier
      * 7: Options Page
      * 8: My Pump Page
-     * 9: Personal Profiles Page
-     * 10: History Page
+     * 9: History Options
+     * 10: Personal Profiles Page
+     * 11: Create Profilles Page
+     * 12: History Page
+     * 13: View Calculations Page
+     * 14: Extended Bolus Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
-    connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
+
+    connect(ui->homeBolus, &QPushButton::released, this, [this]() {
+        openBolus(true);
+    });
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
     
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
-    connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+    connect(ui->backButton_2, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
     connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->CGMHomeButton, SIGNAL(released()), this, SLOT(openCGM()));
     connect(ui->optionsButton_2, SIGNAL(released()), this, SLOT(openOptions()));
@@ -128,8 +160,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(stopCharging()));
 
     connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
-    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
-    
+    connect(ui->backButton_3, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
     connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
     connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openHome()));
 
@@ -140,8 +173,27 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
 
     connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
-    connect(ui->pushButton_2, SIGNAL(released()), this, SLOT(openBolus()));
 
+    connect(ui->addProfileButton, SIGNAL(released()), this, SLOT(openCreateProfile()));
+    connect(ui->profileForm_backButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
+    connect(ui->createProfileButton, SIGNAL(released()), this, SLOT(onCreateProfile()));
+    connect(ui->pushButton_2, &QPushButton::released, this, [this]() {
+        openBolus(true);
+    });
+
+    connect(ui->backButton_9, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->historyButton, SIGNAL(released()), this, SLOT(openHistoryOptions()));
+    connect(ui->backButton_10, SIGNAL(released()), this, SLOT(openHistoryOptions()));
+    //add something to determine which one was pressed
+    connect(ui->CGMReadingsButton, &QPushButton::released, this, [this](){
+        openHistoryDisplay("CGM");
+    });
+    connect(ui->InsulinDeliveryButton, &QPushButton::released, this, [this](){
+        openHistoryDisplay("Insulin Delivery");
+    });
+    connect(ui->WarningsButton, &QPushButton::released, this, [this](){
+        openHistoryDisplay("Warnings");
+    });
 
     //connnecting number carb buttons (by looping through and connecting each button, 0-9)
     for (int i = 0; i <= 9; ++i) {
@@ -186,33 +238,85 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //connect the "check" buttons, this will confirm the grams/glucose values
+    connect(ui->checkButton, &QPushButton::released, this, [this]() {
+        float carbs = bolusCalc->getCarbValue();
+        float bloodGlucose = bolusCalc->getBloodGlucose();
+        float unitsToDeliver = bolusCalc->getFinalBolus();
+
+        QString message = QString("Carbs: %1 g\nBG: %2 mmol/L\nUnits To Deliver: %3 units\n\nConfirm?").arg(carbs).arg(bloodGlucose).arg(unitsToDeliver);
+
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Confirm Dose", message, QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+            QMessageBox::StandardButton deliveryMethod = QMessageBox::question(this, "Delivery Method", "Would you like to deliver the bolus immediately?\nSelect 'No' to deliver it over an extended period.",
+                QMessageBox::Yes | QMessageBox::No
+            );
+
+            if (deliveryMethod == QMessageBox::Yes) {
+                //deliver immediately
+                std::cout << "Bolus delivery: immediate\n";
+            }
+            else {
+                //deliver over extended period
+                std::cout << "Bolus delivery: extended\n";
+                openExtendedBolus();
+            }
+        }
+        else { std::cout << "Bolus cancelled by user\n"; }
+    });
+
+
+
     connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_2->toPlainText(); //this lambda will set the carb value in the bolus calculator
         if (!currentText.isEmpty()) {
-            float carbValue = currentText.toDouble();
+            float carbValue = currentText.toFloat();
             bolusCalc->setCarbValue(carbValue);
             std::cout << "Carbs:" << bolusCalc->getCarbValue() << std::endl;
             checkValue(*ui->textEdit_2, *ui->carbsButton, " grams");
         }
-    });
-    connect(ui->checkButton_2, SIGNAL(released()), this, SLOT(openBolus()));
 
+        //then set the text for the bolus units
+        ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
+    });
+    connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
 
     connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_3->toPlainText(); //this lambda will set the blood glucose level in the bolus calculator
         if (!currentText.isEmpty()) {
-            float bgLevel = currentText.toDouble();
+            float bgLevel = currentText.toFloat();
             bolusCalc->setBloodGlucose(bgLevel);
             std::cout << "Blood Glucose:" << bolusCalc->getBloodGlucose() << std::endl;
             checkValue(*ui->textEdit_3, *ui->glucoseButton, " mmol/L");
         }
+
+        //then set the text for the bolus units
+        ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
-    connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(openBolus()));
+    connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
 
+    //connect the view calculation ui elements
+    connect(ui->viewCalcButton, &QPushButton::released, this, [this]() {
+        writeCalculations(*ui->viewCalculationTextEdit);
+    });
+    connect(ui->viewCalcButton, SIGNAL(released()), this, SLOT(openViewCalculation()));
+    connect(ui->backButton_7, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
 
-    /*connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
-        std::cout << "Bolus:" << bolusCalc->getFinalBolus() << std::endl;
-    });*/
+    //connect the extended bolus ui elements, and populate default values (percentages and duration)
+    connect(ui->backButton_8, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });    bolusCalc->populateDefaultValues();
+    ui->deliverNowButton->setText(QString("%1\%").arg(bolusCalc->getNow()));
+    ui->deliverLaterButton->setText(QString("%1\%").arg(bolusCalc->getLater()));
+    ui->durationButton->setText(QString("%1\%").arg(bolusCalc->getDuration()));
+
 
 
     //functions for the lockscreen page
@@ -229,15 +333,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lockScreen_b8, SIGNAL(released()), this, SLOT(lsButtonEight()));
     connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
 
+    connect(ui->timeList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displaySelectedItem()));
     //displayList();
 }
 
+//change function name, and everytime you open the history page, it should update recentEvents
 /*
- * This was a test functioon, you can remove this
+ * TEST CODE FOR INFORMATION HISTORY
 void MainWindow::displayList(){
-    std::vector<Event*> temp = events.lastTenEvents();
-    for (int i = 0; i < events.getNumEvents(); i++){
-        ui->timeList->addItem(QString::number(temp[i]->getEventTime()));
+    recentEvents = events.recentEvents();
+    for (std::size_t i = 0; i < recentEvents.size(); i++){
+        ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
     }
 }
 */
@@ -262,7 +368,11 @@ void MainWindow::openCGM(){
     cgmConnected = true;
 }
 
-void MainWindow::openBolus(){
+void MainWindow::openBolus(bool pullFlag){
+    if (pullFlag){
+        //pull glucose from cgm before entering bolus
+        pullBloodGlucose();
+    }
     ui->stackedWidget->setCurrentIndex(4);
 }
 void MainWindow::openCarbs(){
@@ -281,6 +391,29 @@ void MainWindow::openMyPump(){
     ui->stackedWidget->setCurrentIndex(8);
 }
 
+void MainWindow::openHistoryOptions(){
+    ui->stackedWidget->setCurrentIndex(9);
+}
+
+void MainWindow::openPersonalProfiles(){
+    ui->stackedWidget->setCurrentIndex(10);
+}
+
+void MainWindow::openCreateProfile(){
+    ui->stackedWidget->setCurrentIndex(11);
+}
+
+void MainWindow::openHistoryDisplay(QString filter){
+    ui->stackedWidget->setCurrentIndex(12);
+}
+
+void MainWindow::openViewCalculation(){
+    ui->stackedWidget->setCurrentIndex(13);
+}
+
+void MainWindow::openExtendedBolus(){
+    ui->stackedWidget->setCurrentIndex(14);
+}
 
 void MainWindow::inputNumber(int num, QTextEdit& edit){
     QString currentText = edit.toPlainText();
@@ -336,11 +469,13 @@ void MainWindow::pullBloodGlucose() {
     std::cout << "Pulled BG: " << bolusCalc->getBloodGlucose() << std::endl;
 }
 
-
-
-void MainWindow::openPersonalProfiles(){
-    ui->stackedWidget->setCurrentIndex(9);
+void MainWindow::writeCalculations(QTextEdit& edit) {
+    edit.setText(""); //reset the text
+    //write calculations in boluscalculator class (do it tmr moment)
+    //edit.append(bolusCalc->logCalculations());
+    bolusCalc->logCalculations();
 }
+
 
 //start timer to charge battery
 void MainWindow::chargePump(){
@@ -423,8 +558,11 @@ void MainWindow::updateCGM(){
 void MainWindow::submitPasscode(){
     //check if the passcode entered is the same as the actual passcode
     if (ui->passcodeLabel->text().toInt() == passcode){
+        //switch page if correct passcode
         ui->stackedWidget->setCurrentIndex(1);
+        //clear the text from the labels
         ui->passcodeIncorrectLabel->setText("");
+        ui->passcodeLabel->setText("");
     }
     else{
         //delete the user's previous entry, and tell them the passcode they entered was incorrect
@@ -495,10 +633,32 @@ void MainWindow::lsButtonZero(){
 }
 //end of pin lock screen functions
 
+void MainWindow::onCreateProfile() {
+    Profile* newProfile = profileFormWidget->getProfile();
+    profilesPageWidget->addProfile(newProfile);
+    openPersonalProfiles();
+}
+//pump information and history
+void MainWindow::displaySelectedItem(){
+    int currentIndex = ui->timeList->currentRow();
+
+    /*
+     * These don't currently work
+    //eInfo should be polymorphic
+    std::string eName = recentEvents[currentIndex]->getEventName();
+    std::string eInfo = recentEvents[currentIndex]->getInformation();
+
+    ui->textBrowser->clear();
+    ui->textBrowser_2->clear();
+    ui->textBrowser->append(QString::fromStdString(eName));
+    ui->textBrowser_2->append(QString::fromStdString(eInfo));
+    */
+}
+
 
 
 //getters
-Profile* MainWindow::getCurProfile() const { return curProfile; }
+Profile* MainWindow::getCurProfile() const { return profilesPageWidget->getActiveProfile(); }
 
 //setters
 void MainWindow::setPasscode(int i){

@@ -2,11 +2,12 @@
 #define INSULINDELIVERYPROFILE_H
 
 #include <string>
+#include <QTime>
 
 class InsulinDeliveryProfile
 {
     public:
-    InsulinDeliveryProfile(float basalRate, float carbRatio, float correctionFactor, float targetGlucose, const std::string& time);
+    InsulinDeliveryProfile(float basalRate, float carbRatio, float correctionFactor, float targetGlucose, const QTime& time);
 
     //print function
     void print() const;
@@ -16,21 +17,21 @@ class InsulinDeliveryProfile
     float getCarbRatio() const;
     float getCorrectionFactor() const;
     float getTargetGlucose() const;
-    const std::string& getTime() const;
+    const QTime& getTime() const;
 
     //setters
     void setBasalRate(float b);
     void setCarbRatio(float c);
     void setCorrectionFactor(float cf);
     void setTargetGlucose(float g);
-    void setTime(const std::string& t);
+    void setTime(const QTime& t);
 
 private:
     float basalRate;
     float carbRatio;
     float correctionFactor;
     float targetGlucose;
-    std::string time;
+    QTime time;
 };
 
 #endif // INSULINDELIVERYPROFILE_H

@@ -18,7 +18,9 @@ SOURCES += \
     insulindeliveryprofile.cpp \
     main.cpp \
     mainwindow.cpp \
-    profile.cpp
+    profile.cpp \
+    profileformwidget.cpp \
+    profilespagewidget.cpp
 
 HEADERS += \
     boluscalculator.h \
@@ -28,7 +30,9 @@ HEADERS += \
     eventhistory.h \
     insulindeliveryprofile.h \
     mainwindow.h \
-    profile.h
+    profile.h \
+    profileformwidget.h \
+    profilespagewidget.h
 
 FORMS += \
     mainwindow.ui

@@ -2,6 +2,7 @@
 
 EventHistory::EventHistory(){
     numEvents = 0;
+    //createEvents();
 }
 
 EventHistory::~EventHistory(){
@@ -18,30 +19,72 @@ void EventHistory::addEvent(Event* e){
     numEvents++;
 }
 
-std::vector<Event*> EventHistory::lastTenEvents(){
+std::vector<Event*> EventHistory::recentEvents(QString filter){
     std::vector<Event*> result;
 
-    //start copying elements from most recent to least recent
-    if (numEvents < 10){
-        for (int i = numEvents - 1; i >= 0; i--){
-            result.push_back(eventsList[i]);
-        }
+    //start copying elements from most recent to least recent based on filter
+    if (filter == "CGM"){
+        result = recentCGMEvents();
     }
-    else{
-        for (int i = numEvents - 1; i >= numEvents - 10; i--){
-            result.push_back(eventsList[i]);
-        }
+    else if (filter == "Insulin Delivery"){
+        result = recentInsulinEvents();
+    }
+    else if (filter == "Warnings"){
+        result = recentWarningEvents();
     }
 
     return result;
 }
 
+std::vector<Event*> EventHistory::recentCGMEvents(){
+    std::vector<Event*> filtered;
+    for (int i = numEvents - 1; i >= 0; i--){
+        if (filtered.size() >= RECENT_EVENTS) break;
+        if (dynamic_cast<CGM*>(eventsList[i])){
+            filtered.push_back(eventsList[i]);
+        }
+    }
+    return filtered;
+}
+
+std::vector<Event*> EventHistory::recentInsulinEvents(){
+    std::vector<Event*> filtered;
+    for (int i = numEvents - 1; i >= 0; i--){
+        if (filtered.size() >= RECENT_EVENTS) break;
+        if (dynamic_cast<InsulinDeliveryProfile*>(eventsList[i])){
+            filtered.push_back(eventsList[i]);
+        }
+    }
+    return filtered;
+}
+
+std::vector<Event*> EventHistory::recentWarningEvents(){
+    /*
+     * Warnings class has not been created yet
+    std::vector<Event*> filtered;
+    for (int i = numEvents - 1; i >= 0; i--){
+        if (filtered.size() >= RECENT_EVENTS) break;
+        if (dynamic_cast<Warnings*>(eventsList[i])){
+            filtered.push_back(eventsList[i]);
+        }
+    }
+    return filtered;
+    */
+}
+
 /*
+ * Test function
 void EventHistory::createEvents(){
-    for (int i = 0; i < 10; i++){
-        addEvent(new Event(i));
+    std::string eventNames[5] = {"NRG", "SEN", "MIBR", "G2", "KRU"};
+    std::string ratings[5] = {"FNS", "N4RRATE", "ASPAS", "JAWGEMO", "SHYY"};
+    int randomNum;
+    std::srand(std::time(nullptr));
+    for (int i = 0; i < 1000; i++){
+        randomNum = rand() % 5;
+        addEvent(new Event(i+1, eventNames[randomNum], ratings[randomNum]));
     }
 }
 */
+
 
 

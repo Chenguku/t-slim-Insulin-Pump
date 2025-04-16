@@ -11,17 +11,21 @@
 #include <QTime>
 #include <iostream>
 #include <vector>
+#include <string>
 
 QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
+#include <QTableWidget>
+#include <QMessageBox>
 
 #include "boluscalculator.h"
 #include "profile.h"
 #include "cgm.h"
-
 #include "profile.h"
 #include "eventhistory.h"
+#include "profileformwidget.h"
+#include "profilespagewidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,7 +39,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    //void displayList(); test function
+    //void displayList();
     //getters
     Profile* getCurProfile() const;
 
@@ -58,16 +62,19 @@ private:
     QDateTime           displayTime;
     int                 insulinOnBoard;
     int                 simulationTime;
-    BolusCalculator*    bolusCalc;
+    BolusCalculator     *bolusCalc;
     int                 passcode;
     EventHistory        events;
-    Profile*            curProfile;
+    Profile             *curProfile;
+    ProfilesPageWidget  *profilesPageWidget;
+    ProfileFormWidget   *profileFormWidget;
+    std::vector<Event*> recentEvents;
 
 
 private slots:
     void openPowerScreen();
     void openHome();
-    void openBolus();
+    void openBolus(bool pullFlag);
     void openOptions();
     void openCarbs();
     void openCGM();
@@ -75,12 +82,20 @@ private slots:
     void chargePump();
     void stopCharging();
     void openMyPump();
-    void openPersonalProfiles();
     void openGlucose();
     void simulateBackground();
     void updateBattery();
     void updateTime();
+    void openViewCalculation();
+    void openExtendedBolus();
     void updateCGM();
+    void openHistoryOptions();
+    void openHistoryDisplay(QString);
+
+    // profile pages
+    void openPersonalProfiles();
+    void openCreateProfile();
+    void onCreateProfile();
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);
@@ -89,6 +104,7 @@ private slots:
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
     void pullBloodGlucose();
+    void writeCalculations(QTextEdit&);
 
     //slots for the pin lockscreen
     void submitPasscode();
@@ -103,5 +119,8 @@ private slots:
     void lsButtonEight();
     void lsButtonNine();
     void lsButtonZero();
+
+    //slots for the history page
+    void displaySelectedItem();
 };
 #endif // MAINWINDOW_H

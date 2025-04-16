@@ -42,8 +42,10 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | BolusCalculator | Daniel Yang                          |
 | CGM             | Daniel Yang, Jason Li                |
 | MainWindow      | Stanley Huang, Jason Li, Daniel Yang, Methira Herath |
-| Profile         | Methira Herath, Daniel Yang          |
-| InsulinDeliveryProfile | Methira Herath |
+| Profile         | Methira Herath |
+| InsulinDeliveryProfile | Methira Herath, Daniel Yang |
 | Event | Stanley Huang |
 | EventHistory | Stanley Huang | 
 | GlucoseReader_Mock | Jason Li |
+| ProfileFormWidget | Methira Herath |
+| ProfilesPageWidget | Methira Herath |
