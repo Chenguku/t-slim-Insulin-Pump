@@ -167,10 +167,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton_4, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(ui->myPumpButton, SIGNAL(released()), this, SLOT(openMyPump()));
-    connect(ui->backButton_5, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->backButton_5, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
-    connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
+    connect(ui->backButton_6, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
 
@@ -181,9 +181,9 @@ MainWindow::MainWindow(QWidget *parent)
         openBolus(true);
     });
 
-    connect(ui->backButton_9, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->backButton_9, SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->historyButton, SIGNAL(released()), this, SLOT(openHistoryOptions()));
-    connect(ui->backButton_10, SIGNAL(released()), this, SLOT(openHistoryOptions()));
+    connect(ui->backButton_10, SIGNAL(released()), this, SLOT(previousPage()));
     //add something to determine which one was pressed
     connect(ui->CGMReadingsButton, &QPushButton::released, this, [this](){
         openHistoryDisplay("CGM");
@@ -393,14 +393,17 @@ void MainWindow::openOptions(){
 }
 
 void MainWindow::openMyPump(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(8);
 }
 
 void MainWindow::openHistoryOptions(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(9);
 }
 
 void MainWindow::openPersonalProfiles(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(10);
 }
 
@@ -536,7 +539,7 @@ void MainWindow::simulateBackground(){
 
 void MainWindow::updateBattery(){
     if(currentBattery == 0){
-        ui->stackedWidget->setCurrentIndex(0);
+        openPowerScreen();
         ui->homeButton->setEnabled(false);
         ui->CGMHomeButton->setEnabled(false);
         return;
