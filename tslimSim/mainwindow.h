@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 #include <QtCharts/QChart>
 #include <QVBoxLayout>
 #include <QTimer>
@@ -15,6 +16,7 @@ QT_CHARTS_USE_NAMESPACE
 
 #include <QMainWindow>
 #include <QTableWidget>
+#include <QMessageBox>
 
 #include "boluscalculator.h"
 #include "profile.h"
@@ -48,7 +50,11 @@ private:
     QLineSeries         *cgmLine;
     QChart              *cgmChart;
     QChartView          *cgmView;
+    QValueAxis          *xAxis;
+    QValueAxis          *yAxis;
+    int                 graphRange;
     CGM                 cgm;
+    bool                cgmConnected;
     QTimer              *powerOnTimer;
     QTimer              *simulationTimer;
     int                 currentBattery;
@@ -65,7 +71,7 @@ private:
 private slots:
     void openPowerScreen();
     void openHome();
-    void openBolus();
+    void openBolus(bool pullFlag);
     void openOptions();
     void openCarbs();
     void openCGM();
@@ -77,6 +83,9 @@ private slots:
     void simulateBackground();
     void updateBattery();
     void updateTime();
+    void openViewCalculation();
+    void openExtendedBolus();
+    void updateCGM();
 
     // profile pages
     void openPersonalProfiles();
@@ -90,6 +99,7 @@ private slots:
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
     void pullBloodGlucose();
+    void writeCalculations(QTextEdit&);
 
     //slots for the pin lockscreen
     void submitPasscode();
