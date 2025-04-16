@@ -93,9 +93,6 @@ MainWindow::MainWindow(QWidget *parent)
     layout->addWidget(cgmView);
 
 
-    //pull glucose from cgm
-    pullBloodGlucose();
-
     /*
      * Connecting slots to change pages
      * Page Indices
@@ -115,11 +112,16 @@ MainWindow::MainWindow(QWidget *parent)
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
-    connect(ui->homeBolus, SIGNAL(released()), this, SLOT(openBolus()));
+
+    connect(ui->homeBolus, &QPushButton::released, this, [this]() {
+        openBolus(true);
+    });
     connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
     
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
-    connect(ui->backButton_2, SIGNAL(released()), this, SLOT(openBolus()));
+    connect(ui->backButton_2, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
     connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->CGMHomeButton, SIGNAL(released()), this, SLOT(openCGM()));
     connect(ui->optionsButton_2, SIGNAL(released()), this, SLOT(openOptions()));
@@ -130,8 +132,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(stopCharging()));
 
     connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
-    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(openBolus()));
-    
+    connect(ui->backButton_3, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
     connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
     connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openHome()));
 
@@ -142,8 +145,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
 
     connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
-    connect(ui->pushButton_2, SIGNAL(released()), this, SLOT(openBolus()));
 
+    connect(ui->pushButton_2, &QPushButton::released, this, [this]() {
+        openBolus(true);
+    });
 
     //connnecting number carb buttons (by looping through and connecting each button, 0-9)
     for (int i = 0; i <= 9; ++i) {
@@ -230,8 +235,9 @@ MainWindow::MainWindow(QWidget *parent)
         //then set the text for the bolus units
         ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
-    connect(ui->checkButton_2, SIGNAL(released()), this, SLOT(openBolus()));
-
+    connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
 
     connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_3->toPlainText(); //this lambda will set the blood glucose level in the bolus calculator
@@ -245,20 +251,23 @@ MainWindow::MainWindow(QWidget *parent)
         //then set the text for the bolus units
         ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
-    connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(openBolus()));
-
+    connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
 
     //connect the view calculation ui elements
     connect(ui->viewCalcButton, &QPushButton::released, this, [this]() {
         writeCalculations(*ui->viewCalculationTextEdit);
     });
     connect(ui->viewCalcButton, SIGNAL(released()), this, SLOT(openViewCalculation()));
-    connect(ui->backButton_7, SIGNAL(released()), this, SLOT(openBolus()));
-
+    connect(ui->backButton_7, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });
 
     //connect the extended bolus ui elements, and populate default values (percentages and duration)
-    connect(ui->backButton_8, SIGNAL(released()), this, SLOT(openBolus()));
-    bolusCalc->populateDefaultValues();
+    connect(ui->backButton_8, &QPushButton::released, this, [this]() {
+        openBolus(false);
+    });    bolusCalc->populateDefaultValues();
     ui->deliverNowButton->setText(QString("%1\%").arg(bolusCalc->getNow()));
     ui->deliverLaterButton->setText(QString("%1\%").arg(bolusCalc->getLater()));
     ui->durationButton->setText(QString("%1\%").arg(bolusCalc->getDuration()));
@@ -311,9 +320,11 @@ void MainWindow::openCGM(){
     cgmConnected = true;
 }
 
-void MainWindow::openBolus(){
-    //pull glucose from cgm before entering bolus
-    pullBloodGlucose();
+void MainWindow::openBolus(bool pullFlag){
+    if (pullFlag){
+        //pull glucose from cgm before entering bolus
+        pullBloodGlucose();
+    }
     ui->stackedWidget->setCurrentIndex(4);
 }
 void MainWindow::openCarbs(){

@@ -68,7 +68,7 @@ private:
 private slots:
     void openPowerScreen();
     void openHome();
-    void openBolus();
+    void openBolus(bool pullFlag);
     void openOptions();
     void openCarbs();
     void openCGM();
