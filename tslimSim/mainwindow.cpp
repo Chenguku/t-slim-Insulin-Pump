@@ -221,7 +221,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
 
-    //connect the +/- and decimal buttons
+    //connect the +/- and decimal buttonsgetFinalBolus
     connect(ui->plusButton, &QPushButton::released, this, [this]() {
         flipSign(*ui->textEdit_2);
     });
@@ -261,6 +261,7 @@ MainWindow::MainWindow(QWidget *parent)
                 //deliver over extended period
                 std::cout << "Bolus delivery: extended\n";
                 openExtendedBolus();
+                ui->textEdit_4->setText(QString("%1").arg(bolusCalc->getFinalBolus()));
             }
         }
         else { std::cout << "Bolus cancelled by user\n"; }
@@ -312,10 +313,20 @@ MainWindow::MainWindow(QWidget *parent)
     //connect the extended bolus ui elements, and populate default values (percentages and duration)
     connect(ui->backButton_8, &QPushButton::released, this, [this]() {
         openBolus(false);
-    });    bolusCalc->populateDefaultValues();
+    });
+    bolusCalc->populateDefaultValues();
     ui->deliverNowButton->setText(QString("%1\%").arg(bolusCalc->getNow()));
     ui->deliverLaterButton->setText(QString("%1\%").arg(bolusCalc->getLater()));
-    ui->durationButton->setText(QString("%1\%").arg(bolusCalc->getDuration()));
+    ui->durationButton->setText(QString("%1 minutes").arg(bolusCalc->getDuration()));
+    connect(ui->deliverNowButton, &QPushButton::released, this, [this]() {
+        changePercentages(*ui->deliverNowButton);
+    });
+    connect(ui->deliverLaterButton, &QPushButton::released, this, [this]() {
+        changePercentages(*ui->deliverLaterButton);
+    });
+    connect(ui->durationButton, &QPushButton::released, this, [this]() {
+        changeDuration();
+    });
 
 
 
@@ -474,6 +485,77 @@ void MainWindow::writeCalculations(QTextEdit& edit) {
     //edit.append(bolusCalc->logCalculations());
     bolusCalc->logCalculations();
 }
+
+void MainWindow::changePercentages(QPushButton& clickedButton) {
+    bool ok;
+    int percentage = QInputDialog::getInt(this,
+                                          "Set Delivery Percentage",
+                                          "Enter percentage (0-100):",
+                                          50,     //default value
+                                          0,      //min
+                                          100,    //max
+                                          1,      //increment step
+                                          &ok);
+
+    //clicked OK and entered a value.
+    if (ok) {
+        qDebug() << "User entered:" << percentage << "%";
+
+        //modify the percentages depending on which button was clicked
+        if (&clickedButton == ui->deliverNowButton){
+            //set the values in the bolus calculator
+            bolusCalc->setNow(percentage);
+            bolusCalc->setLater(100 - percentage);
+
+            //change the numbers on the buttons
+            ui->deliverNowButton->setText(QString("%1\%").arg(percentage));
+            ui->deliverLaterButton->setText(QString("%1\%").arg(100 - percentage));
+        }
+        else{ //same but reversed
+            bolusCalc->setNow(100 - percentage);
+            bolusCalc->setLater(percentage);
+            ui->deliverNowButton->setText(QString("%1\%").arg(100 - percentage));
+            ui->deliverLaterButton->setText(QString("%1\%").arg(percentage));
+        }
+        qDebug() << "Now: " << bolusCalc->getNow() << "Later: " << bolusCalc->getLater();
+
+
+    }
+    else {
+        //clicked cancel or closed the dialog
+        qDebug() << "User cancelled input";
+    }
+
+}
+
+void MainWindow::changeDuration() {
+    bool ok;
+    int duration = QInputDialog::getInt(this,
+                                          "Set Delivery Percentage",
+                                          "Enter duration in minutes (0-360):",
+                                          120,    //default value
+                                          0,      //min
+                                          360,    //max
+                                          5,      //increment step
+                                          &ok);
+
+    //clicked OK and entered a value.
+    if (ok) {
+        qDebug() << "User entered:" << duration << "%";
+        bolusCalc->setDuration(duration);
+        ui->durationButton->setText(QString("%1 minutes").arg(duration));
+        qDebug() << "Duration: " << bolusCalc->getDuration();
+
+    }
+    else {
+        //clicked cancel or closed the dialog
+        qDebug() << "User cancelled input";
+    }
+}
+
+
+
+
 
 
 //start timer to charge battery

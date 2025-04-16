@@ -13,7 +13,7 @@
 //define default values for extended bolus
 #define DELIVER_NOW 50
 #define DELIVER_LATER 50
-#define DEFAULT_DURATION 2
+#define DEFAULT_DURATION 120
 
 
 class BolusCalculator
@@ -43,6 +43,10 @@ public:
     //setters
     void setCarbValue(float c);
     void setBloodGlucose(float bg);
+    void setIOB(float IOB);
+    void setNow(int now);
+    void setLater(int later);
+    void setDuration(int duration);
 
 
     QString logCalculations() const;
