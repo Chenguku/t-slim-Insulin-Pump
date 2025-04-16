@@ -25,3 +25,20 @@ float GlucoseReader_Sine::readBG_mock(){
     seed++;
     return bg;
 }
+
+GlucoseReader_Random::GlucoseReader_Random(){
+    currentBG = 7;
+}
+
+GlucoseReader_Random::GlucoseReader_Random(float initialBG){
+    currentBG = initialBG;
+}
+
+float GlucoseReader_Random::readBG_mock(){
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dist(-1.5, 1.5);
+    float randomNum = dist(gen);
+    currentBG += randomNum;
+    return currentBG;
+}
+

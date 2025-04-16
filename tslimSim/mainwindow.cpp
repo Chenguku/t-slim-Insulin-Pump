@@ -245,6 +245,7 @@ void MainWindow::displayList(){
 void MainWindow::openPowerScreen(){
     ui->stackedWidget->setCurrentIndex(1);
     simulationTimer->stop();
+    cgmConnected = false;
 }
 
 void MainWindow::openHome(){
@@ -384,7 +385,6 @@ void MainWindow::simulateBackground(){
         updateCGM();
     }
     updateTime();
-    std::cout << cgm.readBG_mock() << std::endl;
 
     simulationTime++;
 }

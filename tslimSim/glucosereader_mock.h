@@ -1,6 +1,7 @@
 #ifndef GLUCOSEREADER_MOCK_H
 #define GLUCOSEREADER_MOCK_H
 #include <cmath>
+#include <random>
 
 class GlucoseReader_Mock
 {
@@ -22,6 +23,14 @@ public:
    float readBG_mock() override;
 };
 
-
+class GlucoseReader_Random : public GlucoseReader_Mock
+{
+    float currentBG;
+    std::random_device rd;
+public:
+    GlucoseReader_Random();
+    GlucoseReader_Random(float initialBG);
+    float readBG_mock() override;
+};
 
 #endif // GLUCOSEREADER_MOCK_H
