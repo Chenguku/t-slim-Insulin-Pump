@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , displayTime(QDate(2024, 11, 14), QTime(0, 0, 0)) //initialize time that is displayed to the user
-    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5,""), 5, 0, 0, 0)) //initiate the bolus calculator with default values
+    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 5, 0, 0, 0)) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 

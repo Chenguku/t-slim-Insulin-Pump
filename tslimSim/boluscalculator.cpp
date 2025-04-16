@@ -1,5 +1,5 @@
 #include "boluscalculator.h"
-
+#include <iostream>
 BolusCalculator::BolusCalculator(float c, float bg, InsulinDeliveryProfile* profile, float iob, int now, int later, int duration):
     carbValue(c),
     bloodGlucose(bg),
