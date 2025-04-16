@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //set initial page
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(10);
 
     //setup timer for powering on the insulin pump
     powerOnTimer = new QTimer(this);
@@ -132,9 +132,10 @@ MainWindow::MainWindow(QWidget *parent)
      * 7: Options Page
      * 8: My Pump Page
      * 9: Personal Profiles Page
-     * 10: History Page
-     * 11: View Calculations Page
-     * 12: Extended Bolus Page
+     * 10: Create Profilles Page
+     * 11: History Page
+     * 12: View Calculations Page
+     * 13: Extended Bolus Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
