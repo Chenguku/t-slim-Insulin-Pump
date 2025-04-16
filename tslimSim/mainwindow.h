@@ -9,6 +9,7 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QTime>
+#include <QStack>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -69,6 +70,7 @@ private:
     ProfilesPageWidget  *profilesPageWidget;
     ProfileFormWidget   *profileFormWidget;
     std::vector<Event*> recentEvents;
+    QStack<int>         pageHistory;
 
 
 private slots:
@@ -83,9 +85,13 @@ private slots:
     void stopCharging();
     void openMyPump();
     void openGlucose();
+    void previousPage();
+
+    //for simulation time tasks
     void simulateBackground();
     void updateBattery();
     void updateTime();
+
     void openViewCalculation();
     void openExtendedBolus();
     void updateCGM();

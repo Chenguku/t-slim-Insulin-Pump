@@ -144,7 +144,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->homeBolus, &QPushButton::released, this, [this]() {
         openBolus(true);
     });
-    connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
+    connect(ui->backButton, SIGNAL(released()), this, SLOT(previousPage()));
     
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
     connect(ui->backButton_2, &QPushButton::released, this, [this]() {
@@ -164,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent)
         openBolus(false);
     });
     connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
-    connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openHome()));
+    connect(ui->backButton_4, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(ui->myPumpButton, SIGNAL(released()), this, SLOT(openMyPump()));
     connect(ui->backButton_5, SIGNAL(released()), this, SLOT(openOptions()));
@@ -349,18 +349,21 @@ void MainWindow::displayList(){
 */
 
 void MainWindow::openPowerScreen(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(1);
     simulationTimer->stop();
     cgmConnected = false;
 }
 
 void MainWindow::openHome(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(2);
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
     }
 }
 void MainWindow::openCGM(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(3);
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
@@ -373,6 +376,7 @@ void MainWindow::openBolus(bool pullFlag){
         //pull glucose from cgm before entering bolus
         pullBloodGlucose();
     }
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(4);
 }
 void MainWindow::openCarbs(){
@@ -384,6 +388,7 @@ void MainWindow::openGlucose(){
 }
 
 void MainWindow::openOptions(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(7);
 }
 
@@ -413,6 +418,11 @@ void MainWindow::openViewCalculation(){
 
 void MainWindow::openExtendedBolus(){
     ui->stackedWidget->setCurrentIndex(14);
+}
+
+void MainWindow::previousPage(){
+    int previousPage = pageHistory.pop();
+    ui->stackedWidget->setCurrentIndex(previousPage);
 }
 
 void MainWindow::inputNumber(int num, QTextEdit& edit){
