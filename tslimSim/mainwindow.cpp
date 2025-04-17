@@ -147,9 +147,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton, SIGNAL(released()), this, SLOT(previousPage()));
     
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
-    connect(ui->backButton_2, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->backButton_2,SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->CGMHomeButton, SIGNAL(released()), this, SLOT(openCGM()));
     connect(ui->optionsButton_2, SIGNAL(released()), this, SLOT(openOptions()));
@@ -160,9 +158,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(stopCharging()));
 
     connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
-    connect(ui->backButton_3, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
     connect(ui->backButton_4, SIGNAL(released()), this, SLOT(previousPage()));
 
@@ -280,9 +276,7 @@ MainWindow::MainWindow(QWidget *parent)
         //then set the text for the bolus units
         ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
-    connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->checkButton_2, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_3->toPlainText(); //this lambda will set the blood glucose level in the bolus calculator
@@ -296,23 +290,18 @@ MainWindow::MainWindow(QWidget *parent)
         //then set the text for the bolus units
         ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
-    connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(previousPage()));
 
     //connect the view calculation ui elements
     connect(ui->viewCalcButton, &QPushButton::released, this, [this]() {
         writeCalculations(*ui->viewCalculationTextEdit);
     });
     connect(ui->viewCalcButton, SIGNAL(released()), this, SLOT(openViewCalculation()));
-    connect(ui->backButton_7, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->backButton_7, SIGNAL(released()), this, SLOT(previousPage()));
 
     //connect the extended bolus ui elements, and populate default values (percentages and duration)
-    connect(ui->backButton_8, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });    bolusCalc->populateDefaultValues();
+    connect(ui->backButton_8, SIGNAL(released()), this, SLOT(previousPage()));
+    bolusCalc->populateDefaultValues();
     ui->deliverNowButton->setText(QString("%1\%").arg(bolusCalc->getNow()));
     ui->deliverLaterButton->setText(QString("%1\%").arg(bolusCalc->getLater()));
     ui->durationButton->setText(QString("%1\%").arg(bolusCalc->getDuration()));
@@ -359,7 +348,7 @@ void MainWindow::openHome(){
     pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(2);
     if(!simulationTimer->isActive()){
-        simulationTimer->start(1000);
+        simulationTimer->start(10);
     }
 }
 void MainWindow::openCGM(){
@@ -380,10 +369,12 @@ void MainWindow::openBolus(bool pullFlag){
     ui->stackedWidget->setCurrentIndex(4);
 }
 void MainWindow::openCarbs(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(5);
 }
 
 void MainWindow::openGlucose(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(6);
 }
 
@@ -408,18 +399,22 @@ void MainWindow::openPersonalProfiles(){
 }
 
 void MainWindow::openCreateProfile(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(11);
 }
 
 void MainWindow::openHistoryDisplay(QString filter){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(12);
 }
 
 void MainWindow::openViewCalculation(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(13);
 }
 
 void MainWindow::openExtendedBolus(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(14);
 }
 

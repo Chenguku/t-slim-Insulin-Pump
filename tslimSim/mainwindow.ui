@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>10</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="pinLockScreen">
      <widget class="QLabel" name="lockScreenLabel">
@@ -348,6 +348,9 @@
         <width>121</width>
         <height>41</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="value">
        <number>24</number>
