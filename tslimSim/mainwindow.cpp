@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , displayTime(QDate(2024, 11, 14), QTime(0, 0, 0)) //initialize time that is displayed to the user
-    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 5, 0, 0, 0)) //initiate the bolus calculator with default values
+    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 5, 0, 0, QTime(0,0))) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -135,8 +135,7 @@ MainWindow::MainWindow(QWidget *parent)
      * 10: Personal Profiles Page
      * 11: Create Profilles Page
      * 12: History Page
-     * 13: View Calculations Page
-     * 14: Extended Bolus Page
+     * 13: Extended Bolus Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
@@ -303,13 +302,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     //connect the view calculation ui elements
     connect(ui->viewCalcButton, &QPushButton::released, this, [this]() {
-        writeCalculations(*ui->viewCalculationTextEdit);
+        displayCalculations();
     });
-    connect(ui->viewCalcButton, SIGNAL(released()), this, SLOT(openViewCalculation()));
-    connect(ui->backButton_7, &QPushButton::released, this, [this]() {
-        openBolus(false);
+    connect(ui->viewCalcButton_2, &QPushButton::released, this, [this]() {
+        displayCalculations();
     });
-
     //connect the extended bolus ui elements, and populate default values (percentages and duration)
     connect(ui->backButton_8, &QPushButton::released, this, [this]() {
         openBolus(false);
@@ -317,7 +314,7 @@ MainWindow::MainWindow(QWidget *parent)
     bolusCalc->populateDefaultValues();
     ui->deliverNowButton->setText(QString("%1\%").arg(bolusCalc->getNow()));
     ui->deliverLaterButton->setText(QString("%1\%").arg(bolusCalc->getLater()));
-    ui->durationButton->setText(QString("%1 minutes").arg(bolusCalc->getDuration()));
+    ui->durationButton->setText(QString("%1h %2m").arg(bolusCalc->getDuration().hour()).arg(bolusCalc->getDuration().minute())); //format time in Xh Ym format
     connect(ui->deliverNowButton, &QPushButton::released, this, [this]() {
         changePercentages(*ui->deliverNowButton);
     });
@@ -417,12 +414,8 @@ void MainWindow::openHistoryDisplay(QString filter){
     ui->stackedWidget->setCurrentIndex(12);
 }
 
-void MainWindow::openViewCalculation(){
-    ui->stackedWidget->setCurrentIndex(13);
-}
-
 void MainWindow::openExtendedBolus(){
-    ui->stackedWidget->setCurrentIndex(14);
+    ui->stackedWidget->setCurrentIndex(13);
 }
 
 void MainWindow::inputNumber(int num, QTextEdit& edit){
@@ -479,11 +472,11 @@ void MainWindow::pullBloodGlucose() {
     std::cout << "Pulled BG: " << bolusCalc->getBloodGlucose() << std::endl;
 }
 
-void MainWindow::writeCalculations(QTextEdit& edit) {
-    edit.setText(""); //reset the text
-    //write calculations in boluscalculator class (do it tmr moment)
-    //edit.append(bolusCalc->logCalculations());
-    bolusCalc->logCalculations();
+void MainWindow::displayCalculations() {
+    QString logMessage = bolusCalc->logCalculations();
+
+    //display the message in a popup
+    QMessageBox::information(this, "View Calculations", logMessage);
 }
 
 void MainWindow::changePercentages(QPushButton& clickedButton) {
@@ -542,8 +535,20 @@ void MainWindow::changeDuration() {
     //clicked OK and entered a value.
     if (ok) {
         qDebug() << "User entered:" << duration << "%";
-        bolusCalc->setDuration(duration);
-        ui->durationButton->setText(QString("%1 minutes").arg(duration));
+        QTime qDuration = QTime(0, 0).addSecs(duration * 60); //convert the minutes to a time
+        bolusCalc->setDuration(qDuration);
+
+        int hours = qDuration.hour();
+        int minutes = qDuration.minute();
+
+        QString durationStr;
+        if (hours > 0)
+            durationStr += QString::number(hours) + "h ";
+        if (minutes > 0 || hours == 0) //only show minutes if hours is 0
+            durationStr += QString::number(minutes) + "m";
+
+        ui->durationButton->setText(durationStr);
+
         qDebug() << "Duration: " << bolusCalc->getDuration();
 
     }
