@@ -62,7 +62,7 @@ private:
     QTimer              *simulationTimer;
     int                 currentBattery;
     QDateTime           displayTime;
-    int                 insulinOnBoard;
+    float               insulinOnBoard;
     int                 simulationTime;
     BolusCalculator     *bolusCalc;
     int                 passcode;

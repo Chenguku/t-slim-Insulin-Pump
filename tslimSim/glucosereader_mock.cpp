@@ -16,7 +16,8 @@ void GlucoseReader_Mock::addEffect(const GlucoseEffect &effect){
     effects.push_back(effect);
 }
 
-void GlucoseReader_Mock::applyEffects(){
+float GlucoseReader_Mock::applyEffects(){
+    float insulinDelivered = 0;
     for(auto it = effects.begin(); it != effects.end();){
         currentBG += it->changePerTick;
         it->duration--;
@@ -28,6 +29,7 @@ void GlucoseReader_Mock::applyEffects(){
             it++;
         }
     }
+    return insulinDelivered;
 }
 
 GlucoseReader_Sine::GlucoseReader_Sine()

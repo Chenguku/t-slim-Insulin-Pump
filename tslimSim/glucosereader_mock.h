@@ -17,7 +17,7 @@ public:
     GlucoseReader_Mock();
     float getBG();
     void addEffect(const GlucoseEffect& effect);
-    void applyEffects();
+    float applyEffects();
     virtual ~GlucoseReader_Mock() = 0;
     virtual float readBG_mock() = 0;
 };
