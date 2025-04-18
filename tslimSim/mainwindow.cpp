@@ -589,6 +589,7 @@ void MainWindow::increaseBattery(){
 }
 
 void MainWindow::createLowBatteryEvent(){
+    QMessageBox::information(this, "Low Battery", "Your Device is Low on Battery", QMessageBox::Ok);
     events.addEvent(new AlertEvent(simulationTime, "Low Battery"));
 }
 
