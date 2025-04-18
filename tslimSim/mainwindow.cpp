@@ -345,19 +345,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
 
     connect(ui->timeList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displaySelectedItem()));
-    //displayList();
 }
-
-//change function name, and everytime you open the history page, it should update recentEvents
-/*
- * TEST CODE FOR INFORMATION HISTORY
-void MainWindow::displayList(){
-    recentEvents = events.recentEvents();
-    for (std::size_t i = 0; i < recentEvents.size(); i++){
-        ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
-    }
-}
-*/
 
 void MainWindow::openPowerScreen(){
     ui->stackedWidget->setCurrentIndex(1);
@@ -367,7 +355,7 @@ void MainWindow::openPowerScreen(){
 void MainWindow::openHome(){
     ui->stackedWidget->setCurrentIndex(2);
     if(!simulationTimer->isActive()){
-        simulationTimer->start(1000);
+        simulationTimer->start(10);
     }
 }
 void MainWindow::openCGM(){
@@ -414,6 +402,14 @@ void MainWindow::openCreateProfile(){
 }
 
 void MainWindow::openHistoryDisplay(QString filter){
+    ui->timeList->clear();
+    ui->eventDisplay->clear();
+    ui->informationDisplay->clear();
+    recentEvents = events.recentEvents(filter);
+    for (std::size_t i = 0; i < recentEvents.size(); i++){
+        ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
+    }
+    historyEvent = filter;
     ui->stackedWidget->setCurrentIndex(12);
 }
 
@@ -592,10 +588,17 @@ void MainWindow::increaseBattery(){
     }
 }
 
+void MainWindow::createLowBatteryEvent(){
+    events.addEvent(new AlertEvent(simulationTime, "Low Battery"));
+}
+
 //triggered every second after simulation is loaded. calls handlers for background tasks
 void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
         updateBattery();
+        if (currentBattery == 10){
+            createLowBatteryEvent();
+        }
     }
     if(cgmConnected){
         updateCGM();
@@ -608,7 +611,7 @@ void MainWindow::simulateBackground(){
 
 void MainWindow::updateBattery(){
     if(currentBattery == 0){
-        ui->stackedWidget->setCurrentIndex(0);
+        //ui->stackedWidget->setCurrentIndex(1);
         ui->homeButton->setEnabled(false);
         ui->CGMHomeButton->setEnabled(false);
         return;
@@ -723,18 +726,10 @@ void MainWindow::onCreateProfile() {
 //pump information and history
 void MainWindow::displaySelectedItem(){
     int currentIndex = ui->timeList->currentRow();
-
-    /*
-     * These don't currently work
-    //eInfo should be polymorphic
-    std::string eName = recentEvents[currentIndex]->getEventName();
-    std::string eInfo = recentEvents[currentIndex]->getInformation();
-
-    ui->textBrowser->clear();
-    ui->textBrowser_2->clear();
-    ui->textBrowser->append(QString::fromStdString(eName));
-    ui->textBrowser_2->append(QString::fromStdString(eInfo));
-    */
+    ui->eventDisplay->clear();
+    ui->informationDisplay->clear();
+    ui->eventDisplay->append(historyEvent);
+    ui->informationDisplay->append(recentEvents[currentIndex]->getInformation());
 }
 
 

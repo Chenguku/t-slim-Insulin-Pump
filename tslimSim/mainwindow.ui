@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>9</number>
+     <number>12</number>
     </property>
     <widget class="QWidget" name="pinLockScreen">
      <widget class="QLabel" name="lockScreenLabel">
@@ -1822,7 +1822,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QTextBrowser" name="textBrowser">
+     <widget class="QTextBrowser" name="eventDisplay">
       <property name="geometry">
        <rect>
         <x>250</x>
@@ -1832,7 +1832,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QTextBrowser" name="textBrowser_2">
+     <widget class="QTextBrowser" name="informationDisplay">
       <property name="geometry">
        <rect>
         <x>520</x>

@@ -43,7 +43,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    //void displayList();
+    void createLowBatteryEvent();
+
     //getters
     Profile* getCurProfile() const;
 
@@ -73,6 +74,7 @@ private:
     ProfilesPageWidget  *profilesPageWidget;
     ProfileFormWidget   *profileFormWidget;
     std::vector<Event*> recentEvents;
+    QString             historyEvent; //this is for history viewing, to simplify the code
 
 
 private slots:
