@@ -615,7 +615,7 @@ void MainWindow::updateBattery(){
         ui->CGMHomeButton->setEnabled(false);
         return;
     }
-    if (currentBattery == 10){
+    if (currentBattery == 25){
         createLowBatteryEvent();
     }
     currentBattery--;
