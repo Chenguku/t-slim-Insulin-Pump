@@ -1,7 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include <string>
+#include <QString>
 
 class Event{
     public:
@@ -16,8 +16,8 @@ class Event{
         //make event an abstract class, events will implement these functions
         //depending on implementation, you might be able to remove log
         //virtual void log() = 0;
-        //getInformation() is currently void, but will most likely return a string in the final version
-        virtual void getInformation() = 0;
+        //is currently void, but will most likely return a string in the final version
+        virtual QString getInformation() = 0;
 
         //getters
         int getEventTime() const;

@@ -40,7 +40,7 @@ std::vector<Event*> EventHistory::recentCGMEvents(){
     std::vector<Event*> filtered;
     for (int i = numEvents - 1; i >= 0; i--){
         if (filtered.size() >= RECENT_EVENTS) break;
-        if (dynamic_cast<CGM*>(eventsList[i])){
+        if (dynamic_cast<CGMEvent*>(eventsList[i])){
             filtered.push_back(eventsList[i]);
         }
     }
@@ -51,7 +51,7 @@ std::vector<Event*> EventHistory::recentInsulinEvents(){
     std::vector<Event*> filtered;
     for (int i = numEvents - 1; i >= 0; i--){
         if (filtered.size() >= RECENT_EVENTS) break;
-        if (dynamic_cast<InsulinDeliveryProfile*>(eventsList[i])){
+        if (dynamic_cast<InsulinDeliveryEvent*>(eventsList[i])){
             filtered.push_back(eventsList[i]);
         }
     }
@@ -59,17 +59,15 @@ std::vector<Event*> EventHistory::recentInsulinEvents(){
 }
 
 std::vector<Event*> EventHistory::recentWarningEvents(){
-    /*
-     * Warnings class has not been created yet
+    //Warnings class has not been created yet
     std::vector<Event*> filtered;
     for (int i = numEvents - 1; i >= 0; i--){
         if (filtered.size() >= RECENT_EVENTS) break;
-        if (dynamic_cast<Warnings*>(eventsList[i])){
+        if (dynamic_cast<AlertEvent*>(eventsList[i])){
             filtered.push_back(eventsList[i]);
         }
     }
     return filtered;
-    */
 }
 
 /*

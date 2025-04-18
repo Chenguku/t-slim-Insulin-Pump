@@ -7,8 +7,9 @@
 #include <string>
 #include <ctime>
 #include "event.h"
-#include "cgm.h"
-#include "insulindeliveryprofile.h"
+#include "alertevent.h"
+#include "cgmevent.h"
+#include "insulindeliveryevent.h"
 
 #define RECENT_EVENTS   90
 

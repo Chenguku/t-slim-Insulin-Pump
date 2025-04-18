@@ -27,6 +27,9 @@ QT_CHARTS_USE_NAMESPACE
 #include "eventhistory.h"
 #include "profileformwidget.h"
 #include "profilespagewidget.h"
+#include "alertevent.h"
+#include "cgmevent.h"
+#include "insulindeliveryevent.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
