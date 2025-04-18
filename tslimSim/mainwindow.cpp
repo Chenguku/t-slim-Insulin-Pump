@@ -30,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
     //passcode setup
     passcode = 1234;
 
+    BGLow = false;
+    BGHigh = false;
+
     //CGM Graph setup
     cgmLine = new QLineSeries();
     QPen dottedLine(Qt::black);
@@ -355,7 +358,7 @@ void MainWindow::openPowerScreen(){
 void MainWindow::openHome(){
     ui->stackedWidget->setCurrentIndex(2);
     if(!simulationTimer->isActive()){
-        simulationTimer->start(10);
+        simulationTimer->start(1000);
     }
 }
 void MainWindow::openCGM(){
@@ -590,8 +593,37 @@ void MainWindow::increaseBattery(){
 
 void MainWindow::createLowBatteryEvent(){
     //message box creates a message popup to tell the user their device battery is low
-    QMessageBox::information(this, "Low Battery", "Your Device is Low on Battery", QMessageBox::Ok);
+    QMessageBox::warning(this, "Low Battery", "Your Device is Low on Battery", QMessageBox::Ok);
     events.addEvent(new AlertEvent(simulationTime, "Low Battery"));
+}
+
+void MainWindow::checkBGLevels(){
+    if (!BGLow && cgm.getCurrentBG() <= 4.4){
+        BGLow = true;
+        createLowBloodGlucoseEvent();
+    }
+    else if (BGLow && cgm.getCurrentBG() > 4.4){
+        BGLow = false;
+    }
+    else if (!BGHigh && cgm.getCurrentBG() >= 11.4){
+        BGHigh = true;
+        createHighBloodGlucoseEvent();
+    }
+    else if (BGHigh && cgm.getCurrentBG() < 11.4){
+        BGHigh = false;
+    }
+}
+
+void MainWindow::createLowBloodGlucoseEvent(){
+    //message box creates a message popup to tell the user their blood glucose is low
+    QMessageBox::warning(this, "Low Blood Glucose", "Blood Glucose is low", QMessageBox::Ok);
+    events.addEvent(new AlertEvent(simulationTime, "Low Blood Glucose"));
+}
+
+void MainWindow::createHighBloodGlucoseEvent(){
+    //message box creates a message popup to tell the user their blood glucose is high
+    QMessageBox::warning(this, "High Blood Glucose", "Blood Glucose is high", QMessageBox::Ok);
+    events.addEvent(new AlertEvent(simulationTime, "High Blood Glucose"));
 }
 
 //triggered every second after simulation is loaded. calls handlers for background tasks
@@ -601,6 +633,7 @@ void MainWindow::simulateBackground(){
     }
     if(cgmConnected){
         updateCGM();
+        checkBGLevels();
     }
     updateTime();
     std::cout << cgm.readBG_mock() << std::endl;

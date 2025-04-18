@@ -44,6 +44,9 @@ public:
     ~MainWindow();
 
     void createLowBatteryEvent();
+    void checkBGLevels();
+    void createLowBloodGlucoseEvent();
+    void createHighBloodGlucoseEvent();
 
     //getters
     Profile* getCurProfile() const;
@@ -75,6 +78,8 @@ private:
     ProfileFormWidget   *profileFormWidget;
     std::vector<Event*> recentEvents;
     QString             historyEvent; //this is for history viewing, to simplify the code
+    bool                BGLow;
+    bool                BGHigh;
 
 
 private slots:
