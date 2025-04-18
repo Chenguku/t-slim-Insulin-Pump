@@ -87,7 +87,6 @@ private slots:
     void simulateBackground();
     void updateBattery();
     void updateTime();
-    void openViewCalculation();
     void openExtendedBolus();
     void updateCGM();
     void openHistoryOptions();
@@ -105,7 +104,7 @@ private slots:
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
     void pullBloodGlucose();
-    void writeCalculations(QTextEdit&);
+    void displayCalculations();
     void changePercentages(QPushButton&);
     void changeDuration();
 

@@ -1,6 +1,6 @@
 #include "boluscalculator.h"
 #include <iostream>
-BolusCalculator::BolusCalculator(float c, float bg, InsulinDeliveryProfile* profile, float iob, int now, int later, int duration):
+BolusCalculator::BolusCalculator(float c, float bg, InsulinDeliveryProfile* profile, float iob, int now, int later, QTime duration):
     carbValue(c),
     bloodGlucose(bg),
     curProfile(profile),
@@ -18,7 +18,8 @@ InsulinDeliveryProfile* BolusCalculator::getCurProfile() const  { return curProf
 float BolusCalculator::getIOB () const                          { return IOB; }
 int BolusCalculator::getNow() const                             { return deliverNowPercentage; }
 int BolusCalculator::getLater() const                           { return deliverLaterPercentage; }
-int BolusCalculator::getDuration() const                        { return duration; }
+QTime BolusCalculator::getDuration() const                      { return duration; }
+float BolusCalculator::getDurationFloat() const                 { return duration.hour() + duration.minute() / 60.0f; /*get the total time in hours*/ }
 
 float BolusCalculator::getFoodBolus() const                     { return (carbValue / ICR); }
 
@@ -35,25 +36,26 @@ float BolusCalculator::getFinalBolus() const {
 }
 
 float BolusCalculator::getImmediateBolus() const {
-    return getFinalBolus() * 0.6;
+    return getFinalBolus() * (getNow() / 100.0);
 }
 
 float BolusCalculator::getExtendedBolus() const {
-    return getFinalBolus() * 0.4;
+    return getFinalBolus() * (getLater() / 100.0);
 }
 
-float BolusCalculator::getBolusRate(int hours) const {
-    return getExtendedBolus() / hours;
+float BolusCalculator::getBolusRate() const {
+    return getExtendedBolus() / getDurationFloat();
 }
 
 
 //setters
-void BolusCalculator::setCarbValue(float c)         { carbValue = c; }
-void BolusCalculator::setBloodGlucose(float bg)     { bloodGlucose = bg; }
-void BolusCalculator::setIOB(float iob)             { IOB = iob; }
-void BolusCalculator::setNow(int now)               { deliverNowPercentage = now; }
-void BolusCalculator::setLater(int later)           { deliverLaterPercentage = later; }
-void BolusCalculator::setDuration(int dur)          { duration = dur; }
+void BolusCalculator::setCarbValue(float c)                          { carbValue = c; }
+void BolusCalculator::setBloodGlucose(float bg)                      { bloodGlucose = bg; }
+void BolusCalculator::setCurProfile(InsulinDeliveryProfile* profile) { curProfile = profile; }
+void BolusCalculator::setIOB(float iob)                              { IOB = iob; }
+void BolusCalculator::setNow(int now)                                { deliverNowPercentage = now; }
+void BolusCalculator::setLater(int later)                            { deliverLaterPercentage = later; }
+void BolusCalculator::setDuration(const QTime& dur)                  { duration = dur; }
 
 
 
@@ -66,8 +68,9 @@ QString BolusCalculator::logCalculations() const {
     output.append(QString("Correction Bolus = (%1 - %2) / %3 = %4\n").arg(bloodGlucose).arg(curProfile->getTargetGlucose()).arg(CF).arg(this->getCorrectionBolus()));
     output.append(QString("Total Bolus (Before IOB) = %1 + %2 = %3\n").arg(this->getFoodBolus()).arg(this->getCorrectionBolus()).arg(this->getTotalBolus()));
     output.append(QString("Final Bolus (After IOB) = %1 - %2 = %3\n\n").arg(this->getTotalBolus()).arg(this->getIOB()).arg(this->getFinalBolus()));
-    output.append(QString("Immediate Bolus (60%) = 0.6 x %1 = %2\n").arg(this->getFinalBolus()).arg(this->getImmediateBolus()));
-
+    output.append(QString("Immediate Bolus (%1\%) = %2 x %3 = %4\n").arg(this->getNow()).arg(this->getFinalBolus()).arg(this->getNow() / 100.0).arg(this->getImmediateBolus()));
+    output.append(QString("Extended Bolus (%1\%) = %2 x %3 = %4\n").arg(this->getLater()).arg(this->getFinalBolus()).arg(this->getLater() / 100.0).arg(this->getExtendedBolus()));
+    output.append(QString("Bolus Per Hour = %1 / %2 = %3\n").arg(this->getExtendedBolus()).arg(this->getDurationFloat()).arg(this->getBolusRate()));
 
 
     std::cout << output.toStdString() << std::endl;
@@ -79,7 +82,7 @@ QString BolusCalculator::logCalculations() const {
 void BolusCalculator::populateDefaultValues(){
     deliverNowPercentage    = DELIVER_NOW;
     deliverLaterPercentage  = DELIVER_LATER;
-    duration                = DEFAULT_DURATION;
+    duration = QTime(0, 0).addSecs(DEFAULT_DURATION * 60);
 }
 
 
