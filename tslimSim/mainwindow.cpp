@@ -598,9 +598,6 @@ void MainWindow::createLowBatteryEvent(){
 void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
         updateBattery();
-        if (currentBattery == 10){
-            createLowBatteryEvent();
-        }
     }
     if(cgmConnected){
         updateCGM();
@@ -617,6 +614,9 @@ void MainWindow::updateBattery(){
         ui->homeButton->setEnabled(false);
         ui->CGMHomeButton->setEnabled(false);
         return;
+    }
+    if (currentBattery == 10){
+        createLowBatteryEvent();
     }
     currentBattery--;
     ui->battery->setValue(currentBattery);
