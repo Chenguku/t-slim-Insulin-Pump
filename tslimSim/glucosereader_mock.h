@@ -3,10 +3,21 @@
 #include <cmath>
 #include <random>
 
+struct GlucoseEffect{
+    float changePerTick;
+    int duration;
+};
+
 class GlucoseReader_Mock
 {
+protected:
+    float currentBG;
+    std::vector<GlucoseEffect> effects;
 public:
     GlucoseReader_Mock();
+    float getBG();
+    void addEffect(const GlucoseEffect& effect);
+    void applyEffects();
     virtual ~GlucoseReader_Mock() = 0;
     virtual float readBG_mock() = 0;
 };
@@ -25,7 +36,6 @@ public:
 
 class GlucoseReader_Random : public GlucoseReader_Mock
 {
-    float currentBG;
     std::random_device rd;
 public:
     GlucoseReader_Random();

@@ -14,7 +14,6 @@ public:
     void setProfile(Profile *p);
     void setBGReader(GlucoseReader_Mock *r);
 
-    void adjustBG(float x);
     float basalDelivery(int insulinOnBoard);
     float readBG_mock();
 

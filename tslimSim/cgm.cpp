@@ -6,9 +6,7 @@ CGM::CGM(float initialBG): currentBloodGlucose(initialBG) {}
 float CGM::getCurrentBG() const    { return currentBloodGlucose; }
 void CGM::setProfile(Profile *p)   { activeProfile = p; }
 void CGM::setBGReader(GlucoseReader_Mock *r) { mock_reader = r; }
-
-void CGM::adjustBG(float x)       { currentBloodGlucose += x; }
-float CGM::readBG_mock()          { return mock_reader->readBG_mock(); }
+float CGM::readBG_mock()          { return mock_reader->getBG(); }
 
 float CGM::basalDelivery(int insulinOnBoard){
     currentBloodGlucose = readBG_mock();
