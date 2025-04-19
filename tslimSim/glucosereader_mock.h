@@ -3,10 +3,10 @@
 #include <cmath>
 #include <random>
 
-struct GlucoseEffect{
+typedef struct GlucoseEffect{
     float changePerTick;
     int duration;
-};
+} GlucoseEffect;
 
 class GlucoseReader_Mock
 {
@@ -17,7 +17,7 @@ public:
     GlucoseReader_Mock();
     float getBG();
     void addEffect(const GlucoseEffect& effect);
-    float applyEffects();
+    float applyEffects(float insulinOnBoard);
     virtual ~GlucoseReader_Mock() = 0;
     virtual float readBG_mock() = 0;
 };

@@ -16,10 +16,14 @@ void GlucoseReader_Mock::addEffect(const GlucoseEffect &effect){
     effects.push_back(effect);
 }
 
-float GlucoseReader_Mock::applyEffects(){
-    float insulinDelivered = 0;
+float GlucoseReader_Mock::applyEffects(float possibleBGReduction){
+    float bgChange = 0;
     for(auto it = effects.begin(); it != effects.end();){
-        currentBG += it->changePerTick;
+        if(bgChange + it->changePerTick > possibleBGReduction){
+            continue;
+        }
+        currentBG -= it->changePerTick;
+        bgChange += it->changePerTick;
         it->duration--;
 
         if(it->duration <= 0){
@@ -29,7 +33,7 @@ float GlucoseReader_Mock::applyEffects(){
             it++;
         }
     }
-    return insulinDelivered;
+    return bgChange;
 }
 
 GlucoseReader_Sine::GlucoseReader_Sine()

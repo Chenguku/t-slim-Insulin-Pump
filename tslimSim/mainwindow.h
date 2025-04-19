@@ -91,8 +91,8 @@ private slots:
     void simulateBackground();
     void updateBattery();
     void updateTime();
-    void openExtendedBolus();
     void updateCGM();
+    void openExtendedBolus();
     void openHistoryOptions();
     void openHistoryDisplay(QString);
 

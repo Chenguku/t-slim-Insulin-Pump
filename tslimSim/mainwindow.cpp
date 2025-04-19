@@ -640,12 +640,16 @@ void MainWindow::updateTime(){
 }
 
 void MainWindow::updateCGM(){
-    cgm.basalDelivery(insulinOnBoard);
+    cgm.setInsulinUnits(insulinOnBoard);
+    float insulinUnitsDelivered = cgm.basalDelivery();
     cgmLine->append(simulationTime, cgm.getCurrentBG());
     if(simulationTime > 36){
         xAxis->setRange(simulationTime - 36, simulationTime);
         cgmLine->removePoints(0, 1);
     }
+    insulinOnBoard -= insulinUnitsDelivered;
+    ui->insulinGauge->setValue(insulinOnBoard);
+    ui->insulinGauge_2->setValue(insulinOnBoard);
 }
 
 // The next few functions are for the pin lock screen
