@@ -12,6 +12,7 @@
 #include <QCheckBox>
 #include <QTimeEdit>
 #include <QDebug>
+#include <memory>
 
 ProfileFormWidget::ProfileFormWidget(QWidget *parent)
     : QWidget(parent)
@@ -138,8 +139,10 @@ Profile* ProfileFormWidget::getProfile() const
         float carbRatio = timeTable->item(i, 3) ? timeTable->item(i, 3)->text().toFloat() : 0.0f;
         float targetGlucose = timeTable->item(i, 4) ? timeTable->item(i, 4)->text().toFloat() : 0.0f;
 
-        InsulinDeliveryProfile idp(basal, carbRatio, correctionFactor, targetGlucose, timeValue);
-        newProfile->addTimeSetting(idp);
+        std::unique_ptr<InsulinDeliveryProfile> idpPtr(
+            new InsulinDeliveryProfile(basal, carbRatio, correctionFactor, targetGlucose, timeValue)
+        );
+        newProfile->addTimeSetting(std::move(idpPtr));
     }
     return newProfile;
 }

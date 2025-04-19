@@ -43,7 +43,7 @@ public:
     //void displayList();
     //getters
     Profile* getCurProfile() const;
-
+    InsulinDeliveryProfile* getActiveTimeSetting() const;
     //setters
     void setPasscode(int);
 
@@ -96,6 +96,8 @@ private slots:
     void openPersonalProfiles();
     void openCreateProfile();
     void onCreateProfile();
+    void onActiveProfileSelect(Profile *p);
+
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);
