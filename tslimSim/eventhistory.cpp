@@ -23,13 +23,13 @@ std::vector<Event*> EventHistory::recentEvents(QString filter){
     std::vector<Event*> result;
 
     //start copying elements from most recent to least recent based on filter
-    if (filter == "CGM"){
+    if (filter == "CGM Reading"){
         result = recentCGMEvents();
     }
     else if (filter == "Insulin Delivery"){
         result = recentInsulinEvents();
     }
-    else if (filter == "Warnings"){
+    else if (filter == "Warning"){
         result = recentWarningEvents();
     }
 

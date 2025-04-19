@@ -43,16 +43,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void createLowBatteryEvent();
-    void checkBGLevels();
-    void createLowBloodGlucoseEvent();
-    void createHighBloodGlucoseEvent();
-
     //getters
     Profile* getCurProfile() const;
-
-    //setters
-    void setPasscode(int);
 
 private:
     Ui::MainWindow      *ui;
@@ -80,6 +72,16 @@ private:
     QString             historyEvent; //this is for history viewing, to simplify the code
     bool                BGLow;
     bool                BGHigh;
+
+    //users should not be able to use these helper functions
+    void createLowBatteryEvent();
+    void checkBGLevels();
+    void createLowBloodGlucoseEvent();
+    void createHighBloodGlucoseEvent();
+    void logCGMReading();
+
+    //setters
+    void setPasscode(int);
 
 
 private slots:

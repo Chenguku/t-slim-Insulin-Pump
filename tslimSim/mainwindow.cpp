@@ -189,13 +189,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->backButton_10, SIGNAL(released()), this, SLOT(openHistoryOptions()));
     //add something to determine which one was pressed
     connect(ui->CGMReadingsButton, &QPushButton::released, this, [this](){
-        openHistoryDisplay("CGM");
+        openHistoryDisplay("CGM Reading");
     });
     connect(ui->InsulinDeliveryButton, &QPushButton::released, this, [this](){
         openHistoryDisplay("Insulin Delivery");
     });
     connect(ui->WarningsButton, &QPushButton::released, this, [this](){
-        openHistoryDisplay("Warnings");
+        openHistoryDisplay("Warning");
     });
 
     //connnecting number carb buttons (by looping through and connecting each button, 0-9)
@@ -626,6 +626,10 @@ void MainWindow::createHighBloodGlucoseEvent(){
     events.addEvent(new AlertEvent(simulationTime, "High Blood Glucose"));
 }
 
+void MainWindow::logCGMReading(){
+    events.addEvent(new CGMEvent(simulationTime, cgm.getCurrentBG()));
+}
+
 //triggered every second after simulation is loaded. calls handlers for background tasks
 void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
@@ -634,6 +638,7 @@ void MainWindow::simulateBackground(){
     if(cgmConnected){
         updateCGM();
         checkBGLevels();
+        logCGMReading();
     }
     updateTime();
     std::cout << cgm.readBG_mock() << std::endl;
