@@ -33,6 +33,7 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | Personal Profile | Methira Herath |
 | Lock Screen | Stanley Huang |
 | Pump Information and History | Stanley Huang |
+| Warnings | Stanley Huang |
 
 
 ## Class Implementation:
@@ -45,6 +46,9 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | Profile         | Methira Herath |
 | InsulinDeliveryProfile | Methira Herath, Daniel Yang |
 | Event | Stanley Huang |
+| AlertEvent | Stanley Huang |
+| CGMEvent | Stanley Huang |
+| InsulinDeliveryEvent | Stanley Huang |
 | EventHistory | Stanley Huang | 
 | GlucoseReader_Mock | Jason Li |
 | ProfileFormWidget | Methira Herath |
