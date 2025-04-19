@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , displayTime(QDate(2024, 11, 14), QTime(0, 0, 0)) //initialize time that is displayed to the user
-    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 5, 0, 0, QTime(0,0))) //initiate the bolus calculator with default values
+    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 0, 0, 0, QTime(0,0))) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -255,12 +255,16 @@ MainWindow::MainWindow(QWidget *parent)
             if (deliveryMethod == QMessageBox::Yes) {
                 //deliver immediately
                 std::cout << "Bolus delivery: immediate\n";
+                cgm.adjustBG(unitsToDeliver);
+                std::cout << cgm.getCurrentBG() << std::endl;
             }
             else {
                 //deliver over extended period
                 std::cout << "Bolus delivery: extended\n";
                 openExtendedBolus();
                 ui->textEdit_4->setText(QString("%1").arg(bolusCalc->getFinalBolus()));
+
+
             }
         }
         else { std::cout << "Bolus cancelled by user\n"; }
@@ -380,6 +384,9 @@ void MainWindow::openBolus(bool pullFlag){
         //pull glucose from cgm before entering bolus
         pullBloodGlucose();
     }
+    //set the current insulin delivery profile when bolus is opened
+    //bolusCalc->setCurProfile(profilesPageWidget->getActiveProfile());
+    bolusCalc->setIOB(insulinOnBoard);
     ui->stackedWidget->setCurrentIndex(4);
 }
 void MainWindow::openCarbs(){
