@@ -5,6 +5,10 @@ GlucoseReader_Mock::GlucoseReader_Mock(){
     currentBG = 6.95;
 }
 
+GlucoseReader_Mock::GlucoseReader_Mock(float initialBG){
+    currentBG = initialBG;
+}
+
 GlucoseReader_Mock::~GlucoseReader_Mock(){}
 
 float GlucoseReader_Mock::getBG(){
@@ -20,7 +24,10 @@ float GlucoseReader_Mock::applyEffects(float possibleBGReduction){
     float bgChange = 0;
     for(auto it = effects.begin(); it != effects.end();){
         if(bgChange + it->changePerTick > possibleBGReduction){
-            continue;
+            currentBG -= possibleBGReduction + bgChange;
+            bgChange = possibleBGReduction;
+            it = effects.erase(it);
+            return bgChange;
         }
         currentBG -= it->changePerTick;
         bgChange += it->changePerTick;
@@ -44,12 +51,23 @@ GlucoseReader_Sine::GlucoseReader_Sine()
     midline = 6.95;
 }
 
+GlucoseReader_Sine::GlucoseReader_Sine(float initialBG): GlucoseReader_Mock(initialBG){}
+
+
 GlucoseReader_Sine::GlucoseReader_Sine(float amp, float per, float mid){
    seed = 0;
    amplitude = amp;
    period = per;
    midline = mid;
 }
+
+GlucoseReader_Sine::GlucoseReader_Sine(float amp, float per, float mid, float initialBG): GlucoseReader_Mock(initialBG) {
+   seed = 0;
+   amplitude = amp;
+   period = per;
+   midline = mid;
+}
+
 
 float GlucoseReader_Sine::readBG_mock(){
     float prevIncrement = amplitude * sin((1 / period) * ((seed - 1) * M_PI / 64)) + midline;
@@ -59,19 +77,36 @@ float GlucoseReader_Sine::readBG_mock(){
     return updatedBG;
 }
 
-GlucoseReader_Random::GlucoseReader_Random(){
-    currentBG = 7;
-}
+GlucoseReader_Random::GlucoseReader_Random(){}
 
-GlucoseReader_Random::GlucoseReader_Random(float initialBG){
-    currentBG = initialBG;
-}
+GlucoseReader_Random::GlucoseReader_Random(float initialBG): GlucoseReader_Mock(initialBG) {}
 
 float GlucoseReader_Random::readBG_mock(){
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dist(-1.5, 1.5);
+    std::uniform_real_distribution<> dist(-1, 1);
     float randomNum = dist(gen);
     float updatedBG = currentBG + randomNum;
+    if(updatedBG < 0){
+        updatedBG = 0;
+    }
     return updatedBG;
 }
 
+GlucoseReader_SineVariance::GlucoseReader_SineVariance(){}
+
+GlucoseReader_SineVariance::GlucoseReader_SineVariance(float amp, float per, float mid, float initialBG): GlucoseReader_Mock(initialBG), GlucoseReader_Sine(amp, per, mid) {}
+
+float GlucoseReader_SineVariance::readBG_mock(){
+    float prevIncrement = amplitude * sin((1 / period) * ((seed - 1) * M_PI / 64)) + midline;
+    float bgIncrement = amplitude * sin((1 / period) * (seed * M_PI / 64)) + midline;
+    seed++;
+    float updatedBG = currentBG + bgIncrement - prevIncrement;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dist(-0.5, 0.5);
+    float randomNum = dist(gen);
+    updatedBG += randomNum;
+    if(updatedBG < 0){
+        updatedBG = 0;
+    }
+    return updatedBG;
+}

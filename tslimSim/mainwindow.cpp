@@ -20,11 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
     simulationTimer = new QTimer(this);
     simulationTime = 0;
 
-    //initialize the battery
+    //initialize the battery and insulin on board
     currentBattery = 0;
+    insulinOnBoard = 300;
 
     //initialize CGM
-    GlucoseReader_Sine *cgmreader = new GlucoseReader_Sine();
+    GlucoseReader_SineVariance *cgmreader = new GlucoseReader_SineVariance();
     cgm = CGM();
     cgm.setBGReader(cgmreader);
     //passcode setup
@@ -115,6 +116,12 @@ MainWindow::MainWindow(QWidget *parent)
     profileFormWidget = new ProfileFormWidget(this);
     ui->ProfileForm->layout()->addWidget(profileFormWidget);
     layout->setAlignment(profileFormWidget, Qt::AlignLeft);
+
+    //set insulin progress bar to reflect 300 unit capacity
+    ui->insulinGauge->setMaximum(300);
+    ui->insulinGauge->setFormat("%v u");
+    ui->insulinGauge_2->setMaximum(300);
+    ui->insulinGauge_2->setFormat("%v u");
 
     //pull glucose from cgm
     pullBloodGlucose();
@@ -357,7 +364,7 @@ void MainWindow::openHome(){
     pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(2);
     if(!simulationTimer->isActive()){
-        simulationTimer->start(10);
+        simulationTimer->start(1000);
     }
 }
 void MainWindow::openCGM(){
@@ -595,7 +602,6 @@ void MainWindow::increaseBattery(){
         ui->battery_2->setValue(currentBattery);
 
         //on the home pages, set the innsulin on board (default 100)
-        insulinOnBoard = 100;
         ui->insulinGauge->setValue(insulinOnBoard);
         ui->insulinGauge_2->setValue(insulinOnBoard);
     }
