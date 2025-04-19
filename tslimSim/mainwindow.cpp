@@ -259,7 +259,7 @@ MainWindow::MainWindow(QWidget *parent)
                 //deliver immediately
                 std::cout << "Bolus delivery: immediate\n";
                 cgm.adjustBG(unitsToDeliver);
-                std::cout << cgm.getCurrentBG() << std::endl;
+                std::cout << "immediate: " << cgm.getCurrentBG() << std::endl;
             }
             else {
                 //deliver over extended period
