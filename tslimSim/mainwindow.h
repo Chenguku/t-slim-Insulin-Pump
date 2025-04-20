@@ -67,6 +67,7 @@ private:
     BolusCalculator     *bolusCalc;
     int                 passcode;
     EventHistory        events;
+    Profile             *curProfile;
     ProfilesPageWidget  *profilesPageWidget;
     ProfileFormWidget   *profileFormWidget;
     std::vector<Event*> recentEvents;

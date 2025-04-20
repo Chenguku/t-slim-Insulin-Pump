@@ -1,11 +1,12 @@
 #include "cgm.h"
 
 CGM::CGM(): currentBloodGlucose(7) {
-    activeProfile = new Profile();
-    InsulinDeliveryProfile profile(0.715, 10, 2.8, 6.5, QTime());
-    activeProfile->addTimeSetting(profile);
+    activeProfile = nullptr;
 }
-CGM::CGM(float initialBG): currentBloodGlucose(initialBG) {}
+
+CGM::CGM(float initialBG): currentBloodGlucose(initialBG) {
+    activeProfile = nullptr;
+}
 
 float CGM::getCurrentBG() const    { return currentBloodGlucose; }
 void CGM::setProfile(Profile *p)   { activeProfile = p; }
@@ -22,16 +23,21 @@ float CGM::predictBG(int ticks){
 float CGM::basalDelivery(){
     previousBloodGlucose = currentBloodGlucose;
     currentBloodGlucose = readBG_mock();
+
+    if(activeProfile == nullptr){
+        return 0;
+    }
+
     float projectedBG = predictBG(6);
 
     float insulinUnitsDelivered = 0; //default below target
 
-    if(projectedBG > activeProfile->getTimeSettings()[0].getTargetGlucose() && insulinUnits > 0){
-        GlucoseEffect e = {(activeProfile->getTimeSettings()[0].getBasalRate() / 12) * activeProfile->getTimeSettings()[0].getCorrectionFactor(), 1};
+    if(projectedBG > activeProfile->getTimeSettings()[0]->getTargetGlucose() && insulinUnits > 0){
+        GlucoseEffect e = {(activeProfile->getTimeSettings()[0]->getBasalRate() / 12) * activeProfile->getTimeSettings()[0]->getCorrectionFactor(), 1};
         addEffect(e);
     }
 
-     insulinUnitsDelivered = mock_reader->applyEffects(insulinUnits * activeProfile->getTimeSettings()[0].getCorrectionFactor());
+     insulinUnitsDelivered = mock_reader->applyEffects(insulinUnits * activeProfile->getTimeSettings()[0]->getCorrectionFactor());
 
     if(insulinUnits < insulinUnitsDelivered){
         insulinUnitsDelivered = insulinUnits;
