@@ -45,7 +45,7 @@ float GlucoseReader_Mock::applyEffects(float possibleBGReduction){
 
 float GlucoseReader_Mock::getIOB(){
     float IOB = 0;
-    for (auto it = effects.begin(); it != effects.end(); ){
+    for (auto it = effects.begin(); it != effects.end(); it++){
         IOB += it->changePerTick * it->duration;
     }
     return IOB;
