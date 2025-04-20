@@ -365,7 +365,6 @@ void MainWindow::openPowerScreen(){
     pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(1);
     simulationTimer->stop();
-    cgmConnected = false;
 }
 
 void MainWindow::openHome(){
@@ -381,7 +380,6 @@ void MainWindow::openCGM(){
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
     }
-    cgmConnected = true;
 }
 
 void MainWindow::openBolus(bool pullFlag){
@@ -629,9 +627,7 @@ void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
         updateBattery();
     }
-    if(cgmConnected){
-        updateCGM();
-    }
+    updateCGM();
     updateTime();
 
     simulationTime++;

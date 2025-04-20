@@ -57,7 +57,6 @@ private:
     QValueAxis          *yAxis;
     int                 graphRange;
     CGM                 cgm;
-    bool                cgmConnected;
     QTimer              *powerOnTimer;
     QTimer              *simulationTimer;
     int                 currentBattery;
