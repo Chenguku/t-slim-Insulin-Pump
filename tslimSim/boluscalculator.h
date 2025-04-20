@@ -30,7 +30,7 @@ public:
     int getNow() const;
     int getLater() const;
     QTime getDuration() const;
-    float getDurationFloat() const;
+    int getDurationMinutes() const;
 
     float getFoodBolus() const;
     float getCorrectionBolus() const;

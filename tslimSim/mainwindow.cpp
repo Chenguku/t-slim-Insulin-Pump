@@ -261,7 +261,6 @@ MainWindow::MainWindow(QWidget *parent)
                 //deliver immediately
                 std::cout << "Bolus delivery: immediate\n";
                 cgm.adjustBG(unitsToDeliver);
-                std::cout << "immediate: " << cgm.getCurrentBG() << std::endl;
                 previousPage();
             }
             else {
@@ -269,9 +268,6 @@ MainWindow::MainWindow(QWidget *parent)
                 std::cout << "Bolus delivery: extended\n";
                 openExtendedBolus();
                 ui->textEdit_4->setText(QString("%1").arg(bolusCalc->getFinalBolus()));
-
-                previousPage();
-                previousPage();
             }
         }
         else { std::cout << "Bolus cancelled by user\n"; }
@@ -306,6 +302,22 @@ MainWindow::MainWindow(QWidget *parent)
         ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
     connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(previousPage()));
+
+
+    //connect extended bolus check button -- this administers the extended bolus
+    connect(ui->checkButton_4, &QPushButton::released, this, [this]() {
+        cgm.adjustBG(bolusCalc->getImmediateBolus()); //deliver the deliver now portion
+
+        //add the effect to cgm -- adjust to 5 minute scale since each tick of sim is 5 min
+        cgm.addEffect((struct GlucoseEffect){bolusCalc->getBolusRate() * 5, bolusCalc->getDurationMinutes() / 5});
+
+        //get out of the bolus menu
+        previousPage();
+        previousPage();
+    });
+
+
+
 
     //connect the view calculation ui elements
     connect(ui->viewCalcButton, &QPushButton::released, this, [this]() {
@@ -666,6 +678,9 @@ void MainWindow::updateCGM(){
     insulinOnBoard = cgm.getIOB();
     ui->insulinGauge->setValue(insulinFill);
     ui->insulinGauge_2->setValue(insulinFill);
+
+    //testing
+    std::cout << cgm.getCurrentBG() << std::endl;
 }
 
 // The next few functions are for the pin lock screen

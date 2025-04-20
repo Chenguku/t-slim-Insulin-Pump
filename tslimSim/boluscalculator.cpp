@@ -19,7 +19,7 @@ float BolusCalculator::getIOB () const                          { return IOB; }
 int BolusCalculator::getNow() const                             { return deliverNowPercentage; }
 int BolusCalculator::getLater() const                           { return deliverLaterPercentage; }
 QTime BolusCalculator::getDuration() const                      { return duration; }
-float BolusCalculator::getDurationFloat() const                 { return duration.hour() + duration.minute() / 60.0f; /*get the total time in hours*/ }
+int BolusCalculator::getDurationMinutes() const                 { return duration.hour() * 60 + duration.minute(); /*get the total time in minutes */ }
 
 float BolusCalculator::getFoodBolus() const                     { return (carbValue / ICR); }
 
@@ -44,7 +44,7 @@ float BolusCalculator::getExtendedBolus() const {
 }
 
 float BolusCalculator::getBolusRate() const {
-    return getExtendedBolus() / getDurationFloat();
+    return getExtendedBolus() / getDurationMinutes();
 }
 
 
@@ -70,7 +70,7 @@ QString BolusCalculator::logCalculations() const {
     output.append(QString("Final Bolus (After IOB) = %1 - %2 = %3\n\n").arg(this->getTotalBolus()).arg(this->getIOB()).arg(this->getFinalBolus()));
     output.append(QString("Immediate Bolus (%1\%) = %2 x %3 = %4\n").arg(this->getNow()).arg(this->getFinalBolus()).arg(this->getNow() / 100.0).arg(this->getImmediateBolus()));
     output.append(QString("Extended Bolus (%1\%) = %2 x %3 = %4\n").arg(this->getLater()).arg(this->getFinalBolus()).arg(this->getLater() / 100.0).arg(this->getExtendedBolus()));
-    output.append(QString("Bolus Per Hour = %1 / %2 = %3\n").arg(this->getExtendedBolus()).arg(this->getDurationFloat()).arg(this->getBolusRate()));
+    output.append(QString("Bolus Per Hour = %1 / %2 = %3\n").arg(this->getExtendedBolus()).arg(this->getDurationMinutes() * 60.0f).arg(this->getBolusRate()));
 
 
     std::cout << output.toStdString() << std::endl;
