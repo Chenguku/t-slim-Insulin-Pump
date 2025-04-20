@@ -103,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->Profiles->setLayout(layout);
     }
     profilesPageWidget = new ProfilesPageWidget(this);
+    connect(profilesPageWidget, &ProfilesPageWidget::activeProfileChanged, this, &MainWindow::onActiveProfileSelect);
     ui->Profiles->layout()->addWidget(profilesPageWidget);
     layout->setAlignment(profilesPageWidget, Qt::AlignLeft);
 
@@ -750,6 +751,13 @@ void MainWindow::onCreateProfile() {
     profilesPageWidget->addProfile(newProfile);
     openPersonalProfiles();
 }
+
+void MainWindow::onActiveProfileSelect(Profile *p) {
+    curProfile = p;
+    cgm.setProfile(p);
+    bolusCalc->setCurProfile(getActiveTimeSetting());
+
+}
 //pump information and history
 void MainWindow::displaySelectedItem(){
     int currentIndex = ui->timeList->currentRow();
@@ -770,7 +778,8 @@ void MainWindow::displaySelectedItem(){
 
 
 //getters
-Profile* MainWindow::getCurProfile() const { return profilesPageWidget->getActiveProfile(); }
+Profile* MainWindow::getCurProfile() const { return curProfile; }
+InsulinDeliveryProfile* MainWindow::getActiveTimeSetting() const { return curProfile->getActiveDeliveryProfile(displayTime); }
 
 //setters
 void MainWindow::setPasscode(int i){
