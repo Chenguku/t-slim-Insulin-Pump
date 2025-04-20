@@ -51,11 +51,21 @@ float GlucoseReader_Mock::getIOB(){
     return IOB;
 }
 
+int GlucoseReader_Mock::getIOBTime(){
+    int iobTime = 0;
+    for (auto it = effects.begin(); it != effects.end(); it++){
+        if(it->duration > 1 && it->duration > iobTime){
+            iobTime = it->duration;
+        }
+    }
+    return iobTime;
+}
+
 GlucoseReader_Sine::GlucoseReader_Sine()
 {
     seed = 0;
-    amplitude = 5;
-    period = 0.5;
+    amplitude = 3;
+    period = 0.25;
     midline = 6.95;
 }
 

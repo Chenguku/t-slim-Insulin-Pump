@@ -20,6 +20,7 @@ public:
     void addEffect(const GlucoseEffect& effect);
     float applyEffects(float insulinOnBoard);
     float getIOB();
+    int getIOBTime();
     virtual ~GlucoseReader_Mock() = 0;
     virtual float readBG_mock() = 0;
 };

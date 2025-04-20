@@ -87,6 +87,7 @@ private slots:
     void openMyPump();
     void openGlucose();
     void previousPage();
+    void switchHomePage();
 
     //for simulation time tasks
     void simulateBackground();

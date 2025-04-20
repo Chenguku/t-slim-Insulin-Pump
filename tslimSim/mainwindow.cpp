@@ -148,6 +148,8 @@ MainWindow::MainWindow(QWidget *parent)
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
+    connect(ui->switchHome, SIGNAL(released()), this, SLOT(switchHomePage()));
+    connect(ui->switchHome_2, SIGNAL(released()), this, SLOT(switchHomePage()));
 
     connect(ui->homeBolus, &QPushButton::released, this, [this]() {
         openBolus(true);
@@ -456,6 +458,15 @@ void MainWindow::previousPage(){
     ui->stackedWidget->setCurrentIndex(previousPage);
 }
 
+void MainWindow::switchHomePage(){
+    if(ui->stackedWidget->currentIndex() == 2){
+        openCGM();
+    }
+    else if(ui->stackedWidget->currentIndex() == 3){
+        openHome();
+    }
+}
+
 void MainWindow::inputNumber(int num, QTextEdit& edit){
     QString currentText = edit.toPlainText();
     currentText += QString::number(num);
@@ -675,9 +686,15 @@ void MainWindow::updateCGM(){
         cgmLine->removePoints(0, 1);
     }
     insulinFill -= insulinUnitsDelivered;
-    insulinOnBoard = cgm.getIOB();
     ui->insulinGauge->setValue(insulinFill);
     ui->insulinGauge_2->setValue(insulinFill);
+
+    insulinOnBoard = cgm.getIOB();
+    ui->units->setText(QString::number(insulinOnBoard) + "u");
+    ui->units_2->setText(QString::number(insulinOnBoard) + "u");
+    QTime extendedTime = QTime(cgm.getExtended() / 60, cgm.getExtended() % 60);
+    ui->remainingTime->setText(extendedTime.toString("hh:mm"));
+    ui->remainingTime_2->setText(extendedTime.toString("hh:mm"));
 
     //testing
     std::cout << cgm.getCurrentBG() << std::endl;

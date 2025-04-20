@@ -21,6 +21,7 @@ public:
     float readBG_mock();
     float predictBG(int ticks);
     float getIOB();
+    int getExtended();
 
 private:
     float currentBloodGlucose;

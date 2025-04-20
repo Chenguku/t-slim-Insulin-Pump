@@ -30,7 +30,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>8</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="pinLockScreen">
      <widget class="QLabel" name="lockScreenLabel">
@@ -609,6 +609,19 @@
        <string>Power Screen</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="switchHome">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>180</y>
+        <width>141</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Switch home</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="homeCGM">
      <widget class="QLabel" name="time_2">
@@ -825,6 +838,19 @@
       </property>
       <property name="text">
        <string>Power Screen</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="switchHome_2">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>160</y>
+        <width>141</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Switch home</string>
       </property>
      </widget>
     </widget>
