@@ -20,6 +20,7 @@ public:
     void addEffect(const GlucoseEffect &effect);
     float readBG_mock();
     float predictBG(int ticks);
+    float getIOB();
 
 private:
     float currentBloodGlucose;

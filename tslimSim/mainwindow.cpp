@@ -22,7 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //initialize the battery and insulin on board
     currentBattery = 0;
-    insulinOnBoard = 300;
+    insulinFill = 300;
+    insulinOnBoard = 0;
 
     //initialize CGM
     GlucoseReader_SineVariance *cgmreader = new GlucoseReader_SineVariance();
@@ -178,7 +179,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
 
     connect(ui->addProfileButton, SIGNAL(released()), this, SLOT(openCreateProfile()));
-    connect(ui->profileForm_backButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
+    connect(ui->profileForm_backButton, SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->createProfileButton, SIGNAL(released()), this, SLOT(onCreateProfile()));
     connect(ui->pushButton_2, &QPushButton::released, this, [this]() {
         openBolus(true);
@@ -261,6 +262,7 @@ MainWindow::MainWindow(QWidget *parent)
                 std::cout << "Bolus delivery: immediate\n";
                 cgm.adjustBG(unitsToDeliver);
                 std::cout << "immediate: " << cgm.getCurrentBG() << std::endl;
+                previousPage();
             }
             else {
                 //deliver over extended period
@@ -268,7 +270,8 @@ MainWindow::MainWindow(QWidget *parent)
                 openExtendedBolus();
                 ui->textEdit_4->setText(QString("%1").arg(bolusCalc->getFinalBolus()));
 
-
+                previousPage();
+                previousPage();
             }
         }
         else { std::cout << "Bolus cancelled by user\n"; }
@@ -434,6 +437,7 @@ void MainWindow::openHistoryDisplay(QString filter){
 }
 
 void MainWindow::openExtendedBolus(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(13);
 }
 
@@ -610,9 +614,9 @@ void MainWindow::increaseBattery(){
         ui->battery->setValue(currentBattery);
         ui->battery_2->setValue(currentBattery);
 
-        //on the home pages, set the innsulin on board (default 100)
-        ui->insulinGauge->setValue(insulinOnBoard);
-        ui->insulinGauge_2->setValue(insulinOnBoard);
+        //on the home pages, set the insulin fill gauge (default 100)
+        ui->insulinGauge->setValue(insulinFill);
+        ui->insulinGauge_2->setValue(insulinFill);
     }
     else{
         currentBattery++;
@@ -655,16 +659,17 @@ void MainWindow::updateTime(){
 }
 
 void MainWindow::updateCGM(){
-    cgm.setInsulinUnits(insulinOnBoard);
+    cgm.setInsulinUnits(insulinFill);
     float insulinUnitsDelivered = cgm.basalDelivery();
     cgmLine->append(simulationTime, cgm.getCurrentBG());
     if(simulationTime > 36){
         xAxis->setRange(simulationTime - 36, simulationTime);
         cgmLine->removePoints(0, 1);
     }
-    insulinOnBoard -= insulinUnitsDelivered;
-    ui->insulinGauge->setValue(insulinOnBoard);
-    ui->insulinGauge_2->setValue(insulinOnBoard);
+    insulinFill -= insulinUnitsDelivered;
+    insulinOnBoard = cgm.getIOB();
+    ui->insulinGauge->setValue(insulinFill);
+    ui->insulinGauge_2->setValue(insulinFill);
 }
 
 // The next few functions are for the pin lock screen
@@ -749,7 +754,7 @@ void MainWindow::lsButtonZero(){
 void MainWindow::onCreateProfile() {
     Profile* newProfile = profileFormWidget->getProfile();
     profilesPageWidget->addProfile(newProfile);
-    openPersonalProfiles();
+    previousPage();
 }
 
 void MainWindow::onActiveProfileSelect(Profile *p) {

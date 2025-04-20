@@ -43,6 +43,14 @@ float GlucoseReader_Mock::applyEffects(float possibleBGReduction){
     return bgChange;
 }
 
+float GlucoseReader_Mock::getIOB(){
+    float IOB = 0;
+    for (auto it = effects.begin(); it != effects.end(); ){
+        IOB += it->changePerTick * it->duration;
+    }
+    return IOB;
+}
+
 GlucoseReader_Sine::GlucoseReader_Sine()
 {
     seed = 0;

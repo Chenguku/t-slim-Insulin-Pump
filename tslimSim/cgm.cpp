@@ -15,6 +15,8 @@ void CGM::setInsulinUnits(float units) { insulinUnits = units; }
 float CGM::readBG_mock()           { return mock_reader->getBG(); }
 void CGM::adjustBG(float x)        { addEffect((GlucoseEffect) {x, 1}); }
 void CGM::addEffect(const GlucoseEffect &effect) { mock_reader->addEffect(effect); }
+float CGM::getIOB()                { return mock_reader->getIOB(); }
+
 
 float CGM::predictBG(int ticks){
     return currentBloodGlucose + (currentBloodGlucose - previousBloodGlucose) * ticks;
