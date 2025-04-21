@@ -9,7 +9,6 @@ ProfilesPageWidget::ProfilesPageWidget(QWidget *parent)
     : QWidget(parent), activeIndex(-1)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-
     tableWidget = new QTableWidget(this);
     tableWidget->setColumnCount(2);
     QStringList headers;

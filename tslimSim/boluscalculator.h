@@ -19,7 +19,7 @@
 class BolusCalculator
 {
 public:
-    BolusCalculator(float c, float bg, InsulinDeliveryProfile* curProfile, float IOB, int now, int later, int duration);
+    BolusCalculator(float c, float bg, InsulinDeliveryProfile* curProfile, float IOB, int now, int later, QTime duration);
 
 
     //getters
@@ -29,7 +29,8 @@ public:
     float getIOB() const;
     int getNow() const;
     int getLater() const;
-    int getDuration() const;
+    QTime getDuration() const;
+    int getDurationMinutes() const;
 
     float getFoodBolus() const;
     float getCorrectionBolus() const;
@@ -37,16 +38,17 @@ public:
     float getFinalBolus() const;
     float getImmediateBolus() const;
     float getExtendedBolus() const;
-    float getBolusRate(int hours) const;
+    float getBolusRate() const;
 
 
     //setters
     void setCarbValue(float c);
     void setBloodGlucose(float bg);
+    void setCurProfile(InsulinDeliveryProfile* profile);
     void setIOB(float IOB);
     void setNow(int now);
     void setLater(int later);
-    void setDuration(int duration);
+    void setDuration(const QTime& duration);
 
 
     QString logCalculations() const;
@@ -60,7 +62,7 @@ private:
     float IOB;
     int deliverNowPercentage;
     int deliverLaterPercentage;
-    int duration;
+    QTime duration;
 };
 
 #endif // BOLUSCALCULATOR_H

@@ -9,6 +9,7 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QTime>
+#include <QStack>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -45,6 +46,7 @@ public:
 
     //getters
     Profile* getCurProfile() const;
+    InsulinDeliveryProfile* getActiveTimeSetting() const;
 
 private:
     Ui::MainWindow      *ui;
@@ -55,12 +57,12 @@ private:
     QValueAxis          *yAxis;
     int                 graphRange;
     CGM                 cgm;
-    bool                cgmConnected;
     QTimer              *powerOnTimer;
     QTimer              *simulationTimer;
     int                 currentBattery;
     QDateTime           displayTime;
-    int                 insulinOnBoard;
+    float               insulinFill;
+    float               insulinOnBoard;
     int                 simulationTime;
     BolusCalculator     *bolusCalc;
     int                 passcode;
@@ -72,6 +74,7 @@ private:
     QString             historyEvent; //this is for history viewing, to simplify the code
     bool                BGLow;
     bool                BGHigh;
+    QStack<int>         pageHistory;
 
     //users should not be able to use these helper functions
     void createLowBatteryEvent();
@@ -82,7 +85,6 @@ private:
 
     //setters
     void setPasscode(int);
-
 
 private slots:
     void openPowerScreen();
@@ -96,12 +98,15 @@ private slots:
     void stopCharging();
     void openMyPump();
     void openGlucose();
+    void previousPage();
+    void switchHomePage();
+
+    //for simulation time tasks
     void simulateBackground();
     void updateBattery();
     void updateTime();
-    void openViewCalculation();
-    void openExtendedBolus();
     void updateCGM();
+    void openExtendedBolus();
     void openHistoryOptions();
     void openHistoryDisplay(QString);
 
@@ -109,6 +114,8 @@ private slots:
     void openPersonalProfiles();
     void openCreateProfile();
     void onCreateProfile();
+    void onActiveProfileSelect(Profile *p);
+
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);
@@ -117,7 +124,7 @@ private slots:
     void backspace(QTextEdit&);
     void checkValue(QTextEdit&, QPushButton&, QString);
     void pullBloodGlucose();
-    void writeCalculations(QTextEdit&);
+    void displayCalculations();
     void changePercentages(QPushButton&);
     void changeDuration();
 

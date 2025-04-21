@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , displayTime(QDate(2024, 11, 14), QTime(0, 0, 0)) //initialize time that is displayed to the user
-    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 5, 0, 0, 0)) //initiate the bolus calculator with default values
+    , bolusCalc(new BolusCalculator(0,0, new InsulinDeliveryProfile(0,0,1,5, QTime(0, 0)), 0, 0, 0, QTime(0,0))) //initiate the bolus calculator with default values
 {
     ui->setupUi(this);
 
@@ -20,11 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
     simulationTimer = new QTimer(this);
     simulationTime = 0;
 
-    //initialize the battery
+    //initialize the battery and insulin on board
     currentBattery = 0;
+    insulinFill = 300;
+    insulinOnBoard = 0;
 
     //initialize CGM
-    GlucoseReader_Sine *cgmreader = new GlucoseReader_Sine();
+    GlucoseReader_Mock *cgmreader = new GlucoseReader_SineVariance();
     cgm = CGM();
     cgm.setBGReader(cgmreader);
     //passcode setup
@@ -60,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     cgmChart->addAxis(yAxis, Qt::AlignRight);
     cgmLine->attachAxis(yAxis);
     xAxis = new QValueAxis;
-    xAxis->setRange(0, 20);
+    xAxis->setRange(0, 36);
     xAxis->setLabelsVisible(false);
     xAxis->setTickCount(0);
     xAxis->setGridLineVisible(false);
@@ -105,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->Profiles->setLayout(layout);
     }
     profilesPageWidget = new ProfilesPageWidget(this);
+    connect(profilesPageWidget, &ProfilesPageWidget::activeProfileChanged, this, &MainWindow::onActiveProfileSelect);
     ui->Profiles->layout()->addWidget(profilesPageWidget);
     layout->setAlignment(profilesPageWidget, Qt::AlignLeft);
 
@@ -118,6 +121,12 @@ MainWindow::MainWindow(QWidget *parent)
     profileFormWidget = new ProfileFormWidget(this);
     ui->ProfileForm->layout()->addWidget(profileFormWidget);
     layout->setAlignment(profileFormWidget, Qt::AlignLeft);
+
+    //set insulin progress bar to reflect 300 unit capacity
+    ui->insulinGauge->setMaximum(300);
+    ui->insulinGauge->setFormat("%v u");
+    ui->insulinGauge_2->setMaximum(300);
+    ui->insulinGauge_2->setFormat("%v u");
 
     //pull glucose from cgm
     pullBloodGlucose();
@@ -138,21 +147,20 @@ MainWindow::MainWindow(QWidget *parent)
      * 10: Personal Profiles Page
      * 11: Create Profilles Page
      * 12: History Page
-     * 13: View Calculations Page
-     * 14: Extended Bolus Page
+     * 13: Extended Bolus Page
     */
     connect(ui->powerScreenButton, SIGNAL(released()), this, SLOT(openPowerScreen()));
     connect(ui->powerScreenButton_2, SIGNAL(released()), this, SLOT(openPowerScreen()));
+    connect(ui->switchHome, SIGNAL(released()), this, SLOT(switchHomePage()));
+    connect(ui->switchHome_2, SIGNAL(released()), this, SLOT(switchHomePage()));
 
     connect(ui->homeBolus, &QPushButton::released, this, [this]() {
         openBolus(true);
     });
-    connect(ui->backButton, SIGNAL(released()), this, SLOT(openHome()));
+    connect(ui->backButton, SIGNAL(released()), this, SLOT(previousPage()));
     
     connect(ui->carbsButton, SIGNAL(released()), this, SLOT(openCarbs()));
-    connect(ui->backButton_2, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->backButton_2,SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->homeButton, SIGNAL(released()), this, SLOT(openHome()));
     connect(ui->CGMHomeButton, SIGNAL(released()), this, SLOT(openCGM()));
     connect(ui->optionsButton_2, SIGNAL(released()), this, SLOT(openOptions()));
@@ -163,30 +171,28 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->powerOnButton, SIGNAL(released()), this, SLOT(stopCharging()));
 
     connect(ui->glucoseButton, SIGNAL(released()), this, SLOT(openGlucose()));
-    connect(ui->backButton_3, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->backButton_3, SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->optionsButton, SIGNAL(released()), this, SLOT(openOptions()));
-    connect(ui->backButton_4, SIGNAL(released()), this, SLOT(openHome()));
+    connect(ui->backButton_4, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(ui->myPumpButton, SIGNAL(released()), this, SLOT(openMyPump()));
-    connect(ui->backButton_5, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->backButton_5, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(ui->profilesButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
-    connect(ui->backButton_6, SIGNAL(released()), this, SLOT(openMyPump()));
+    connect(ui->backButton_6, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(simulationTimer, SIGNAL(timeout()), this, SLOT(simulateBackground()));
 
     connect(ui->addProfileButton, SIGNAL(released()), this, SLOT(openCreateProfile()));
-    connect(ui->profileForm_backButton, SIGNAL(released()), this, SLOT(openPersonalProfiles()));
+    connect(ui->profileForm_backButton, SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->createProfileButton, SIGNAL(released()), this, SLOT(onCreateProfile()));
     connect(ui->pushButton_2, &QPushButton::released, this, [this]() {
         openBolus(true);
     });
 
-    connect(ui->backButton_9, SIGNAL(released()), this, SLOT(openOptions()));
+    connect(ui->backButton_9, SIGNAL(released()), this, SLOT(previousPage()));
     connect(ui->historyButton, SIGNAL(released()), this, SLOT(openHistoryOptions()));
-    connect(ui->backButton_10, SIGNAL(released()), this, SLOT(openHistoryOptions()));
+    connect(ui->backButton_10, SIGNAL(released()), this, SLOT(previousPage()));
     //add something to determine which one was pressed
     connect(ui->CGMReadingsButton, &QPushButton::released, this, [this](){
         openHistoryDisplay("CGM Reading");
@@ -259,6 +265,8 @@ MainWindow::MainWindow(QWidget *parent)
             if (deliveryMethod == QMessageBox::Yes) {
                 //deliver immediately
                 std::cout << "Bolus delivery: immediate\n";
+                cgm.adjustBG(unitsToDeliver);
+                previousPage();
             }
             else {
                 //deliver over extended period
@@ -284,9 +292,7 @@ MainWindow::MainWindow(QWidget *parent)
         //then set the text for the bolus units
         ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
-    connect(ui->checkButton_2, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->checkButton_2, SIGNAL(released()), this, SLOT(previousPage()));
 
     connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
         QString currentText = ui->textEdit_3->toPlainText(); //this lambda will set the blood glucose level in the bolus calculator
@@ -300,27 +306,37 @@ MainWindow::MainWindow(QWidget *parent)
         //then set the text for the bolus units
         ui->textEdit->setPlainText(QString("%1").arg(bolusCalc->getFinalBolus()));
     });
-    connect(ui->checkButton_3, &QPushButton::released, this, [this]() {
-        openBolus(false);
+    connect(ui->checkButton_3, SIGNAL(released()), this, SLOT(previousPage()));
+
+
+    //connect extended bolus check button -- this administers the extended bolus
+    connect(ui->checkButton_4, &QPushButton::released, this, [this]() {
+        cgm.adjustBG(bolusCalc->getImmediateBolus()); //deliver the deliver now portion
+
+        //add the effect to cgm -- adjust to 5 minute scale since each tick of sim is 5 min
+        cgm.addEffect((struct GlucoseEffect){bolusCalc->getBolusRate() * 5, bolusCalc->getDurationMinutes() / 5});
+
+        //get out of the bolus menu
+        previousPage();
+        previousPage();
     });
+
+
+
 
     //connect the view calculation ui elements
     connect(ui->viewCalcButton, &QPushButton::released, this, [this]() {
-        writeCalculations(*ui->viewCalculationTextEdit);
+        displayCalculations();
     });
-    connect(ui->viewCalcButton, SIGNAL(released()), this, SLOT(openViewCalculation()));
-    connect(ui->backButton_7, &QPushButton::released, this, [this]() {
-        openBolus(false);
+    connect(ui->viewCalcButton_2, &QPushButton::released, this, [this]() {
+        displayCalculations();
     });
-
     //connect the extended bolus ui elements, and populate default values (percentages and duration)
-    connect(ui->backButton_8, &QPushButton::released, this, [this]() {
-        openBolus(false);
-    });
+    connect(ui->backButton_8, SIGNAL(released()), this, SLOT(previousPage()));
     bolusCalc->populateDefaultValues();
     ui->deliverNowButton->setText(QString("%1\%").arg(bolusCalc->getNow()));
     ui->deliverLaterButton->setText(QString("%1\%").arg(bolusCalc->getLater()));
-    ui->durationButton->setText(QString("%1 minutes").arg(bolusCalc->getDuration()));
+    ui->durationButton->setText(QString("%1h %2m").arg(bolusCalc->getDuration().hour()).arg(bolusCalc->getDuration().minute())); //format time in Xh Ym format
     connect(ui->deliverNowButton, &QPushButton::released, this, [this]() {
         changePercentages(*ui->deliverNowButton);
     });
@@ -351,22 +367,24 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::openPowerScreen(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(1);
     simulationTimer->stop();
 }
 
 void MainWindow::openHome(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(2);
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
     }
 }
 void MainWindow::openCGM(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(3);
     if(!simulationTimer->isActive()){
         simulationTimer->start(1000);
     }
-    cgmConnected = true;
 }
 
 void MainWindow::openBolus(bool pullFlag){
@@ -374,33 +392,45 @@ void MainWindow::openBolus(bool pullFlag){
         //pull glucose from cgm before entering bolus
         pullBloodGlucose();
     }
+    pageHistory.push(ui->stackedWidget->currentIndex());
+
+    //set the current insulin delivery profile when bolus is opened
+    //bolusCalc->setCurProfile(profilesPageWidget->getActiveProfile());
+    bolusCalc->setIOB(insulinOnBoard);
     ui->stackedWidget->setCurrentIndex(4);
 }
 void MainWindow::openCarbs(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(5);
 }
 
 void MainWindow::openGlucose(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(6);
 }
 
 void MainWindow::openOptions(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(7);
 }
 
 void MainWindow::openMyPump(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(8);
 }
 
 void MainWindow::openHistoryOptions(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(9);
 }
 
 void MainWindow::openPersonalProfiles(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(10);
 }
 
 void MainWindow::openCreateProfile(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(11);
 }
 
@@ -413,15 +443,27 @@ void MainWindow::openHistoryDisplay(QString filter){
         ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
     }
     historyEvent = filter;
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(12);
 }
 
-void MainWindow::openViewCalculation(){
+void MainWindow::openExtendedBolus(){
+    pageHistory.push(ui->stackedWidget->currentIndex());
     ui->stackedWidget->setCurrentIndex(13);
 }
 
-void MainWindow::openExtendedBolus(){
-    ui->stackedWidget->setCurrentIndex(14);
+void MainWindow::previousPage(){
+    int previousPage = pageHistory.pop();
+    ui->stackedWidget->setCurrentIndex(previousPage);
+}
+
+void MainWindow::switchHomePage(){
+    if(ui->stackedWidget->currentIndex() == 2){
+        openCGM();
+    }
+    else if(ui->stackedWidget->currentIndex() == 3){
+        openHome();
+    }
 }
 
 void MainWindow::inputNumber(int num, QTextEdit& edit){
@@ -478,11 +520,11 @@ void MainWindow::pullBloodGlucose() {
     std::cout << "Pulled BG: " << bolusCalc->getBloodGlucose() << std::endl;
 }
 
-void MainWindow::writeCalculations(QTextEdit& edit) {
-    edit.setText(""); //reset the text
-    //write calculations in boluscalculator class (do it tmr moment)
-    //edit.append(bolusCalc->logCalculations());
-    bolusCalc->logCalculations();
+void MainWindow::displayCalculations() {
+    QString logMessage = bolusCalc->logCalculations();
+
+    //display the message in a popup
+    QMessageBox::information(this, "View Calculations", logMessage);
 }
 
 void MainWindow::changePercentages(QPushButton& clickedButton) {
@@ -541,8 +583,20 @@ void MainWindow::changeDuration() {
     //clicked OK and entered a value.
     if (ok) {
         qDebug() << "User entered:" << duration << "%";
-        bolusCalc->setDuration(duration);
-        ui->durationButton->setText(QString("%1 minutes").arg(duration));
+        QTime qDuration = QTime(0, 0).addSecs(duration * 60); //convert the minutes to a time
+        bolusCalc->setDuration(qDuration);
+
+        int hours = qDuration.hour();
+        int minutes = qDuration.minute();
+
+        QString durationStr;
+        if (hours > 0)
+            durationStr += QString::number(hours) + "h ";
+        if (minutes > 0 || hours == 0) //only show minutes if hours is 0
+            durationStr += QString::number(minutes) + "m";
+
+        ui->durationButton->setText(durationStr);
+
         qDebug() << "Duration: " << bolusCalc->getDuration();
 
     }
@@ -580,10 +634,9 @@ void MainWindow::increaseBattery(){
         ui->battery->setValue(currentBattery);
         ui->battery_2->setValue(currentBattery);
 
-        //on the home pages, set the innsulin on board (default 100)
-        insulinOnBoard = 100;
-        ui->insulinGauge->setValue(insulinOnBoard);
-        ui->insulinGauge_2->setValue(insulinOnBoard);
+        //on the home pages, set the insulin fill gauge (default 100)
+        ui->insulinGauge->setValue(insulinFill);
+        ui->insulinGauge_2->setValue(insulinFill);
     }
     else{
         currentBattery++;
@@ -635,20 +688,17 @@ void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
         updateBattery();
     }
-    if(cgmConnected){
-        updateCGM();
-        checkBGLevels();
-        logCGMReading();
-    }
+    updateCGM();
+    checkBGLevels();
+    logCGMReading();
     updateTime();
-    std::cout << cgm.readBG_mock() << std::endl;
 
     simulationTime++;
 }
 
 void MainWindow::updateBattery(){
     if(currentBattery == 0){
-        //ui->stackedWidget->setCurrentIndex(1);
+        openPowerScreen();
         ui->homeButton->setEnabled(false);
         ui->CGMHomeButton->setEnabled(false);
         return;
@@ -671,12 +721,26 @@ void MainWindow::updateTime(){
 }
 
 void MainWindow::updateCGM(){
-    cgm.basalDelivery(insulinOnBoard);
+    cgm.setInsulinUnits(insulinFill);
+    float insulinUnitsDelivered = cgm.basalDelivery();
     cgmLine->append(simulationTime, cgm.getCurrentBG());
-    if(simulationTime > 20){
-        xAxis->setRange(simulationTime - 20, simulationTime);
+    if(simulationTime > 36){
+        xAxis->setRange(simulationTime - 36, simulationTime);
         cgmLine->removePoints(0, 1);
     }
+    insulinFill -= insulinUnitsDelivered;
+    ui->insulinGauge->setValue(insulinFill);
+    ui->insulinGauge_2->setValue(insulinFill);
+
+    insulinOnBoard = cgm.getIOB();
+    ui->units->setText(QString::number(insulinOnBoard) + "u");
+    ui->units_2->setText(QString::number(insulinOnBoard) + "u");
+    QTime extendedTime = QTime(cgm.getExtended() / 60, cgm.getExtended() % 60);
+    ui->remainingTime->setText(extendedTime.toString("hh:mm") + " hrs");
+    ui->remainingTime_2->setText(extendedTime.toString("hh:mm") + " hrs");
+
+    //testing
+    std::cout << cgm.getCurrentBG() << std::endl;
 }
 
 // The next few functions are for the pin lock screen
@@ -761,7 +825,14 @@ void MainWindow::lsButtonZero(){
 void MainWindow::onCreateProfile() {
     Profile* newProfile = profileFormWidget->getProfile();
     profilesPageWidget->addProfile(newProfile);
-    openPersonalProfiles();
+    previousPage();
+}
+
+void MainWindow::onActiveProfileSelect(Profile *p) {
+    curProfile = p;
+    cgm.setProfile(p);
+    bolusCalc->setCurProfile(getActiveTimeSetting());
+
 }
 //pump information and history
 void MainWindow::displaySelectedItem(){
@@ -775,7 +846,8 @@ void MainWindow::displaySelectedItem(){
 
 
 //getters
-Profile* MainWindow::getCurProfile() const { return profilesPageWidget->getActiveProfile(); }
+Profile* MainWindow::getCurProfile() const { return curProfile; }
+InsulinDeliveryProfile* MainWindow::getActiveTimeSetting() const { return curProfile->getActiveDeliveryProfile(displayTime); }
 
 //setters
 void MainWindow::setPasscode(int i){

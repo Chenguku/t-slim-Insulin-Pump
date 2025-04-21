@@ -13,13 +13,20 @@ public:
     float getCurrentBG() const;
     void setProfile(Profile *p);
     void setBGReader(GlucoseReader_Mock *r);
-
+    void setInsulinUnits(float units);
     void adjustBG(float x);
-    float basalDelivery(int insulinOnBoard);
+
+    float basalDelivery();
+    void addEffect(const GlucoseEffect &effect);
     float readBG_mock();
+    float predictBG(int ticks);
+    float getIOB();
+    int getExtended();
 
 private:
     float currentBloodGlucose;
+    float previousBloodGlucose;
+    float insulinUnits;
     Profile *activeProfile;
     GlucoseReader_Mock *mock_reader;
 };

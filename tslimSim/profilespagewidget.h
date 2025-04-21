@@ -5,6 +5,7 @@
 #include <QTableWidget>
 #include <QButtonGroup>
 #include <vector>
+#include "cgm.h"
 #include "profile.h"
 
 class ProfilesPageWidget : public QWidget
