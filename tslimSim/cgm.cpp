@@ -20,22 +20,28 @@ int CGM::getExtended()             { return mock_reader->getIOBTime() * 5; }
 
 
 float CGM::predictBG(int ticks){
-    return currentBloodGlucose + (currentBloodGlucose - previousBloodGlucose) * ticks;
+    return currentBloodGlucose + (currentBloodGlucose - previousBloodGlucose) * ticks/2;
 }
 
 float CGM::basalDelivery(){
     previousBloodGlucose = currentBloodGlucose;
     currentBloodGlucose = readBG_mock();
+    float projectedBG = predictBG(6);
 
-    if(activeProfile == nullptr){
-        return 0;
+    if(projectedBG > 10 && insulinUnits > 0){
+        GlucoseEffect e = {projectedBG - 10, 1};
+        addEffect(e);
     }
 
-    float projectedBG = predictBG(6);
+    if(activeProfile == nullptr){
+        float insulinUnitsDelivered = mock_reader->applyEffects(insulinUnits);
+        return insulinUnitsDelivered;
+    }
 
     float insulinUnitsDelivered = 0; //default below target
 
-    if(projectedBG > activeProfile->getTimeSettings()[0]->getTargetGlucose() && insulinUnits > 0){
+
+    if(projectedBG <= 10 && projectedBG > activeProfile->getTimeSettings()[0]->getTargetGlucose() && insulinUnits > 0){
         GlucoseEffect e = {(activeProfile->getTimeSettings()[0]->getBasalRate() / 12) * activeProfile->getTimeSettings()[0]->getCorrectionFactor(), 1};
         addEffect(e);
     }

@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     insulinOnBoard = 0;
 
     //initialize CGM
-    GlucoseReader_SineVariance *cgmreader = new GlucoseReader_SineVariance();
+    GlucoseReader_Mock *cgmreader = new GlucoseReader_SineVariance();
     cgm = CGM();
     cgm.setBGReader(cgmreader);
     //passcode setup
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     cgmChart->addSeries(cgmLine);
 
     yAxis = new QValueAxis;
-    yAxis->setRange(0, 15);
+    yAxis->setRange(0, 12);
     yAxis->setLabelFormat("%.1f");
     yAxis->setGridLineVisible(false);
     yAxis->setMinorGridLineVisible(false);
@@ -693,8 +693,8 @@ void MainWindow::updateCGM(){
     ui->units->setText(QString::number(insulinOnBoard) + "u");
     ui->units_2->setText(QString::number(insulinOnBoard) + "u");
     QTime extendedTime = QTime(cgm.getExtended() / 60, cgm.getExtended() % 60);
-    ui->remainingTime->setText(extendedTime.toString("hh:mm"));
-    ui->remainingTime_2->setText(extendedTime.toString("hh:mm"));
+    ui->remainingTime->setText(extendedTime.toString("hh:mm") + " hrs");
+    ui->remainingTime_2->setText(extendedTime.toString("hh:mm") + " hrs");
 
     //testing
     std::cout << cgm.getCurrentBG() << std::endl;
