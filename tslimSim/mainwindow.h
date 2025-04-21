@@ -75,6 +75,7 @@ private:
     bool                BGLow;
     bool                BGHigh;
     QStack<int>         pageHistory;
+    bool                lowInsulin;
 
     //users should not be able to use these helper functions
     void createLowBatteryEvent();
@@ -82,6 +83,8 @@ private:
     void createLowBloodGlucoseEvent();
     void createHighBloodGlucoseEvent();
     void logCGMReading();
+    void createLowInsulinEvent();
+    void logInsulinDelivery(float);
 
     //setters
     void setPasscode(int);
@@ -100,6 +103,7 @@ private slots:
     void openGlucose();
     void previousPage();
     void switchHomePage();
+    void refillInsulin();
 
     //for simulation time tasks
     void simulateBackground();

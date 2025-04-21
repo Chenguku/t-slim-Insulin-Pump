@@ -32,8 +32,12 @@ MainWindow::MainWindow(QWidget *parent)
     //passcode setup
     passcode = 1234;
 
+    //for high/low blood glucose warning events
     BGLow = false;
     BGHigh = false;
+
+    //for low innsulin warning event
+    lowInsulin = false;
 
     //CGM Graph setup
     cgmLine = new QLineSeries();
@@ -364,6 +368,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lockScreen_b9, SIGNAL(released()), this, SLOT(lsButtonNine()));
 
     connect(ui->timeList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displaySelectedItem()));
+
+    connect(ui->refillInsulinButton, SIGNAL(released()), this, SLOT(refillInsulin()));
 }
 
 void MainWindow::openPowerScreen(){
@@ -607,9 +613,10 @@ void MainWindow::changeDuration() {
 }
 
 
-
-
-
+void MainWindow::refillInsulin(){
+    insulinFill = 300;
+    lowInsulin = false;
+}
 
 //start timer to charge battery
 void MainWindow::chargePump(){
@@ -683,6 +690,17 @@ void MainWindow::logCGMReading(){
     events.addEvent(new CGMEvent(simulationTime, cgm.getCurrentBG()));
 }
 
+void MainWindow::createLowInsulinEvent(){
+    //message box creates a message popup to tell the user their insulin is low
+    QMessageBox::warning(this, "Low Insulin Alert", "Your Device is Low on Insulin", QMessageBox::Ok);
+    events.addEvent(new AlertEvent(simulationTime, "Low Insulin"));
+    lowInsulin = true;
+}
+
+void MainWindow::logInsulinDelivery(float id){
+    events.addEvent(new InsulinDeliveryEvent(simulationTime, id));
+}
+
 //triggered every second after simulation is loaded. calls handlers for background tasks
 void MainWindow::simulateBackground(){
     if(simulationTime % 3 == 0){
@@ -731,6 +749,9 @@ void MainWindow::updateCGM(){
     insulinFill -= insulinUnitsDelivered;
     ui->insulinGauge->setValue(insulinFill);
     ui->insulinGauge_2->setValue(insulinFill);
+    if (insulinFill <= 20 && !lowInsulin){
+        createLowInsulinEvent();
+    }
 
     insulinOnBoard = cgm.getIOB();
     ui->units->setText(QString::number(insulinOnBoard) + "u");
@@ -738,6 +759,11 @@ void MainWindow::updateCGM(){
     QTime extendedTime = QTime(cgm.getExtended() / 60, cgm.getExtended() % 60);
     ui->remainingTime->setText(extendedTime.toString("hh:mm") + " hrs");
     ui->remainingTime_2->setText(extendedTime.toString("hh:mm") + " hrs");
+
+    //create an event for insulin delivered
+    if (insulinUnitsDelivered != 0){
+        logInsulinDelivery(insulinUnitsDelivered);
+    }
 
     //testing
     std::cout << cgm.getCurrentBG() << std::endl;

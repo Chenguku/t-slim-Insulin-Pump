@@ -1,7 +1,7 @@
 #include "insulindeliveryevent.h"
 
-InsulinDeliveryEvent::InsulinDeliveryEvent(int time, float br): Event(time), basalRate(br){}
+InsulinDeliveryEvent::InsulinDeliveryEvent(int time, float ud): Event(time), unitsDelivered(ud){}
 
 QString InsulinDeliveryEvent::getInformation(){
-    return QString::number(basalRate);
+    return QString::number(unitsDelivered) + " units";
 }

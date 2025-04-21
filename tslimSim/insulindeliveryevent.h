@@ -8,7 +8,7 @@ class InsulinDeliveryEvent : public Event{
         InsulinDeliveryEvent(int, float);
         QString getInformation() override;
     private:
-        float basalRate;
+        float unitsDelivered;
 };
 
 #endif // INSULINDELIVERYEVENT_H
