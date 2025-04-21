@@ -70,19 +70,5 @@ std::vector<Event*> EventHistory::recentWarningEvents(){
     return filtered;
 }
 
-/*
- * Test function
-void EventHistory::createEvents(){
-    std::string eventNames[5] = {"NRG", "SEN", "MIBR", "G2", "KRU"};
-    std::string ratings[5] = {"FNS", "N4RRATE", "ASPAS", "JAWGEMO", "SHYY"};
-    int randomNum;
-    std::srand(std::time(nullptr));
-    for (int i = 0; i < 1000; i++){
-        randomNum = rand() % 5;
-        addEvent(new Event(i+1, eventNames[randomNum], ratings[randomNum]));
-    }
-}
-*/
-
 
 

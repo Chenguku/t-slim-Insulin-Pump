@@ -20,9 +20,6 @@ class EventHistory{
         void addEvent(Event*);
         std::vector<Event*> recentEvents(QString);
 
-        //test function
-        //void createEvents();
-
         //getters
         int getNumEvents() const;
     private:
