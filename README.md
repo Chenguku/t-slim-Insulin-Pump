@@ -11,6 +11,10 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 ``` sudo apt install libqt5charts5-dev ```
 
 ## Use notes 
+- To begin, run the program in Qt, enter the passcode (1234), charge the device to 100% and then you will be able to click the "Home" or "CGM Home" screen
+- Administer a manual bolus using the "Bolus" button on the home screen
+- Create a profile by navigating to Options > My Pump > Personal Profiles
+- View the pump logs by navigating to Options > History and selecting the log type you wish to see
 - A profile must be set to active before basal insulin delivery can occur
 - Manual bolus and bolus automatically administered by CGM when blood glucose is greater than 10mmol/L will occur regardless of if a profile is set
 
