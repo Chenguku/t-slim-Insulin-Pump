@@ -36,6 +36,11 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+#define LOW_BATTERY     25
+#define LOW_INSULIN     20
+#define LOW_BG          3.9     //follows the graph, not the user guide
+#define HIGH_BG         10.0    //follows the graph, not the user guide
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

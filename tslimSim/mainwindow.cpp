@@ -658,18 +658,18 @@ void MainWindow::createLowBatteryEvent(){
 }
 
 void MainWindow::checkBGLevels(){
-    if (!BGLow && cgm.getCurrentBG() <= 4.4){
+    if (!BGLow && cgm.getCurrentBG() <= LOW_BG){
         BGLow = true;
         createLowBloodGlucoseEvent();
     }
-    else if (BGLow && cgm.getCurrentBG() > 4.4){
+    else if (BGLow && cgm.getCurrentBG() > LOW_BG){
         BGLow = false;
     }
-    else if (!BGHigh && cgm.getCurrentBG() >= 11.4){
+    else if (!BGHigh && cgm.getCurrentBG() >= HIGH_BG){
         BGHigh = true;
         createHighBloodGlucoseEvent();
     }
-    else if (BGHigh && cgm.getCurrentBG() < 11.4){
+    else if (BGHigh && cgm.getCurrentBG() < HIGH_BG){
         BGHigh = false;
     }
 }
@@ -721,7 +721,7 @@ void MainWindow::updateBattery(){
         ui->CGMHomeButton->setEnabled(false);
         return;
     }
-    if (currentBattery == 25){
+    if (currentBattery == LOW_BATTERY){
         createLowBatteryEvent();
     }
     currentBattery--;
@@ -749,7 +749,7 @@ void MainWindow::updateCGM(){
     insulinFill -= insulinUnitsDelivered;
     ui->insulinGauge->setValue(insulinFill);
     ui->insulinGauge_2->setValue(insulinFill);
-    if (insulinFill <= 20 && !lowInsulin){
+    if (insulinFill <= LOW_INSULIN && !lowInsulin){
         createLowInsulinEvent();
     }
 
