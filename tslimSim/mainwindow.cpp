@@ -754,11 +754,11 @@ void MainWindow::updateCGM(){
     }
 
     insulinOnBoard = cgm.getIOB();
-    ui->units->setText(QString::number(insulinOnBoard) + "u");
-    ui->units_2->setText(QString::number(insulinOnBoard) + "u");
+    ui->units->setText(QString::number(insulinOnBoard, 'f', 2) + "u");
+    ui->units_2->setText(QString::number(insulinOnBoard, 'f', 2) + "u");
     QTime extendedTime = QTime(cgm.getExtended() / 60, cgm.getExtended() % 60);
-    ui->remainingTime->setText(extendedTime.toString("hh:mm") + " hrs");
-    ui->remainingTime_2->setText(extendedTime.toString("hh:mm") + " hrs");
+    ui->remainingTime->setText(extendedTime.toString("HH:mm") + " hrs");
+    ui->remainingTime_2->setText(extendedTime.toString("HH:mm") + " hrs");
 
     //create an event for insulin delivered
     if (insulinUnitsDelivered != 0){
