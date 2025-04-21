@@ -2,12 +2,13 @@
 #define ALERTEVENT_H
 
 #include <QString>
+#include <QDateTime>
 
 #include "event.h"
 
 class AlertEvent : public Event{
     public:
-        AlertEvent(int, QString);
+        AlertEvent(QDateTime, QString);
         QString getInformation() override;
     private:
         QString warningType;

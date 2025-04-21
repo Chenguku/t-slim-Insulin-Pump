@@ -446,7 +446,7 @@ void MainWindow::openHistoryDisplay(QString filter){
     ui->informationDisplay->clear();
     recentEvents = events.recentEvents(filter);
     for (std::size_t i = 0; i < recentEvents.size(); i++){
-        ui->timeList->addItem(QString::number(recentEvents[i]->getEventTime()));
+        ui->timeList->addItem(recentEvents[i]->formattedTime());
     }
     historyEvent = filter;
     pageHistory.push(ui->stackedWidget->currentIndex());
@@ -654,7 +654,7 @@ void MainWindow::increaseBattery(){
 void MainWindow::createLowBatteryEvent(){
     //message box creates a message popup to tell the user their device battery is low
     QMessageBox::warning(this, "Low Battery", "Your Device is Low on Battery", QMessageBox::Ok);
-    events.addEvent(new AlertEvent(simulationTime, "Low Battery"));
+    events.addEvent(new AlertEvent(displayTime, "Low Battery"));
 }
 
 void MainWindow::checkBGLevels(){
@@ -677,28 +677,28 @@ void MainWindow::checkBGLevels(){
 void MainWindow::createLowBloodGlucoseEvent(){
     //message box creates a message popup to tell the user their blood glucose is low
     QMessageBox::warning(this, "Low Blood Glucose", "Blood Glucose is low", QMessageBox::Ok);
-    events.addEvent(new AlertEvent(simulationTime, "Low Blood Glucose"));
+    events.addEvent(new AlertEvent(displayTime, "Low Blood Glucose"));
 }
 
 void MainWindow::createHighBloodGlucoseEvent(){
     //message box creates a message popup to tell the user their blood glucose is high
     QMessageBox::warning(this, "High Blood Glucose", "Blood Glucose is high", QMessageBox::Ok);
-    events.addEvent(new AlertEvent(simulationTime, "High Blood Glucose"));
+    events.addEvent(new AlertEvent(displayTime, "High Blood Glucose"));
 }
 
 void MainWindow::logCGMReading(){
-    events.addEvent(new CGMEvent(simulationTime, cgm.getCurrentBG()));
+    events.addEvent(new CGMEvent(displayTime, cgm.getCurrentBG()));
 }
 
 void MainWindow::createLowInsulinEvent(){
     //message box creates a message popup to tell the user their insulin is low
     QMessageBox::warning(this, "Low Insulin Alert", "Your Device is Low on Insulin", QMessageBox::Ok);
-    events.addEvent(new AlertEvent(simulationTime, "Low Insulin"));
+    events.addEvent(new AlertEvent(displayTime, "Low Insulin"));
     lowInsulin = true;
 }
 
 void MainWindow::logInsulinDelivery(float id){
-    events.addEvent(new InsulinDeliveryEvent(simulationTime, id));
+    events.addEvent(new InsulinDeliveryEvent(displayTime, id));
 }
 
 //triggered every second after simulation is loaded. calls handlers for background tasks
