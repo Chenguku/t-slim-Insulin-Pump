@@ -1,0 +1,136 @@
+title Normal Operation: Entering and Using 3 Different Profiles
+
+participant MainWindow
+
+participant InsulinDeliveryProfile
+participant ProfileFormWidget
+participant ProfilesPageWidget
+
+
+participant Profile1
+
+activate MainWindow
+
+MainWindow->MainWindow: setupUi(this)
+
+MainWindow->MainWindow: openLockScreen()
+MainWindow->MainWindow: submitPasscode()
+MainWindow->MainWindow: openPowerScreen()
+MainWindow->MainWindow: chargePump()
+MainWindow->MainWindow: openHome()
+MainWindow->MainWindow: openOptions()
+MainWindow->MainWindow: openMyPump()
+
+
+MainWindow->MainWindow: openPersonalProfiles()
+
+
+//Profile1
+note over MainWindow: Creating Profile1
+MainWindow->MainWindow: openCreateProfile()
+MainWindow->MainWindow: onCreateProfile()
+MainWindow->ProfileFormWidget: getProfile()
+activate ProfileFormWidget
+
+note over ProfileFormWidget: Get the values from UI\nSet them in Profile1
+ProfileFormWidget->Profile1:setInsulinDuration(insulinDurationEdit->time())
+activate Profile1
+
+ProfileFormWidget->Profile1:setMaxBolus(maxBolusEdit->text().toFloat())
+ProfileFormWidget->Profile1:setIncludeCarbs(carbCheckbox->isChecked())
+ProfileFormWidget->Profile1:addTimeSetting()
+
+
+
+deactivate ProfileFormWidget
+MainWindow -> ProfilesPageWidget : addProfile(Profile1)
+activate ProfilesPageWidget
+ProfilesPageWidget->MainWindow: refreshTable()
+deactivate ProfilesPageWidget
+MainWindow->MainWindow: openPersonalProfiles()
+
+
+note over MainWindow: Selecting Profile1
+MainWindow->ProfilesPageWidget: emit activeProfileChange(Profile1)
+activate ProfilesPageWidget
+ProfilesPageWidget->MainWindow:onActiveProfileSelect(Profile1)
+deactivate ProfilesPageWidget
+MainWindow->MainWindow: setProfile(Profile1)
+MainWindow->MainWindow: cgm->setProfile(Profile1)
+MainWindow->MainWindow: bolusCalc->setCurProfile(Profile1->getActiveDeliveryProfile(displayTime)
+
+
+//Profile2
+note over MainWindow: Creating Profile2
+MainWindow->MainWindow: openCreateProfile()
+MainWindow->MainWindow: onCreateProfile()
+MainWindow->ProfileFormWidget: getProfile()
+activate ProfileFormWidget
+
+note over ProfileFormWidget: Get the values from UI\nSet them in Profile2
+ProfileFormWidget->Profile2:setInsulinDuration(insulinDurationEdit->time())
+activate Profile2
+
+ProfileFormWidget->Profile2:setMaxBolus(maxBolusEdit->text().toFloat())
+ProfileFormWidget->Profile2:setIncludeCarbs(carbCheckbox->isChecked())
+ProfileFormWidget->Profile2:addTimeSetting()
+
+
+
+deactivate ProfileFormWidget
+MainWindow -> ProfilesPageWidget : addProfile(Profile2)
+activate ProfilesPageWidget
+ProfilesPageWidget->MainWindow: refreshTable()
+deactivate ProfilesPageWidget
+MainWindow->MainWindow: openPersonalProfiles()
+
+
+note over MainWindow: Selecting Profile2
+MainWindow->ProfilesPageWidget: emit activeProfileChange(Profile2)
+activate ProfilesPageWidget
+ProfilesPageWidget->MainWindow:onActiveProfileSelect(Profile2)
+deactivate ProfilesPageWidget
+MainWindow->MainWindow: setProfile(Profile2)
+MainWindow->MainWindow: cgm->setProfile(Profile2)
+MainWindow->MainWindow: bolusCalc->setCurProfile(Profile2->getActiveDeliveryProfile(displayTime)
+
+
+
+//Profile3
+note over MainWindow: Creating Profile3
+MainWindow->MainWindow: openCreateProfile()
+MainWindow->MainWindow: onCreateProfile()
+MainWindow->ProfileFormWidget: getProfile()
+activate ProfileFormWidget
+
+note over ProfileFormWidget: Get the values from UI\nSet them in Profile3
+ProfileFormWidget->Profile2:setInsulinDuration(insulinDurationEdit->time())
+activate Profile3
+
+ProfileFormWidget->Profile3:setMaxBolus(maxBolusEdit->text().toFloat())
+ProfileFormWidget->Profile3:setIncludeCarbs(carbCheckbox->isChecked())
+ProfileFormWidget->Profile3:addTimeSetting()
+
+
+
+deactivate ProfileFormWidget
+MainWindow -> ProfilesPageWidget : addProfile(Profile3)
+activate ProfilesPageWidget
+ProfilesPageWidget->MainWindow: refreshTable()
+deactivate ProfilesPageWidget
+MainWindow->MainWindow: openPersonalProfiles()
+
+
+note over MainWindow: Selecting Profile3
+MainWindow->ProfilesPageWidget: emit activeProfileChange(Profile3)
+activate ProfilesPageWidget
+ProfilesPageWidget->MainWindow:onActiveProfileSelect(Profile3)
+deactivate ProfilesPageWidget
+MainWindow->MainWindow: setProfile(Profile3)
+MainWindow->MainWindow: cgm->setProfile(Profile3)
+MainWindow->MainWindow: bolusCalc->setCurProfile(Profile3->getActiveDeliveryProfile(displayTime)
+
+
+
+
+
