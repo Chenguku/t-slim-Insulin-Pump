@@ -120,7 +120,7 @@ float GlucoseReader_SineVariance::readBG_mock(){
     seed++;
     float updatedBG = currentBG + bgIncrement - prevIncrement;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dist(-0.25, 0.5);
+    std::uniform_real_distribution<> dist(-0.25, 0.50);
     float randomNum = dist(gen);
     updatedBG += randomNum;
     if(updatedBG < 0){
