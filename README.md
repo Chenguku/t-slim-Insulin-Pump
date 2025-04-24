@@ -62,3 +62,8 @@ The QCharts module for Qt 5 is required for this project to build. It can be dow
 | GlucoseReader_Mock | Jason Li |
 | ProfileFormWidget | Methira Herath |
 | ProfilesPageWidget | Methira Herath |
+
+
+
+## Demo Video Link:
+https://youtu.be/wyfRX-eg0DU
