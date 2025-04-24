@@ -124,6 +124,7 @@ private slots:
     void openCreateProfile();
     void onCreateProfile();
     void onActiveProfileSelect(Profile *p);
+    void onDeleteProfile(Profile *p);
 
 
     //for carbs/glucose input screens

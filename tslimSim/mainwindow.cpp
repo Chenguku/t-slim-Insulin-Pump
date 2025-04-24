@@ -112,6 +112,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     profilesPageWidget = new ProfilesPageWidget(this);
     connect(profilesPageWidget, &ProfilesPageWidget::activeProfileChanged, this, &MainWindow::onActiveProfileSelect);
+    connect(profilesPageWidget, &ProfilesPageWidget::deleteProfileRequested, this, &MainWindow::onDeleteProfile);
+
     ui->Profiles->layout()->addWidget(profilesPageWidget);
     layout->setAlignment(profilesPageWidget, Qt::AlignLeft);
 
@@ -859,6 +861,21 @@ void MainWindow::onActiveProfileSelect(Profile *p) {
     cgm.setProfile(p);
     bolusCalc->setCurProfile(getActiveTimeSetting());
 
+}
+
+void MainWindow::onDeleteProfile(Profile *p)
+{
+    // message confirmation (commented out cause overlapping messageboxes sometimes causes errors)
+//    auto reply = QMessageBox::question(
+//        this,
+//        "Delete Profile",
+//        QString("Delete profile \"%1\"?").arg(QString::fromStdString(p->getTitle())),
+//        QMessageBox::Yes | QMessageBox::No
+//    );
+//    if (reply != QMessageBox::Yes)
+//        return;
+
+    profilesPageWidget->removeProfile(p);
 }
 //pump information and history
 void MainWindow::displaySelectedItem(){

@@ -16,11 +16,13 @@ public:
     ~ProfilesPageWidget();
 
     void addProfile(Profile* profile);
+    void removeProfile(Profile* profile);
 
     Profile* getActiveProfile() const;
 
 signals:
     void activeProfileChanged(Profile* profile);
+    void deleteProfileRequested(Profile* profile);
 
 private:
     void refreshTable();
