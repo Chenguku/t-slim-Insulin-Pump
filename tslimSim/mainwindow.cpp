@@ -861,6 +861,7 @@ void MainWindow::onCreateProfile() {
         Profile* newProfile = profileFormWidget->getProfile();
         profilesPageWidget->addProfile(newProfile);
     }
+    profilesPageWidget->refreshTable();
     previousPage();
 }
 

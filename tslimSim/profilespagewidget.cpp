@@ -33,7 +33,6 @@ ProfilesPageWidget::~ProfilesPageWidget()
 void ProfilesPageWidget::addProfile(Profile* profile)
 {
     profiles.push_back(profile);
-    refreshTable();
 }
 
 void ProfilesPageWidget::removeProfile(Profile* profile)

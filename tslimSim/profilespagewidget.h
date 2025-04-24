@@ -19,14 +19,13 @@ public:
     void removeProfile(Profile* profile);
 
     Profile* getActiveProfile() const;
-
+    void refreshTable();
 signals:
     void activeProfileChanged(Profile* profile);
     void deleteProfileRequested(Profile* profile);
     void editProfileRequested(Profile* profile);
 
 private:
-    void refreshTable();
 
     QTableWidget *tableWidget;
     QButtonGroup *radioGroup;
