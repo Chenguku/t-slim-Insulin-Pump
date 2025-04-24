@@ -146,3 +146,74 @@ Profile* ProfileFormWidget::getProfile() const
     }
     return newProfile;
 }
+
+void ProfileFormWidget::loadProfile(Profile *p)
+{
+    if (!p) return;
+
+    // basic fields
+    titleLineEdit->setText(QString::fromStdString(p->getTitle()));
+    insulinDurationEdit->setTime(p->getInsulinDuration());
+    maxBolusEdit->setText(QString::number(p->getMaxBolus()));
+    carbCheckbox->setChecked(p->getIncludeCarbs());
+
+    // time settings table
+    const auto &settings = p->getTimeSettings();
+    int rows = static_cast<int>(settings.size());
+    timeTable->setRowCount(rows);
+
+    for (int i = 0; i < rows; ++i) {
+        auto &up = settings[i];
+
+        // time widget
+        QTimeEdit *te = new QTimeEdit;
+        te->setDisplayFormat("HH:mm");
+        te->setTime(up->getTime());
+        timeTable->setCellWidget(i, 0, te);
+
+        // bolus
+        timeTable->setItem(i, 1,
+            new QTableWidgetItem(QString::number(up->getBasalRate()))
+        );
+        timeTable->setItem(i, 2,
+            new QTableWidgetItem(QString::number(up->getCorrectionFactor()))
+        );
+        timeTable->setItem(i, 3,
+            new QTableWidgetItem(QString::number(up->getCarbRatio()))
+        );
+        timeTable->setItem(i, 4,
+            new QTableWidgetItem(QString::number(up->getTargetGlucose()))
+        );
+    }
+}
+
+void ProfileFormWidget::updateProfile(Profile *p) const
+{
+    if (!p) return;
+
+    // Basic fields
+    p->setTitle(titleLineEdit->text().toStdString());
+    p->setInsulinDuration(insulinDurationEdit->time());
+    p->setMaxBolus(maxBolusEdit->text().toFloat());
+    p->setIncludeCarbs(carbCheckbox->isChecked());
+
+    // Rebuild time-settings
+    p->clearTimeSettings();
+    int rows = timeTable->rowCount();
+    for (int i = 0; i < rows; ++i) {
+        // get values
+        auto *te = qobject_cast<QTimeEdit*>(timeTable->cellWidget(i, 0));
+        QTime tm = te ? te->time() : QTime(0,0);
+        float basal  = timeTable->item(i,1)->text().toFloat();
+        float corr   = timeTable->item(i,2)->text().toFloat();
+        float carb   = timeTable->item(i,3)->text().toFloat();
+        float target = timeTable->item(i,4)->text().toFloat();
+
+        // create and add
+        std::unique_ptr<InsulinDeliveryProfile> idpPtr(
+            new InsulinDeliveryProfile(basal, carb, corr, target, tm)
+        );
+        p->addTimeSetting(std::move(idpPtr));
+    }
+}
+

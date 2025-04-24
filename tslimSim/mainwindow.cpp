@@ -110,9 +110,11 @@ MainWindow::MainWindow(QWidget *parent)
         layout->setContentsMargins(0, 100, 0, 0);
         ui->Profiles->setLayout(layout);
     }
+    editingProfile = nullptr;
     profilesPageWidget = new ProfilesPageWidget(this);
     connect(profilesPageWidget, &ProfilesPageWidget::activeProfileChanged, this, &MainWindow::onActiveProfileSelect);
     connect(profilesPageWidget, &ProfilesPageWidget::deleteProfileRequested, this, &MainWindow::onDeleteProfile);
+    connect(profilesPageWidget, &ProfilesPageWidget::editProfileRequested, this, &MainWindow::onEditProfile);
 
     ui->Profiles->layout()->addWidget(profilesPageWidget);
     layout->setAlignment(profilesPageWidget, Qt::AlignLeft);
@@ -851,8 +853,14 @@ void MainWindow::lsButtonZero(){
 //end of pin lock screen functions
 
 void MainWindow::onCreateProfile() {
-    Profile* newProfile = profileFormWidget->getProfile();
-    profilesPageWidget->addProfile(newProfile);
+    if (editingProfile) {
+        profileFormWidget->updateProfile(editingProfile);
+        editingProfile = nullptr;
+        ui->createProfileButton->setText("Create");
+    } else {
+        Profile* newProfile = profileFormWidget->getProfile();
+        profilesPageWidget->addProfile(newProfile);
+    }
     previousPage();
 }
 
@@ -866,17 +874,27 @@ void MainWindow::onActiveProfileSelect(Profile *p) {
 void MainWindow::onDeleteProfile(Profile *p)
 {
     // message confirmation (commented out cause overlapping messageboxes sometimes causes errors)
-//    auto reply = QMessageBox::question(
-//        this,
-//        "Delete Profile",
-//        QString("Delete profile \"%1\"?").arg(QString::fromStdString(p->getTitle())),
-//        QMessageBox::Yes | QMessageBox::No
-//    );
-//    if (reply != QMessageBox::Yes)
-//        return;
-
+    /*
+    auto reply = QMessageBox::question(
+        this,
+        "Delete Profile",
+        QString("Delete profile \"%1\"?").arg(QString::fromStdString(p->getTitle())),
+        QMessageBox::Yes | QMessageBox::No
+    );
+    if (reply != QMessageBox::Yes)
+        return;
+    */
     profilesPageWidget->removeProfile(p);
 }
+
+void MainWindow::onEditProfile(Profile *p)
+{
+    editingProfile = p;
+    profileFormWidget->loadProfile(p);
+    ui->createProfileButton->setText("Save");
+    openCreateProfile();
+}
+
 //pump information and history
 void MainWindow::displaySelectedItem(){
     int currentIndex = ui->timeList->currentRow();

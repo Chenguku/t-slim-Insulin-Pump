@@ -73,6 +73,7 @@ private:
     int                 passcode;
     EventHistory        events;
     Profile             *curProfile;
+    Profile             *editingProfile;
     ProfilesPageWidget  *profilesPageWidget;
     ProfileFormWidget   *profileFormWidget;
     std::vector<Event*> recentEvents;
@@ -125,7 +126,7 @@ private slots:
     void onCreateProfile();
     void onActiveProfileSelect(Profile *p);
     void onDeleteProfile(Profile *p);
-
+    void onEditProfile(Profile *p);
 
     //for carbs/glucose input screens
     void inputNumber(int num, QTextEdit&);

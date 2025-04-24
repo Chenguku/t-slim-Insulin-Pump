@@ -23,6 +23,7 @@ public:
 signals:
     void activeProfileChanged(Profile* profile);
     void deleteProfileRequested(Profile* profile);
+    void editProfileRequested(Profile* profile);
 
 private:
     void refreshTable();

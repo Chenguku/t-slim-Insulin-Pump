@@ -11,9 +11,9 @@ ProfilesPageWidget::ProfilesPageWidget(QWidget *parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     tableWidget = new QTableWidget(this);
-    tableWidget->setColumnCount(3);
+    tableWidget->setColumnCount(4);
     QStringList headers;
-    headers << "Title" << "Active" << "Delete";
+    headers << "Title" << "Active" << "Edit" << "Delete";
     tableWidget->setHorizontalHeaderLabels(headers);
     tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     layout->addWidget(tableWidget);
@@ -85,6 +85,15 @@ void ProfilesPageWidget::refreshTable()
         });
         tableWidget->setCellWidget(i, 1, activeRadio);
 
+        // edit
+        QPushButton *editBtn = new QPushButton("Edit", this);
+        editBtn->setEnabled(i != activeIndex);
+        connect(editBtn, &QPushButton::clicked, this, [this, i]() {
+            if (i != activeIndex)
+                emit editProfileRequested(profiles[i]);
+        });
+        tableWidget->setCellWidget(i, 2, editBtn);
+
         // delete
         QPushButton *deleteBtn = new QPushButton("Delete", this);
         deleteBtn->setEnabled(i != activeIndex);
@@ -92,7 +101,7 @@ void ProfilesPageWidget::refreshTable()
             if (i != activeIndex)
                 emit deleteProfileRequested(profiles[i]);
         });
-        tableWidget->setCellWidget(i, 2, deleteBtn);
+        tableWidget->setCellWidget(i, 3, deleteBtn);
 
     }
 }

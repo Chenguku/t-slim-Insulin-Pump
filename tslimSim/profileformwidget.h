@@ -17,8 +17,10 @@ class ProfileFormWidget : public QWidget
     Q_OBJECT
 public:
     explicit ProfileFormWidget(QWidget *parent = nullptr);
-
     Profile* getProfile() const;
+
+    void loadProfile(Profile* p);
+    void updateProfile(Profile* p) const;
 
 private:
     QLineEdit    *titleLineEdit;
@@ -28,7 +30,6 @@ private:
     QCheckBox    *carbCheckbox;
     QPushButton  *addTimeButton;
     QPushButton  *removeTimeButton;
-
 
 private slots:
     void onAddTimeSetting();
